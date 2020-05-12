@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OracleParser\DataBaseRepository\DataBaseRepository.csproj" />
+    <ProjectReference Include="..\OracleParser\OracleParser\OracleParser.csproj" />
+    <ProjectReference Include="..\UpdateableJsonConfig\UpdateableJsonConfig\UpdateableJsonConfig.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="PackageSplitterSettings.Json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,50 @@
+﻿using DataBaseRepository;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PackageSplitter.ViewModel
+{
+    public class RepositoryVM : PropertyChangedBase
+    {
+        private string _SelectedOwner;
+        public string SelectedOwner
+        {
+            get 
+            {
+                return _SelectedOwner; 
+            }
+            set
+            {
+                _SelectedOwner = value;
+                /*Config.Instanse().LastOwnerUsed = value;
+                Config.Instanse().Save();*/
+            }
+        }
+
+        private string _RepositoryPath;
+        public string RepositoryPath
+        {
+            get
+            {
+                return _RepositoryPath;
+            }
+            set
+            {
+                _RepositoryPath = value;
+                /*Config.Instanse().RepositoryPath = value;
+                Config.Instanse().Save();*/
+            }
+        }
+
+        public RepositoryVM()
+        {
+            _RepositoryPath = Config.Instanse().RepositoryPath;
+        }
+    }
+}

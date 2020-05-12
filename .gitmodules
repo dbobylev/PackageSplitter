@@ -1,0 +1,8 @@
+[submodule "UpdateableJsonConfig"]
+	path = UpdateableJsonConfig
+	url = https://github.com/dbobylev/UpdateableJsonConfig
+	branch = master
+[submodule "OracleParser"]
+	path = OracleParser
+	url = https://github.com/dbobylev/OracleParser.git
+	branch = master

@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageSplitter", "PackageSplitter\PackageSplitter.csproj", "{9F31B06C-8FF2-402B-98E0-CA4B9F0F5167}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OracleParser", "OracleParser\OracleParser\OracleParser.csproj", "{834085EE-855E-416C-A7B8-C6423BEC1392}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBaseRepository", "OracleParser\DataBaseRepository\DataBaseRepository.csproj", "{2B99FFC4-8050-4E87-BD59-F48D4238A85B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntlrOraclePlsql", "OracleParser\AntlrOraclePlsql\AntlrOraclePlsql\AntlrOraclePlsql.csproj", "{D4C5611D-27F6-4C9A-B46F-62A3CBC5A57E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpdateableJsonConfig", "UpdateableJsonConfig\UpdateableJsonConfig\UpdateableJsonConfig.csproj", "{11052A21-8941-4FFD-B6B3-767BD59FDA44}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OracleParser.Tests", "OracleParser\OracleParser.Tests\OracleParser.Tests.csproj", "{0D3ADD7C-EE03-40DA-81D4-93DC3F8C203C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F31B06C-8FF2-402B-98E0-CA4B9F0F5167}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F31B06C-8FF2-402B-98E0-CA4B9F0F5167}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F31B06C-8FF2-402B-98E0-CA4B9F0F5167}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F31B06C-8FF2-402B-98E0-CA4B9F0F5167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{834085EE-855E-416C-A7B8-C6423BEC1392}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{834085EE-855E-416C-A7B8-C6423BEC1392}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{834085EE-855E-416C-A7B8-C6423BEC1392}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{834085EE-855E-416C-A7B8-C6423BEC1392}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B99FFC4-8050-4E87-BD59-F48D4238A85B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B99FFC4-8050-4E87-BD59-F48D4238A85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B99FFC4-8050-4E87-BD59-F48D4238A85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B99FFC4-8050-4E87-BD59-F48D4238A85B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4C5611D-27F6-4C9A-B46F-62A3CBC5A57E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4C5611D-27F6-4C9A-B46F-62A3CBC5A57E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4C5611D-27F6-4C9A-B46F-62A3CBC5A57E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4C5611D-27F6-4C9A-B46F-62A3CBC5A57E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11052A21-8941-4FFD-B6B3-767BD59FDA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11052A21-8941-4FFD-B6B3-767BD59FDA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11052A21-8941-4FFD-B6B3-767BD59FDA44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11052A21-8941-4FFD-B6B3-767BD59FDA44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D3ADD7C-EE03-40DA-81D4-93DC3F8C203C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D3ADD7C-EE03-40DA-81D4-93DC3F8C203C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D3ADD7C-EE03-40DA-81D4-93DC3F8C203C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D3ADD7C-EE03-40DA-81D4-93DC3F8C203C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {13D961B2-B076-40F2-8A9E-0A038BAE96CD}
+	EndGlobalSection
+EndGlobal

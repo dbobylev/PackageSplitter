@@ -1,0 +1,18 @@
+﻿{
+  "RepositoryPath": "",
+  "LastOwnerUsed": "",
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.Console" ],
+    "MinimumLevel": "Verbose",
+    "WriteTo": [
+      { "Name": "Console" },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "serilog-configuration-sample.txt",
+          "retainedFileCountLimit": "1"
+        }
+      }
+    ]
+  }
+}
