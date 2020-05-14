@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,8 +23,11 @@ namespace PackageSplitter.ViewModel
             set
             {
                 _SelectedOwner = value;
-                /*Config.Instanse().LastOwnerUsed = value;
-                Config.Instanse().Save();*/
+                if (!string.IsNullOrEmpty(value))
+                {
+                    Config.Instanse().LastOwnerUsed = value;
+                    Config.Instanse().Save();
+                }
             }
         }
 
@@ -37,8 +41,11 @@ namespace PackageSplitter.ViewModel
             set
             {
                 _RepositoryPath = value;
-                /*Config.Instanse().RepositoryPath = value;
-                Config.Instanse().Save();*/
+                if (Directory.Exists(value))
+                {
+                    Config.Instanse().RepositoryPath = value;
+                    Config.Instanse().Save();
+                }
             }
         }
 

@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DataBaseRepository;
 using OracleParser;
+using PackageSplitter.Convertrs;
 
 namespace PackageSplitter
 {
@@ -26,18 +27,28 @@ namespace PackageSplitter
         public MainWindow()
         {
             InitializeComponent();
+        }
 
-            var descriptor = DependencyPropertyDescriptor.FromProperty(ComboBox.ItemsSourceProperty, typeof(ComboBox));
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetLastOwnerUed();
+        }
 
-            descriptor.AddValueChanged(cbOwners, (sender, e) =>
+        private void SetLastOwnerUed()
+        {
+            Seri.Log.Verbose("SetLastUsedOwner begin");
+
+            string LastOwnerUsed = Config.Instanse().LastOwnerUsed;
+            Seri.Log.Verbose($"Load from settings: {LastOwnerUsed}");
+
+            var value = cbOwners.ItemsSource.OfType<string>().Where(x => x == LastOwnerUsed).FirstOrDefault();
+            if (value != null)
             {
-                Seri.Log.Verbose("In AddValueChanged");
-                var LastOwnerUsed = Config.Instanse().LastOwnerUsed;
-                ComboBox box = (sender as ComboBox);
-                var value = box.ItemsSource.OfType<string>().Where(x => x == LastOwnerUsed).FirstOrDefault();
-                if (value != null)
-                    box.SelectedValue = value;
-            });
+                Seri.Log.Verbose($"SetLastUsedOwner find value: [{value}]");
+                cbOwners.SelectedValue = value;
+            }
+            else
+                Seri.Log.Verbose($"SetLastUsedOwner end");
         }
     }
 }

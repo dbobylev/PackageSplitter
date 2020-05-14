@@ -13,8 +13,7 @@ namespace PackageSplitter.Convertrs
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Seri.Log.Verbose("In convert");
-
+            Seri.Log.Verbose($"RepPathToOwnersConverter begin value:{value.ToString()}");
 
             if (!(value is string))
                 throw new Exception("Wrong value in RepPathToOwnersConverter");

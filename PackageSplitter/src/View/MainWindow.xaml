@@ -1,13 +1,12 @@
-﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window x:Class="PackageSplitter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PackageSplitter"
         xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel"
         xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" 
-        x:Class="PackageSplitter.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Window.Resources>
         <Convertrs:RepPathToOwnersConverter x:Key="RepPathToOwnersConverter"/>
     </Window.Resources>
@@ -25,10 +24,7 @@
             <Label Content="Схема"/>
             <ComboBox x:Name="cbOwners" 
                       SelectedValue="{Binding SelectedOwner}" 
-                      ItemsSource="{Binding Text, 
-                                    Converter={StaticResource RepPathToOwnersConverter}, 
-                                    ElementName=tbRepositoryPath, 
-                                    Mode=OneWay} "/>
+                      ItemsSource="{Binding Text, Converter={StaticResource RepPathToOwnersConverter}, ElementName=tbRepositoryPath, Mode=OneWay}"/>
             <Label Content="Поиск"/>
             <TextBox/>
             <Label Content="Объект"/>
