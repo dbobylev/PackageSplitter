@@ -1,11 +1,11 @@
 ﻿{
-  "RepositoryPath": "",
+  "RepositoryPath": "C:\\TestRep",
   "LastOwnerUsed": "",
   "Serilog": {
     "Using": [ "Serilog.Sinks.Console" ],
     "MinimumLevel": "Verbose",
     "WriteTo": [
-      { "Name": "Debug"},
+      { "Name": "Debug" },
       { "Name": "Console" },
       {
         "Name": "File",

@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Window.Resources>
+        <Convertrs:OwnersToRepObjectsConverter x:Key="OwnersToRepObjectsConverter"/>
         <Convertrs:RepPathToOwnersConverter x:Key="RepPathToOwnersConverter"/>
     </Window.Resources>
     <Grid>
@@ -28,7 +29,10 @@
             <Label Content="Поиск"/>
             <TextBox/>
             <Label Content="Объект"/>
-            <ComboBox/>
+            <ComboBox x:Name="xbRepositoryObjects" 
+                      DisplayMemberPath="Name"
+                      ItemsSource="{Binding SelectedValue, BindsDirectlyToSource=False, Converter={StaticResource OwnersToRepObjectsConverter}, ElementName=cbOwners, Mode=OneWay}"/>
+            <Button Content="Загрузить"/>
         </StackPanel>
         <DataGrid Grid.Column="1"/>
     </Grid>
