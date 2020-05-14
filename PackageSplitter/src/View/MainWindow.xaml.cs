@@ -14,8 +14,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DataBaseRepository;
+using DataBaseRepository.Model;
 using OracleParser;
 using PackageSplitter.Convertrs;
+using PackageSplitter.Model;
 
 namespace PackageSplitter
 {
@@ -49,6 +51,15 @@ namespace PackageSplitter
             }
             else
                 Seri.Log.Verbose($"SetLastUsedOwner end");
+        }
+
+        private void btnLoadObject_Click(object sender, RoutedEventArgs e)
+        {
+            var obj = cbRepositoryObjects.SelectedItem as RepositoryObject;
+            if (obj is null)
+                return;
+            var pac = OraParser.Instance().GetPackage(new RepositoryPackage(obj));
+            var x = new Package(pac);
         }
     }
 }

@@ -29,10 +29,10 @@
             <Label Content="Поиск"/>
             <TextBox/>
             <Label Content="Объект"/>
-            <ComboBox x:Name="xbRepositoryObjects" 
+            <ComboBox x:Name="cbRepositoryObjects" 
                       DisplayMemberPath="Name"
                       ItemsSource="{Binding SelectedValue, BindsDirectlyToSource=False, Converter={StaticResource OwnersToRepObjectsConverter}, ElementName=cbOwners, Mode=OneWay}"/>
-            <Button Content="Загрузить"/>
+            <Button x:Name="btnLoadObject" Content="Загрузить" Click="btnLoadObject_Click"/>
         </StackPanel>
         <DataGrid Grid.Column="1"/>
     </Grid>
