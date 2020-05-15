@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PackageSplitter.src.Model
+namespace PackageSplitter.Model
 {
-    class PackageElement
+    public class PackageElement
     {
         public string Name { get; private set; }
         public bool IsMissing { get; private set; } = false;

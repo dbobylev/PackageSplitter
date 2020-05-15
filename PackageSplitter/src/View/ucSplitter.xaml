@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="PackageSplitter.View.ucSplitter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PackageSplitter.View"
+             xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel" 
+             xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" 
+             xmlns:Templates="clr-namespace:PackageSplitter.Templates"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="MainGrid" ItemsSource="{Binding Elements}" AutoGenerateColumns="False">
+            <DataGrid.DataContext>
+                <ViewModel:PackageVM/>
+            </DataGrid.DataContext>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Name}" Header="Name"/>
+                <DataGridTemplateColumn Header="Spec">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Templates:OldSpecCell DeleteOldSpec="OldSpecCell_DeleteOldSpec"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn/>
+                <DataGridTextColumn Binding="{Binding OldBody, Converter={StaticResource ElementStateToStringConverter}}" Header="Body"/>
+                <DataGridTextColumn Binding="{Binding NewSpec, Converter={StaticResource ElementStateToStringConverter}}" Header="NewSpec"/>
+                <DataGridTextColumn Binding="{Binding NewBody, Converter={StaticResource ElementStateToStringConverter}}" Header="NewBody"/>                
+            </DataGrid.Columns>
+
+        </DataGrid>
+    </Grid>
+</UserControl>

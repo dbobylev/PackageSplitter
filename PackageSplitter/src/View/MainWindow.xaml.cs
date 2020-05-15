@@ -55,11 +55,15 @@ namespace PackageSplitter
 
         private void btnLoadObject_Click(object sender, RoutedEventArgs e)
         {
-            var obj = cbRepositoryObjects.SelectedItem as RepositoryObject;
-            if (obj is null)
+            var repositoryObject = cbRepositoryObjects.SelectedItem as RepositoryObject;
+            if (repositoryObject is null)
                 return;
-            var pac = OraParser.Instance().GetPackage(new RepositoryPackage(obj));
-            var x = new Package(pac);
+
+            var repositoryPackage = new RepositoryPackage(repositoryObject);
+            var parsedPackage = OraParser.Instance().GetPackage(repositoryPackage);
+            var PackageModel = new Package(parsedPackage);
+            var ElementsList = PackageModel.Elements.ToArray();
+            Splitter.AddElements(ElementsList);
         }
     }
 }

@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
-namespace PackageSplitter.src.Model
+namespace PackageSplitter.Model
 {
-    enum eElementStateType
+    public enum eElementStateType
     {
+        [Description("Да")]
         Exist,
+        [Description("Нет")]
         Empty,
+        [Description("Добавить")]
         Add,
+        [Description("Удалить")]
         Delete,
+        [Description("Создать ссылку")]
         CreateLink
     }
 }

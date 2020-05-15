@@ -1,4 +1,5 @@
-﻿using PackageSplitter.src.Model;
+﻿using PackageSplitter.Model;
+using PackageSplitter.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace PackageSplitter.Model
 
                 _elements.Add(element);
             }
+        }
+
+        public List<PackageElementVM> GetVMList()
+        {
+            return _elements.Select(x => new PackageElementVM(x)).ToList();
         }
     }
 }

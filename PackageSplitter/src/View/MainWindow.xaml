@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:View="clr-namespace:PackageSplitter.View"
         xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel"
         xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" 
         mc:Ignorable="d"
@@ -34,6 +35,6 @@
                       ItemsSource="{Binding SelectedValue, BindsDirectlyToSource=False, Converter={StaticResource OwnersToRepObjectsConverter}, ElementName=cbOwners, Mode=OneWay}"/>
             <Button x:Name="btnLoadObject" Content="Загрузить" Click="btnLoadObject_Click"/>
         </StackPanel>
-        <DataGrid Grid.Column="1"/>
+        <View:ucSplitter x:Name="Splitter" Grid.Column="1"/>
     </Grid>
 </Window>
