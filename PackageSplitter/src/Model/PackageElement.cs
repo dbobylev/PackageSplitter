@@ -11,7 +11,7 @@ namespace PackageSplitter.Model
         public bool IsMissing { get; private set; } = false;
 
         public eElementStateType OldSpec { get; private set; }
-        public eElementStateType OldBody { get; private set; }
+        public eElementStateType OldBody { get; set; }
         public eElementStateType NewSpec { get; private set; }
         public eElementStateType NewBody { get; private set; }
 

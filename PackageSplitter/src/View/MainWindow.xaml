@@ -35,6 +35,6 @@
                       ItemsSource="{Binding SelectedValue, BindsDirectlyToSource=False, Converter={StaticResource OwnersToRepObjectsConverter}, ElementName=cbOwners, Mode=OneWay}"/>
             <Button x:Name="btnLoadObject" Content="Загрузить" Click="btnLoadObject_Click"/>
         </StackPanel>
-        <View:ucSplitter x:Name="Splitter" Grid.Column="1"/>
+        <View:SplitterView x:Name="Splitter" Grid.Column="1"/>
     </Grid>
 </Window>

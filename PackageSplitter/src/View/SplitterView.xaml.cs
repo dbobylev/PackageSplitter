@@ -1,4 +1,5 @@
 ﻿using PackageSplitter.Model;
+using PackageSplitter.Splitter;
 using PackageSplitter.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,11 @@ namespace PackageSplitter.View
     /// <summary>
     /// Interaction logic for ucSplitter.xaml
     /// </summary>
-    public partial class ucSplitter : UserControl
+    public partial class SplitterView : UserControl
     {
         PackageVM packageVM;
 
-        public ucSplitter()
+        public SplitterView()
         {
             InitializeComponent();
 
@@ -38,6 +39,11 @@ namespace PackageSplitter.View
         private void OldSpecCell_DeleteOldSpec()
         {
 
+        }
+
+        private void Grid_SplitterCellAction(object sender, SplitterCellActionEventArgs args)
+        {
+            //packageVM.Elements[0].OldBody = eElementStateType.Add;
         }
     }
 }

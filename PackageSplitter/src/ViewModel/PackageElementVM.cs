@@ -12,7 +12,7 @@ namespace PackageSplitter.ViewModel
         public string Name { get => _model.Name; }
 
         public eElementStateType OldSpec { get => _model.OldSpec; }
-        public eElementStateType OldBody { get => _model.OldBody; }
+        public eElementStateType OldBody { get => _model.OldBody; set { _model.OldBody = value; } }
         public eElementStateType NewSpec { get => _model.NewSpec; }
         public eElementStateType NewBody { get => _model.NewBody; }
 

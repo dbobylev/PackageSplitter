@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PackageSplitter.SplitterActions
+namespace PackageSplitter.Splitter
 {
     [Flags]
-    enum eSplitterObjectType
+    public enum eSplitterObjectType
     {
         None = 0,
         OldSpec = 1 << 0,

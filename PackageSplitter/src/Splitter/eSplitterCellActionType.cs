@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PackageSplitter.SplitterActions
+namespace PackageSplitter.Splitter
 {
-    enum eSplitterActionType
+    public enum eSplitterCellActionType
     {
         Add,
         Delete,
