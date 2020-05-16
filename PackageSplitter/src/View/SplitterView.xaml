@@ -27,7 +27,7 @@
                 <DataGridTemplateColumn Header="Spec">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell PackageElementName="{Binding Name}"
+                            <Templates:SplitterCell PackageElementName="{Binding Name, Mode=OneTime}"
                                                     SplitterCellAction="SplitterCell_SplitterCellAction" 
                                                     TextToDisplay="{Binding OldBody, Converter={StaticResource ElementStateToStringConverter}}"/>
                         </DataTemplate>

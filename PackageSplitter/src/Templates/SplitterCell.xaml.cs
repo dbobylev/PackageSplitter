@@ -49,7 +49,7 @@ namespace PackageSplitter.Templates
             RaiseEvent(new SplitterCellActionEventArgs(
                 routedEvent: SplitterCell.SplitterCellActionEvent,
                 source: sender,
-                elementName: PackageElementName ?? "123",
+                elementName: tbname.Text,
                 splitterAction: eSplitterCellActionType.Add, 
                 splitterObject: eSplitterObjectType.NewBody));;
         }
