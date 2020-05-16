@@ -45,11 +45,11 @@ namespace PackageSplitter.Templates
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Seri.Log.Verbose("Button_Click " + PackageElementName);
+            Seri.Log.Verbose("Button_Click " + GetValue(PackageElementNameProperty));
             RaiseEvent(new SplitterCellActionEventArgs(
                 routedEvent: SplitterCell.SplitterCellActionEvent,
                 source: sender,
-                elementName: tbname.Text,
+                elementName: (string)GetValue(PackageElementNameProperty),
                 splitterAction: eSplitterCellActionType.Add, 
                 splitterObject: eSplitterObjectType.NewBody));;
         }
