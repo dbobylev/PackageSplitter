@@ -22,7 +22,7 @@ namespace PackageSplitter.ViewModel
             {
                 _elements.Add(item);
             }
-            OnPropertyChanged("Elements");
+            //OnPropertyChanged("Elements");
         }
     }
 }

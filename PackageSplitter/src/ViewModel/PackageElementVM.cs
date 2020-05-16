@@ -10,17 +10,17 @@ namespace PackageSplitter.ViewModel
         private PackageElement _model;
 
         public string Name { get => _model.Name; }
+        public int ID { get; private set; }
 
         public eElementStateType OldSpec { get => _model.OldSpec; }
         public eElementStateType OldBody { get => _model.OldBody; set { _model.OldBody = value; OnPropertyChanged(); } }
         public eElementStateType NewSpec { get => _model.NewSpec; }
         public eElementStateType NewBody { get => _model.NewBody; }
 
-        public PackageElementVM(PackageElement model)
+        public PackageElementVM(PackageElement model, int index)
         {
             _model = model;
+            ID = index;
         }
-
-        public event Action DeleteOldSpecVM;
     }
 }

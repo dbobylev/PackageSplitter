@@ -33,12 +33,12 @@ namespace PackageSplitter.View
 
         public void AddElements(IEnumerable<PackageElement> elements)
         {
-            packageVM.AddElements(elements.Select(x => new PackageElementVM(x)));
+            packageVM.AddElements(elements.Select((x, i) => new PackageElementVM(x, i)));
         }
 
         private void SplitterCell_SplitterCellAction(object sender, SplitterCellActionEventArgs args)
         {
-            packageVM.Elements.Where(x=>x.Name == args.ElementName).First().OldBody = eElementStateType.Add;
+            packageVM.Elements.Where(x=>x.ID == args.ID).First().OldBody = eElementStateType.Add;
         }
     }
 }
