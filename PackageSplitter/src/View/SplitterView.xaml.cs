@@ -36,14 +36,9 @@ namespace PackageSplitter.View
             packageVM.AddElements(elements.Select(x => new PackageElementVM(x)));
         }
 
-        private void OldSpecCell_DeleteOldSpec()
-        {
-
-        }
-
         private void SplitterCell_SplitterCellAction(object sender, SplitterCellActionEventArgs args)
         {
-            packageVM.Elements[0].OldBody = eElementStateType.Add;
+            packageVM.Elements.Where(x=>x.Name == args.ElementName).First().OldBody = eElementStateType.Add;
         }
     }
 }

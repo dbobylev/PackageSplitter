@@ -20,7 +20,10 @@ namespace PackageSplitter.Templates
     public partial class SplitterCell : UserControl
     {
         public static DependencyProperty TextToDisplayProperty = DependencyProperty.Register("TextToDisplay", typeof(string), typeof(SplitterCell));
-        public string TextToDisplay { get; set; } = string.Empty;
+        public string TextToDisplay { get; set; }
+
+        public static DependencyProperty PackageElementNameProperty = DependencyProperty.Register("PackageElementName", typeof(string), typeof(SplitterCell));
+        public string PackageElementName { get; set; }
 
         public static readonly RoutedEvent SplitterCellActionEvent =
             EventManager.RegisterRoutedEvent("Demo",
@@ -42,7 +45,13 @@ namespace PackageSplitter.Templates
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            RaiseEvent(new SplitterCellActionEventArgs(SplitterCell.SplitterCellActionEvent, sender, eSplitterCellActionType.Add, eSplitterObjectType.NewBody));
+            Seri.Log.Verbose("Button_Click " + PackageElementName);
+            RaiseEvent(new SplitterCellActionEventArgs(
+                routedEvent: SplitterCell.SplitterCellActionEvent,
+                source: sender,
+                elementName: PackageElementName ?? "123",
+                splitterAction: eSplitterCellActionType.Add, 
+                splitterObject: eSplitterObjectType.NewBody));;
         }
     }
 }
