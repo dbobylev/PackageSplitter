@@ -13,27 +13,27 @@ namespace PackageSplitter.Templates
         {
             { eSplitterObjectType.OldSpec, new CellAction[]
                 {
-                    new CellAction(eSplitterObjectType.OldSpec, eSplitterCellActionType.Delete),
-                    new CellAction(eSplitterObjectType.OldSpec, eSplitterCellActionType.Add)
+                    new CellAction(eSplitterCellActionType.Delete, eSplitterObjectType.OldSpec),
+                    new CellAction(eSplitterCellActionType.Add, eSplitterObjectType.OldSpec)
                 }
             },
             { eSplitterObjectType.OldBody, new CellAction[]
                 {
-                    new CellAction(eSplitterObjectType.OldBody | eSplitterObjectType.OldSpec, eSplitterCellActionType.Delete),
-                    new CellAction(eSplitterObjectType.OldBody, eSplitterCellActionType.Add),
-                    new CellAction(eSplitterObjectType.OldBody | eSplitterObjectType.NewSpec | eSplitterObjectType.NewBody, eSplitterCellActionType.MakeLink)
+                    new CellAction(eSplitterCellActionType.Delete, eSplitterObjectType.OldBody | eSplitterObjectType.OldSpec),
+                    new CellAction(eSplitterCellActionType.Add, eSplitterObjectType.OldBody),
+                    new CellAction(eSplitterCellActionType.MakeLink, eSplitterObjectType.OldBody | eSplitterObjectType.NewSpec | eSplitterObjectType.NewBody)
                 }
             },
             { eSplitterObjectType.NewSpec, new CellAction[]
                 {
-                    new CellAction(eSplitterObjectType.NewSpec, eSplitterCellActionType.Delete),
-                    new CellAction(eSplitterObjectType.NewSpec | eSplitterObjectType.NewBody, eSplitterCellActionType.Add)
+                    new CellAction(eSplitterCellActionType.Delete, eSplitterObjectType.NewSpec),
+                    new CellAction(eSplitterCellActionType.Add, eSplitterObjectType.NewSpec | eSplitterObjectType.NewBody)
                 }
             },
             { eSplitterObjectType.NewBody, new CellAction[]
                 {
-                    new CellAction(eSplitterObjectType.NewBody | eSplitterObjectType.NewSpec, eSplitterCellActionType.Delete),
-                    new CellAction(eSplitterObjectType.NewBody, eSplitterCellActionType.Add)
+                    new CellAction(eSplitterCellActionType.Delete, eSplitterObjectType.NewBody | eSplitterObjectType.NewSpec),
+                    new CellAction(eSplitterCellActionType.Add, eSplitterObjectType.NewBody)
                 }
             },
         };

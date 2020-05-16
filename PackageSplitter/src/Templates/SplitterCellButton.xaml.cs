@@ -32,10 +32,10 @@ namespace PackageSplitter.Templates
             switch (cellAction.SplitterAction)
             {
                 case eSplitterCellActionType.Add:
-                    mainButton.Content = "+";
+                    mainButton.Content = "V";
                     break;
                 case eSplitterCellActionType.Delete:
-                    mainButton.Content = "-";
+                    mainButton.Content = "X";
                     break;
                 case eSplitterCellActionType.MakeLink:
                     mainButton.Content = "L";

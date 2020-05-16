@@ -10,7 +10,7 @@ namespace PackageSplitter.Splitter
         public eSplitterCellActionType SplitterAction { get; private set; }
         public eSplitterObjectType SplitterObject { get; private set; }
 
-        public CellAction(eSplitterObjectType splitterObject, eSplitterCellActionType splitterAction)
+        public CellAction(eSplitterCellActionType splitterAction, eSplitterObjectType splitterObject)
         {
             SplitterAction = splitterAction;
             SplitterObject = splitterObject;
