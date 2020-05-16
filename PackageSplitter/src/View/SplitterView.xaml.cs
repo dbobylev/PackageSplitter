@@ -38,7 +38,7 @@ namespace PackageSplitter.View
 
         private void SplitterCell_SplitterCellAction(object sender, SplitterCellActionEventArgs args)
         {
-            packageVM.Elements.Where(x=>x.ID == args.ID).First().OldBody = eElementStateType.Add;
+            packageVM.Elements.Where(x=>x.ID == args.CellAction.ID).First().OldBody = eElementStateType.Add;
         }
     }
 }

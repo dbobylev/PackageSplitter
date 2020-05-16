@@ -1,11 +1,8 @@
-﻿<UserControl x:Class="PackageSplitter.Templates.SplitterCell"
-             x:Name="uc"
+﻿<UserControl x:Class="PackageSplitter.Templates.SplitterCellButton"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PackageSplitter.Templates">
-    <StackPanel x:Name="mainStack" Orientation="Horizontal">
-        <TextBlock x:Name="tbActionName" MinWidth="150" Text="{Binding Path=TextToDisplay, ElementName=uc, Mode=OneWay}"/>
-    </StackPanel>
+    <Button Click="mainButton_Click" Margin="5"/>
 </UserControl>

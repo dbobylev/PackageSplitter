@@ -39,19 +39,23 @@ namespace PackageSplitter.Templates
 
         public SplitterCell()
         {
-            Seri.Log.Verbose("SplitterCell InitializeComponent");
             InitializeComponent();
+
+            SplitterCellButton cb = 
+                new SplitterCellButton(
+                    new SplitterCellAction((int)GetValue(PackageElementIDProperty), eSplitterObjectType.OldBody, eSplitterCellActionType.Delete), 
+                    RealButton_Click);
+
+            mainStack.Children.Add(cb);
+            mainStack.Children.Add(cb);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void RealButton_Click(object sender, SplitterCellAction e)
         {
-            Seri.Log.Verbose("Button_Click " + GetValue(PackageElementIDProperty));
             RaiseEvent(new SplitterCellActionEventArgs(
                 routedEvent: SplitterCell.SplitterCellActionEvent,
                 source: sender,
-                elementID: (int)GetValue(PackageElementIDProperty),
-                splitterAction: eSplitterCellActionType.Add, 
-                splitterObject: eSplitterObjectType.NewBody));;
+                cellAction: e));
         }
     }
 }
