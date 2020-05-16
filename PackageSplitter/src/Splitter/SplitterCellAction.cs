@@ -4,17 +4,19 @@ using System.Text;
 
 namespace PackageSplitter.Splitter
 {
-    public class SplitterCellAction
+    public class SplitterCellAction :CellAction
     {
         public int ID { get; private set; }
-        public eSplitterCellActionType SplitterAction { get; private set; }
-        public eSplitterObjectType SplitterObject { get; private set; }
 
         public SplitterCellAction(int index, eSplitterObjectType splitterObject, eSplitterCellActionType splitterAction)
+            :base(splitterObject, splitterAction)
         {
             ID = index;
-            SplitterAction = splitterAction;
-            SplitterObject = splitterObject;
+        }
+
+        public SplitterCellAction(int indext, CellAction cellAction):base(cellAction.SplitterObject, cellAction.SplitterAction)
+        {
+            ID = indext;
         }
     }
 }

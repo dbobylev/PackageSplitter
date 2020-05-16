@@ -29,7 +29,7 @@
                         <DataTemplate>
                             <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
                                                     SplitterCellAction="SplitterCell_SplitterCellAction" 
-                                                    CellType="OldBody"
+                                                    CellType="OldSpec"
                                                     TextToDisplay="{Binding OldSpecState, Converter={StaticResource ElementStateToStringConverter}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -49,7 +49,7 @@
                         <DataTemplate>
                             <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
                                                     SplitterCellAction="SplitterCell_SplitterCellAction" 
-                                                    CellType="OldBody"
+                                                    CellType="NewSpec"
                                                     TextToDisplay="{Binding NewSpecState, Converter={StaticResource ElementStateToStringConverter}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -59,7 +59,7 @@
                         <DataTemplate>
                             <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
                                                     SplitterCellAction="SplitterCell_SplitterCellAction" 
-                                                    CellType="OldBody"
+                                                    CellType="NewBody"
                                                     TextToDisplay="{Binding NewBodyState, Converter={StaticResource ElementStateToStringConverter}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

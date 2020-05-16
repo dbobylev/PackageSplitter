@@ -33,13 +33,13 @@ namespace PackageSplitter.ViewModel
                 OldBodyState = GetNewState(OldBodyState, cellAction.SplitterAction);
 
             if (cellAction.SplitterObject.HasFlag(eSplitterObjectType.NewSpec))
-                NewSpecState = GetNewState(NewSpecState, cellAction.SplitterAction);
+                NewSpecState = GetNewState(NewSpecState, cellAction.SplitterAction, true);
 
             if (cellAction.SplitterObject.HasFlag(eSplitterObjectType.NewBody))
-                NewBodyState = GetNewState(NewBodyState, cellAction.SplitterAction);
+                NewBodyState = GetNewState(NewBodyState, cellAction.SplitterAction, true);
         }
 
-        private eElementStateType GetNewState(eElementStateType oldState, eSplitterCellActionType action)
+        private eElementStateType GetNewState(eElementStateType oldState, eSplitterCellActionType action, bool IsNew = false)
         {
             eElementStateType answer = oldState;
             switch (action)
@@ -51,16 +51,16 @@ namespace PackageSplitter.ViewModel
                         answer = eElementStateType.Exist;
                     break;
                 case eSplitterCellActionType.Delete:
-                    if (oldState == eElementStateType.Exist)
+                    if (oldState == eElementStateType.Exist || oldState == eElementStateType.CreateLink)
                         answer = eElementStateType.Delete;
                     else if (oldState == eElementStateType.Add)
-                        answer = eElementStateType.Exist;
-                    else if (oldState == eElementStateType.CreateLink)
-                        answer = eElementStateType.Exist;
+                        answer = IsNew ? eElementStateType.Empty : eElementStateType.Exist;
                     break;
                 case eSplitterCellActionType.MakeLink:
                     if (oldState == eElementStateType.Exist)
                         answer = eElementStateType.CreateLink;
+                    else if (oldState == eElementStateType.Empty && IsNew)
+                        answer = eElementStateType.Add;
                     break;
                 default:
                     break;

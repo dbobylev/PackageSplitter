@@ -19,6 +19,8 @@ namespace PackageSplitter.Templates
     /// </summary>
     public partial class SplitterCell : UserControl
     {
+        private static SplitterCellButtonFactory _cellButtonsFactory = new SplitterCellButtonFactory();
+
         public static DependencyProperty TextToDisplayProperty = DependencyProperty.Register("TextToDisplay", typeof(string), typeof(SplitterCell));
         public string TextToDisplay { get; set; }
 
@@ -54,17 +56,10 @@ namespace PackageSplitter.Templates
 
         private void uc_Loaded(object sender, RoutedEventArgs e)
         {
-            SplitterCellButton cb = new SplitterCellButton(
-                new SplitterCellAction((int)GetValue(PackageElementIDProperty), eSplitterObjectType.OldBody, eSplitterCellActionType.Delete),
-                AnyButton_Click);
-                    
-            mainStack.Children.Add(cb);
+            var buttons = _cellButtonsFactory.GetButtons((int)GetValue(PackageElementIDProperty), CellType, AnyButton_Click);
 
-            cb = new SplitterCellButton(
-                    new SplitterCellAction((int)GetValue(PackageElementIDProperty), eSplitterObjectType.OldBody, eSplitterCellActionType.Add),
-                    AnyButton_Click);
-
-            mainStack.Children.Add(cb);
+            foreach (var item in buttons)
+                mainStack.Children.Add(item);
         }
     }
 }
