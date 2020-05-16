@@ -20,7 +20,7 @@ namespace PackageSplitter.Templates
     public partial class SplitterCell : UserControl
     {
         public static DependencyProperty TextToDisplayProperty = DependencyProperty.Register("TextToDisplay", typeof(string), typeof(SplitterCell));
-        public string TextToDisplay { get; set; }
+        public string TextToDisplay { get; set; } = string.Empty;
 
         public static readonly RoutedEvent SplitterCellActionEvent =
             EventManager.RegisterRoutedEvent("Demo",
@@ -36,6 +36,7 @@ namespace PackageSplitter.Templates
 
         public SplitterCell()
         {
+            Seri.Log.Verbose("SplitterCell InitializeComponent");
             InitializeComponent();
         }
 

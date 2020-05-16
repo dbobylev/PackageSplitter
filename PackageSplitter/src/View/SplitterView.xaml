@@ -13,7 +13,7 @@
         <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
         <Templates:SplitterCell x:Key="SplitterCell"/>
     </UserControl.Resources>
-    <Grid Templates:SplitterCell.SplitterCellAction="Grid_SplitterCellAction">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
@@ -27,7 +27,8 @@
                 <DataGridTemplateColumn Header="Spec">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell TextToDisplay="{Binding OldBody, Converter={StaticResource ElementStateToStringConverter}}"/>
+                            <Templates:SplitterCell SplitterCellAction="SplitterCell_SplitterCellAction" 
+                                                    TextToDisplay="{Binding OldBody, Converter={StaticResource ElementStateToStringConverter}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -37,6 +38,5 @@
                 <DataGridTextColumn Binding="{Binding NewBody, Converter={StaticResource ElementStateToStringConverter}}" Header="NewBody"/>                
             </DataGrid.Columns>
         </DataGrid>
-        <Templates:SplitterCell Grid.Row="1" TextToDisplay="sosamba"/>
     </Grid>
 </UserControl>

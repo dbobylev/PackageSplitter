@@ -41,9 +41,9 @@ namespace PackageSplitter.View
 
         }
 
-        private void Grid_SplitterCellAction(object sender, SplitterCellActionEventArgs args)
+        private void SplitterCell_SplitterCellAction(object sender, SplitterCellActionEventArgs args)
         {
-            //packageVM.Elements[0].OldBody = eElementStateType.Add;
+            packageVM.Elements[0].OldBody = eElementStateType.Add;
         }
     }
 }
