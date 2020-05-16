@@ -27,16 +27,43 @@
                 <DataGridTemplateColumn Header="Spec">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneTime}"
+                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
                                                     SplitterCellAction="SplitterCell_SplitterCellAction" 
-                                                    TextToDisplay="{Binding OldBody, Converter={StaticResource ElementStateToStringConverter}}"/>
+                                                    CellType="OldBody"
+                                                    TextToDisplay="{Binding OldSpecState, Converter={StaticResource ElementStateToStringConverter}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn/>
-                <DataGridTextColumn Binding="{Binding OldBody, Converter={StaticResource ElementStateToStringConverter}}" Header="Body"/>
-                <DataGridTextColumn Binding="{Binding NewSpec, Converter={StaticResource ElementStateToStringConverter}}" Header="NewSpec"/>
-                <DataGridTextColumn Binding="{Binding NewBody, Converter={StaticResource ElementStateToStringConverter}}" Header="NewBody"/>                
+                <DataGridTemplateColumn Header="Body">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
+                                                    SplitterCellAction="SplitterCell_SplitterCellAction" 
+                                                    CellType="OldBody"
+                                                    TextToDisplay="{Binding OldBodyState, Converter={StaticResource ElementStateToStringConverter}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="NEW Spec">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
+                                                    SplitterCellAction="SplitterCell_SplitterCellAction" 
+                                                    CellType="OldBody"
+                                                    TextToDisplay="{Binding NewSpecState, Converter={StaticResource ElementStateToStringConverter}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="NEW Body">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
+                                                    SplitterCellAction="SplitterCell_SplitterCellAction" 
+                                                    CellType="OldBody"
+                                                    TextToDisplay="{Binding NewBodyState, Converter={StaticResource ElementStateToStringConverter}}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

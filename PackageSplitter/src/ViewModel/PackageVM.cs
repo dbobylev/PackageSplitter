@@ -1,6 +1,8 @@
-﻿using System;
+﻿using PackageSplitter.Splitter;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace PackageSplitter.ViewModel
@@ -22,7 +24,11 @@ namespace PackageSplitter.ViewModel
             {
                 _elements.Add(item);
             }
-            //OnPropertyChanged("Elements");
+        }
+
+        public void PerformElementAction(SplitterCellAction cellAction)
+        {
+            _elements.Where(x => x.ID == cellAction.ID).FirstOrDefault().PerformElementAction(cellAction);
         }
     }
 }

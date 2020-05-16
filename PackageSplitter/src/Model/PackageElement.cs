@@ -7,20 +7,19 @@ namespace PackageSplitter.Model
 {
     public class PackageElement
     {
-        public string Name { get; private set; }
-        public bool IsMissing { get; private set; } = false;
+        private PieceOfCode _PosSpec;
+        private PieceOfCode _PosBody;
 
-        public eElementStateType OldSpec { get; private set; }
+        public string PackageElementName { get; private set; }
+
+        public eElementStateType OldSpec { get; set; }
         public eElementStateType OldBody { get; set; }
-        public eElementStateType NewSpec { get; private set; }
-        public eElementStateType NewBody { get; private set; }
+        public eElementStateType NewSpec { get; set; }
+        public eElementStateType NewBody { get; set; }
 
-        private PieceOfCode PosSpec;
-        private PieceOfCode PosBody;
-
-        public PackageElement(string name)
+        public PackageElement(string packageElementNAme)
         {
-            Name = name;
+            PackageElementName = packageElementNAme;
             OldSpec = eElementStateType.Empty;
             OldBody = eElementStateType.Empty;
             NewSpec = eElementStateType.Empty;
@@ -29,13 +28,13 @@ namespace PackageSplitter.Model
 
         public void SetOldSpec(PieceOfCode posSpec)
         {
-            PosSpec = posSpec;
+            _PosSpec = posSpec;
             OldSpec = eElementStateType.Exist;
         }
 
         public void SetOldBody(PieceOfCode posBody)
         {
-            PosBody = posBody;
+            _PosBody = posBody;
             OldBody = eElementStateType.Exist;
         }
     }

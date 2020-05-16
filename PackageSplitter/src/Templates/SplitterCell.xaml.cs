@@ -25,6 +25,8 @@ namespace PackageSplitter.Templates
         public static DependencyProperty PackageElementIDProperty = DependencyProperty.Register("PackageElementID", typeof(int), typeof(SplitterCell));
         public int PackageElementID { get; set; }
 
+        public eSplitterObjectType CellType { get; set; }
+
         public static readonly RoutedEvent SplitterCellActionEvent =
             EventManager.RegisterRoutedEvent("SplitterCellActionEventRoute",
             RoutingStrategy.Bubble,
@@ -40,22 +42,29 @@ namespace PackageSplitter.Templates
         public SplitterCell()
         {
             InitializeComponent();
-
-            SplitterCellButton cb = 
-                new SplitterCellButton(
-                    new SplitterCellAction((int)GetValue(PackageElementIDProperty), eSplitterObjectType.OldBody, eSplitterCellActionType.Delete), 
-                    RealButton_Click);
-
-            mainStack.Children.Add(cb);
-            mainStack.Children.Add(cb);
         }
 
-        private void RealButton_Click(object sender, SplitterCellAction e)
+        private void AnyButton_Click(object sender, SplitterCellAction e)
         {
             RaiseEvent(new SplitterCellActionEventArgs(
                 routedEvent: SplitterCell.SplitterCellActionEvent,
                 source: sender,
                 cellAction: e));
+        }
+
+        private void uc_Loaded(object sender, RoutedEventArgs e)
+        {
+            SplitterCellButton cb = new SplitterCellButton(
+                new SplitterCellAction((int)GetValue(PackageElementIDProperty), eSplitterObjectType.OldBody, eSplitterCellActionType.Delete),
+                AnyButton_Click);
+                    
+            mainStack.Children.Add(cb);
+
+            cb = new SplitterCellButton(
+                    new SplitterCellAction((int)GetValue(PackageElementIDProperty), eSplitterObjectType.OldBody, eSplitterCellActionType.Add),
+                    AnyButton_Click);
+
+            mainStack.Children.Add(cb);
         }
     }
 }

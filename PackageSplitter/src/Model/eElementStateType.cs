@@ -7,7 +7,7 @@ namespace PackageSplitter.Model
 {
     public enum eElementStateType
     {
-        [Description("Да")]
+        [Description("Есть")]
         Exist,
         [Description("Нет")]
         Empty,

@@ -12,12 +12,7 @@ namespace PackageSplitter.Splitter
     {
         public SplitterCellAction CellAction { get; private set; }
 
-        public SplitterCellActionEventArgs(
-            RoutedEvent routedEvent, 
-            object source,
-            SplitterCellAction cellAction
-            ) 
-            : base(routedEvent, source)
+        public SplitterCellActionEventArgs(SplitterCellAction cellAction, RoutedEvent routedEvent, object source) : base(routedEvent, source)
         {
             CellAction = cellAction;
         }
