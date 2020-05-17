@@ -5,13 +5,25 @@
     "Using": [ "Serilog.Sinks.Console" ],
     "MinimumLevel": "Verbose",
     "WriteTo": [
-      { "Name": "Debug" },
-      { "Name": "Console" },
+      {
+        "Name": "Debug",
+        "Args": {
+          "outputTemplate": "{Timestamp:HH:mm:ss} {SourceContext} [{Level:u3}] [PackageSplitter] {Message}{NewLine}{Exception}"
+        }
+      },
+      { "Name": "Console",
+        "Args": {
+          "outputTemplate": "{Timestamp:HH:mm:ss} {SourceContext} [{Level:u3}] [PackageSplitter] {Message}{NewLine}{Exception}"
+        }
+      },
       {
         "Name": "File",
         "Args": {
-          "path": "serilog-configuration-sample.txt",
-          "retainedFileCountLimit": "1"
+          "path": "log.txt",
+          "rollingInterval": "Day",
+          "retainedFileCountLimit": "1",
+          "outputTemplate": "{Timestamp:HH:mm:ss} {SourceContext} [{Level:u3}] [PackageSplitter] {Message}{NewLine}{Exception}",
+          "shared": true
         }
       }
     ]
