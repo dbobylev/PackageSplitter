@@ -1,11 +1,16 @@
-﻿<UserControl x:Class="PackageSplitter.Templates.SplitterCell"
-             x:Name="uc"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:PackageSplitter.Templates" Loaded="uc_Loaded">
-    <StackPanel x:Name="mainStack" Orientation="Horizontal">
-        <TextBlock x:Name="tbActionName" MinWidth="40" Text="{Binding Path=TextToDisplay, ElementName=uc, Mode=OneWay}"/>
+             xmlns:local="clr-namespace:PackageSplitter.Templates" xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" x:Class="PackageSplitter.Templates.SplitterCell"
+             x:Name="uc"
+             Loaded="uc_Loaded">
+    <UserControl.Resources>
+        <Convertrs:ElementStateToStackPanelStyle x:Key="ElementStateToStackPanelStyle"/>
+        <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
+    </UserControl.Resources>
+    <StackPanel x:Name="mainStack" Orientation="Horizontal" Style="{StaticResource xx}">
+        <TextBlock x:Name="tbActionName" MinWidth="40" Text="{Binding ElementState, Mode=OneWay, Converter={StaticResource ElementStateToStringConverter}, ElementName=uc}"/>
     </StackPanel>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿using PackageSplitter.Splitter;
+﻿using PackageSplitter.Model;
+using PackageSplitter.Splitter;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,11 +22,11 @@ namespace PackageSplitter.Templates
     {
         private static SplitterCellButtonFactory _cellButtonsFactory = new SplitterCellButtonFactory();
 
-        public static DependencyProperty TextToDisplayProperty = DependencyProperty.Register("TextToDisplay", typeof(string), typeof(SplitterCell));
-        public string TextToDisplay { get; set; }
-
         public static DependencyProperty PackageElementIDProperty = DependencyProperty.Register("PackageElementID", typeof(int), typeof(SplitterCell));
         public int PackageElementID { get; set; }
+
+        public static DependencyProperty ElementStateProperty = DependencyProperty.Register("ElementState", typeof(eElementStateType), typeof(SplitterCell));
+        public eElementStateType ElementState { get; set; }
 
         public eSplitterObjectType CellType { get; set; }
 

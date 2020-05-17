@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:PackageSplitter"
              StartupUri="src/View/MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./src/Styles/CellStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
