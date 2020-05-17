@@ -10,7 +10,7 @@
         <Convertrs:ElementStateToStackPanelStyle x:Key="ElementStateToStackPanelStyle"/>
         <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
     </UserControl.Resources>
-    <StackPanel x:Name="mainStack" Orientation="Horizontal" Style="{StaticResource xx}">
-        <TextBlock x:Name="tbActionName" MinWidth="40" Text="{Binding ElementState, Mode=OneWay, Converter={StaticResource ElementStateToStringConverter}, ElementName=uc}"/>
+    <StackPanel x:Name="mainStack" Orientation="Horizontal" Style="{Binding ElementState, Converter={StaticResource ElementStateToStackPanelStyle}, ElementName=uc}" VerticalAlignment="Center">
+        <TextBlock x:Name="tbActionName" MinWidth="100" Text="{Binding ElementState, Mode=OneWay, Converter={StaticResource ElementStateToStringConverter}, ElementName=uc}" VerticalAlignment="Center"/>
     </StackPanel>
 </UserControl>
