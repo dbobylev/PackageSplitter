@@ -7,27 +7,41 @@
              xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel"
              xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" 
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded" BorderThickness="1,1,1,1">
     <UserControl.Resources>
         <Convertrs:OwnersToRepObjectsConverter x:Key="OwnersToRepObjectsConverter"/>
         <Convertrs:RepPathToOwnersConverter x:Key="RepPathToOwnersConverter"/>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="Margin" Value="5,0"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>        
     </UserControl.Resources>
-    <StackPanel x:Name="spObjectSelector">
-        <StackPanel.DataContext>
-            <ViewModel:RepositoryVM/>
-        </StackPanel.DataContext>
-        <Label Content="Репозиторий"/>
-        <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
-        <Label Content="Схема"/>
-        <ComboBox x:Name="cbOwners" 
+    <Border BorderThickness="2" BorderBrush="#FFE4CCB7" SnapsToDevicePixels="True" CornerRadius="5" Margin="5,0">
+        <StackPanel x:Name="spObjectSelector" Margin="0" Background="#FFF0EFE5">
+            <StackPanel.DataContext>
+                <ViewModel:RepositoryVM/>
+            </StackPanel.DataContext>
+            <Label Content="Репозиторий"/>
+            <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
+            <Label Content="Схема"/>
+            <ComboBox x:Name="cbOwners" 
                       SelectedValue="{Binding SelectedOwner}" 
                       ItemsSource="{Binding Text, Converter={StaticResource RepPathToOwnersConverter}, ElementName=tbRepositoryPath, Mode=OneWay}"/>
-        <Label Content="Поиск"/>
-        <TextBox/>
-        <Label Content="Объект"/>
-        <ComboBox x:Name="cbRepositoryObjects" 
+            <Label Content="Поиск"/>
+            <TextBox/>
+            <Label Content="Объект"/>
+            <ComboBox x:Name="cbRepositoryObjects" 
                       DisplayMemberPath="Name"
                       ItemsSource="{Binding SelectedValue, BindsDirectlyToSource=False, Converter={StaticResource OwnersToRepObjectsConverter}, ElementName=cbOwners, Mode=OneWay}"/>
-        <Button x:Name="btnLoadObject" Content="Загрузить" Click="btnLoadObject_Click"/>
-    </StackPanel>
+            <Button x:Name="btnLoadObject" Content="Загрузить" Click="btnLoadObject_Click"/>
+        </StackPanel>
+    </Border>
 </UserControl>
