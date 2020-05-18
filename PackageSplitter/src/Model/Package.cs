@@ -13,7 +13,7 @@ namespace PackageSplitter.Model
 
         public IReadOnlyCollection<PackageElement> Elements { get => _elements.AsReadOnly(); }
 
-        public Package(OracleParser.Model.Package package)
+        public Package(OracleParser.Model.ParsedPackage package)
         {
             for (int i = 0; i < package.Body.Procedures.Count; i++)
             {
