@@ -1,6 +1,7 @@
 ﻿{
   "RepositoryPath": "C:\\TestRep",
   "LastOwnerUsed": "",
+  "LastFileUsed": "",
   "Serilog": {
     "Using": [ "Serilog.Sinks.Console" ],
     "MinimumLevel": "Verbose",

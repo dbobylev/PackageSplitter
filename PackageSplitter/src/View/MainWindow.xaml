@@ -7,34 +7,13 @@
         xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel"
         xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" 
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
-    <Window.Resources>
-        <Convertrs:OwnersToRepObjectsConverter x:Key="OwnersToRepObjectsConverter"/>
-        <Convertrs:RepPathToOwnersConverter x:Key="RepPathToOwnersConverter"/>
-    </Window.Resources>
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <StackPanel x:Name="spObjectSelector">
-            <StackPanel.DataContext>
-                <ViewModel:RepositoryVM/>
-            </StackPanel.DataContext>
-            <Label Content="Репозиторий"/>
-            <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
-            <Label Content="Схема"/>
-            <ComboBox x:Name="cbOwners" 
-                      SelectedValue="{Binding SelectedOwner}" 
-                      ItemsSource="{Binding Text, Converter={StaticResource RepPathToOwnersConverter}, ElementName=tbRepositoryPath, Mode=OneWay}"/>
-            <Label Content="Поиск"/>
-            <TextBox/>
-            <Label Content="Объект"/>
-            <ComboBox x:Name="cbRepositoryObjects" 
-                      DisplayMemberPath="Name"
-                      ItemsSource="{Binding SelectedValue, BindsDirectlyToSource=False, Converter={StaticResource OwnersToRepObjectsConverter}, ElementName=cbOwners, Mode=OneWay}"/>
-            <Button x:Name="btnLoadObject" Content="Загрузить" Click="btnLoadObject_Click"/>
-        </StackPanel>
+        <View:RepositoryObjectView PushPackageElements="RepositoryObjectView_PushPackageElements"/>
         <View:SplitterView x:Name="Splitter" Grid.Column="1"/>
     </Grid>
 </Window>
