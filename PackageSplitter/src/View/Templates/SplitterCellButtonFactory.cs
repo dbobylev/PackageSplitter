@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 
-namespace PackageSplitter.Templates
+namespace PackageSplitter.View.Templates
 {
     class SplitterCellButtonFactory
     {

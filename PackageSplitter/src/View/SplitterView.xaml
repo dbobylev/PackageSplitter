@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PackageSplitter.View"
              xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel" 
              xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" 
-             xmlns:Templates="clr-namespace:PackageSplitter.Templates"
+             xmlns:Templates="clr-namespace:PackageSplitter.View.Templates"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>

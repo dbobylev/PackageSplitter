@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PackageSplitter.Templates
+namespace PackageSplitter.View.Templates
 {
     /// <summary>
     /// Interaction logic for OldSpecCell.xaml
