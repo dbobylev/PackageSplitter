@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="TextWindow" Height="450" Width="800">
     <Grid>
-        <TextBlock x:Name="tbMain">
+        <TextBox x:Name="tbMain">
             
-        </TextBlock>
+        </TextBox>
     </Grid>
 </Window>

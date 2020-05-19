@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PackageSplitter.Model
 {
-    public class PackageElement
+    public class SplitterPackageElement
     {
         public PieceOfCode PosSpec { get; private set; }
         public PieceOfCode PosBody { get; private set; }
@@ -17,7 +17,7 @@ namespace PackageSplitter.Model
         public eElementStateType NewSpec { get; set; }
         public eElementStateType NewBody { get; set; }
 
-        public PackageElement(string packageElementNAme)
+        public SplitterPackageElement(string packageElementNAme)
         {
             PackageElementName = packageElementNAme;
             OldSpec = eElementStateType.Empty;

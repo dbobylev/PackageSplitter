@@ -2,6 +2,8 @@
   "RepositoryPath": "C:\\TestRep",
   "LastOwnerUsed": "",
   "LastFileUsed": "",
+  "NewPackageName": "NewPackageName",
+  "NewPackageOwner": "NewPackageOwner",
   "Serilog": {
     "Using": [ "Serilog.Sinks.Console" ],
     "MinimumLevel": "Verbose",
@@ -12,7 +14,8 @@
           "outputTemplate": "{Timestamp:HH:mm:ss} {SourceContext} [{Level:u3}] [PackageSplitter] {Message}{NewLine}{Exception}"
         }
       },
-      { "Name": "Console",
+      {
+        "Name": "Console",
         "Args": {
           "outputTemplate": "{Timestamp:HH:mm:ss} {SourceContext} [{Level:u3}] [PackageSplitter] {Message}{NewLine}{Exception}"
         }

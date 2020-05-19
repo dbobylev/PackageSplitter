@@ -33,6 +33,9 @@ namespace PackageSplitter.ViewModel
             _elements.Where(x => x.ID == cellAction.ID).FirstOrDefault().PerformElementAction(cellAction);
         }
 
-        public PieceOfCode[] GetNewSpec => _elements.Select(x=>x.Model).Where(x => x.NewSpec == eElementStateType.Add).Select(x => x.PosSpec).ToArray();
+        public PieceOfCode[] GetNewSpec => _elements.Select(x => x.Model).Where(x => x.NewSpec == eElementStateType.Add).Select(x => x.PosSpec).ToArray();
+        public PieceOfCode[] GetNewBody => _elements.Select(x => x.Model).Where(x => x.NewBody == eElementStateType.Add).Select(x => x.PosBody).ToArray();
+        public PieceOfCode[] GetOldSpec => _elements.Select(x => x.Model).Where(x => x.OldSpec == eElementStateType.Add || x.OldSpec == eElementStateType.Delete).Select(x => x.PosSpec).ToArray();
+        public PieceOfCode[] GetOldBody => _elements.Select(x => x.Model).Where(x => x.OldBody == eElementStateType.Delete || x.OldBody == eElementStateType.CreateLink).Select(x => x.PosBody).ToArray();
     }
 }

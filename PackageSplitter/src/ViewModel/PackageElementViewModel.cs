@@ -8,7 +8,7 @@ namespace PackageSplitter.ViewModel
 {
     public class PackageElementViewModel : PropertyChangedBase
     {
-        public PackageElement Model { get; private set; }
+        public SplitterPackageElement Model { get; private set; }
 
         public string Name { get => Model.PackageElementName; }
         public int ID { get; private set; }
@@ -18,7 +18,7 @@ namespace PackageSplitter.ViewModel
         public eElementStateType NewSpecState { get => Model.NewSpec; set { Model.NewSpec = value; OnPropertyChanged(); } }
         public eElementStateType NewBodyState { get => Model.NewBody; set { Model.NewBody = value; OnPropertyChanged(); } }
 
-        public PackageElementViewModel(PackageElement model, int index)
+        public PackageElementViewModel(SplitterPackageElement model, int index)
         {
             Model = model;
             ID = index;

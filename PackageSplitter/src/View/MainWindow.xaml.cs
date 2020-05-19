@@ -31,7 +31,7 @@ namespace PackageSplitter
             InitializeComponent();
         }
 
-        private void RepositoryObjectView_PushPackageElements(PackageElement[] elements, RepositoryPackage repositoryPackage)
+        private void RepositoryObjectView_PushPackageElements(SplitterPackageElement[] elements, RepositoryPackage repositoryPackage)
         {
             Splitter.AddElements(elements, repositoryPackage);
         }

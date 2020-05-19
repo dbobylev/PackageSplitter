@@ -20,6 +20,19 @@ namespace PackageSplitter
             set => SetValue("LastOwnerUsed", value);
         }
 
+        public string NewPackageName
+        {
+            get => GetValue<string>("NewPackageName");
+            set => SetValue("NewPackageName", value);
+        }
+
+        public string NewPackageOwner
+        {
+            get => GetValue<string>("NewPackageOwner");
+            set => SetValue("NewPackageOwner", value);
+        }
+        
+
         private static Config _Instanse;
         public static Config Instanse()
         {

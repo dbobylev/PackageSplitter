@@ -8,19 +8,19 @@ using System.Text;
 
 namespace PackageSplitter.Model
 {
-    public class Package
+    public class SplitterPackage
     {
-        private List<PackageElement> _elements = new List<PackageElement>();
+        private List<SplitterPackageElement> _elements = new List<SplitterPackageElement>();
 
-        public IReadOnlyCollection<PackageElement> Elements { get => _elements.AsReadOnly(); }
+        public IReadOnlyCollection<SplitterPackageElement> Elements { get => _elements.AsReadOnly(); }
 
-        public Package(ParsedPackage package)
+        public SplitterPackage(ParsedPackage package)
         {
             for (int i = 0; i < package.Body.Procedures.Count; i++)
             {
                 string elementName = package.Body.Procedures[i].Name;
 
-                var element = new PackageElement(elementName);
+                var element = new SplitterPackageElement(elementName);
                 element.SetOldBody(package.Body.Procedures[i]);
 
                 var SpecElement = package.Spec.Procedures.FirstOrDefault(x => x.Name == elementName);
