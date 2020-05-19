@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PackageSplitter.View"
              xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel" 
-             xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" 
+             xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" 
              xmlns:Templates="clr-namespace:PackageSplitter.View.Templates"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
         <DataGrid x:Name="MainGrid" ItemsSource="{Binding Elements}" AutoGenerateColumns="False">
             <DataGrid.DataContext>
-                <ViewModel:PackageVM/>
+                <ViewModel:PackageViewModel/>
             </DataGrid.DataContext>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" Header="Name">
@@ -73,5 +73,8 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <StackPanel Grid.Row="1">
+            <Button x:Name="btnTextNewSpec" Content="GetTextNewSpec" Click="btnTextNewSpec_Click"/>
+        </StackPanel>
     </Grid>
 </UserControl>

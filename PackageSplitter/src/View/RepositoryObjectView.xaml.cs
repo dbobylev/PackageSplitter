@@ -27,7 +27,7 @@ namespace PackageSplitter.View
             InitializeComponent();
         }
 
-        public event Action<PackageElement[]> PushPackageElements;
+        public event Action<PackageElement[], RepositoryPackage> PushPackageElements;
 
         private void SetLastOwnerUed()
         {
@@ -56,7 +56,8 @@ namespace PackageSplitter.View
             var parsedPackage = OraParser.Instance().GetPackage(repositoryPackage);
             var PackageModel = new Package(parsedPackage);
             var ElementsList = PackageModel.Elements.ToArray();
-            PushPackageElements?.Invoke(ElementsList);
+            
+            PushPackageElements?.Invoke(ElementsList, repositoryPackage);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

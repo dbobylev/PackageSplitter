@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 
-namespace PackageSplitter.Convertrs
+namespace PackageSplitter.ViewModel.Convertrs
 {
     class OwnersToRepObjectsConverter : IValueConverter
     {

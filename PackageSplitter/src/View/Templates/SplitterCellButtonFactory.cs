@@ -1,4 +1,4 @@
-﻿using PackageSplitter.Splitter;
+﻿using PackageSplitter.Model.SplitterGrid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,31 +9,31 @@ namespace PackageSplitter.View.Templates
 {
     class SplitterCellButtonFactory
     {
-        private Dictionary<eSplitterObjectType, CellAction[]> _ButtonActionsByObject = new Dictionary<eSplitterObjectType, CellAction[]>()
+        private Dictionary<eSplitterObjectType, SplitterAction[]> _ButtonActionsByObject = new Dictionary<eSplitterObjectType, SplitterAction[]>()
         {
-            { eSplitterObjectType.OldSpec, new CellAction[]
+            { eSplitterObjectType.OldSpec, new SplitterAction[]
                 {
-                    new CellAction(eSplitterCellActionType.Delete, eSplitterObjectType.OldSpec),
-                    new CellAction(eSplitterCellActionType.Add, eSplitterObjectType.OldSpec)
+                    new SplitterAction(eCellSplitterActionType.Delete, eSplitterObjectType.OldSpec),
+                    new SplitterAction(eCellSplitterActionType.Add, eSplitterObjectType.OldSpec)
                 }
             },
-            { eSplitterObjectType.OldBody, new CellAction[]
+            { eSplitterObjectType.OldBody, new SplitterAction[]
                 {
-                    new CellAction(eSplitterCellActionType.Delete, eSplitterObjectType.OldBody | eSplitterObjectType.OldSpec),
-                    new CellAction(eSplitterCellActionType.Add, eSplitterObjectType.OldBody),
-                    new CellAction(eSplitterCellActionType.MakeLink, eSplitterObjectType.OldBody | eSplitterObjectType.NewSpec | eSplitterObjectType.NewBody)
+                    new SplitterAction(eCellSplitterActionType.Delete, eSplitterObjectType.OldBody | eSplitterObjectType.OldSpec),
+                    new SplitterAction(eCellSplitterActionType.Add, eSplitterObjectType.OldBody),
+                    new SplitterAction(eCellSplitterActionType.MakeLink, eSplitterObjectType.OldBody | eSplitterObjectType.NewSpec | eSplitterObjectType.NewBody)
                 }
             },
-            { eSplitterObjectType.NewSpec, new CellAction[]
+            { eSplitterObjectType.NewSpec, new SplitterAction[]
                 {
-                    new CellAction(eSplitterCellActionType.Delete, eSplitterObjectType.NewSpec),
-                    new CellAction(eSplitterCellActionType.Add, eSplitterObjectType.NewSpec | eSplitterObjectType.NewBody)
+                    new SplitterAction(eCellSplitterActionType.Delete, eSplitterObjectType.NewSpec),
+                    new SplitterAction(eCellSplitterActionType.Add, eSplitterObjectType.NewSpec | eSplitterObjectType.NewBody)
                 }
             },
-            { eSplitterObjectType.NewBody, new CellAction[]
+            { eSplitterObjectType.NewBody, new SplitterAction[]
                 {
-                    new CellAction(eSplitterCellActionType.Delete, eSplitterObjectType.NewBody | eSplitterObjectType.NewSpec),
-                    new CellAction(eSplitterCellActionType.Add, eSplitterObjectType.NewBody)
+                    new SplitterAction(eCellSplitterActionType.Delete, eSplitterObjectType.NewBody | eSplitterObjectType.NewSpec),
+                    new SplitterAction(eCellSplitterActionType.Add, eSplitterObjectType.NewBody)
                 }
             },
         };
@@ -43,10 +43,10 @@ namespace PackageSplitter.View.Templates
 
         }
 
-        public SplitterCellButton[] GetButtons(int ElementID, eSplitterObjectType splitterObjectType, SplitterCellActionHandler handler)
+        public SplitterCellButton[] GetButtons(int ElementID, eSplitterObjectType splitterObjectType, CellSplitterActionHandler handler)
         {
             return _ButtonActionsByObject[splitterObjectType]
-                .Select(x => new SplitterCellAction(ElementID, x))
+                .Select(x => new CellSplitterAction(ElementID, x))
                 .Select(x => new SplitterCellButton(x, handler))
                 .ToArray();
         }

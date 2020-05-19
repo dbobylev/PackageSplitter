@@ -1,4 +1,5 @@
-﻿using PackageSplitter.Model;
+﻿using OracleParser.Model;
+using PackageSplitter.Model;
 using PackageSplitter.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -7,13 +8,13 @@ using System.Text;
 
 namespace PackageSplitter.Model
 {
-    class Package
+    public class Package
     {
         private List<PackageElement> _elements = new List<PackageElement>();
 
         public IReadOnlyCollection<PackageElement> Elements { get => _elements.AsReadOnly(); }
 
-        public Package(OracleParser.Model.ParsedPackage package)
+        public Package(ParsedPackage package)
         {
             for (int i = 0; i < package.Body.Procedures.Count; i++)
             {

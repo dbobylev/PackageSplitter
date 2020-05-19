@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:View="clr-namespace:PackageSplitter.View"
         xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel"
-        xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" 
+        xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" 
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1200">
     <Grid>

@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 
-namespace PackageSplitter.Convertrs
+namespace PackageSplitter.ViewModel.Convertrs
 {
     class ElementStateToStackPanelStyle : IValueConverter
     {

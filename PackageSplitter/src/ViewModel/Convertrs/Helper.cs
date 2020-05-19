@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace PackageSplitter.Convertrs
+namespace PackageSplitter.ViewModel.Convertrs
 {
     static class Helper
     {

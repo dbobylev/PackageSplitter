@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PackageSplitter.Splitter
+namespace PackageSplitter.Model.SplitterGrid
 {
-    public enum eSplitterCellActionType
+    public enum eCellSplitterActionType
     {
         Add,
         Delete,

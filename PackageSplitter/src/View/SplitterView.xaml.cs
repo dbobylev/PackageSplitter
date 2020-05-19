@@ -1,5 +1,8 @@
-﻿using PackageSplitter.Model;
-using PackageSplitter.Splitter;
+﻿using DataBaseRepository.Model;
+using PackageSplitter.Model;
+using PackageSplitter.Model.Split;
+using PackageSplitter.Model.SplitterGrid;
+using PackageSplitter.src.View;
 using PackageSplitter.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -22,23 +25,32 @@ namespace PackageSplitter.View
     /// </summary>
     public partial class SplitterView : UserControl
     {
-        PackageVM packageVM;
+        PackageViewModel _PackageViewModel;
+        SplitManager _SplitManager;
 
         public SplitterView()
         {
             InitializeComponent();
 
-            packageVM = MainGrid.DataContext as PackageVM;
+            _PackageViewModel = MainGrid.DataContext as PackageViewModel;
         }
 
-        public void AddElements(IEnumerable<PackageElement> elements)
+        public void AddElements(IEnumerable<PackageElement> elements, RepositoryPackage repositoryObject)
         {
-            packageVM.AddElements(elements.Select((x, i) => new PackageElementVM(x, i)));
+            _PackageViewModel.AddElements(elements.Select((x, i) => new PackageElementViewModel(x, i)));
+            _SplitManager = new SplitManager(repositoryObject);
         }
 
-        private void SplitterCell_SplitterCellAction(object sender, SplitterCellActionEventArgs args)
+        private void SplitterCell_SplitterCellAction(object sender, CellSplitterActionEventArgs args)
         {
-            packageVM.PerformElementAction(args.CellAction);
+            _PackageViewModel.PerformElementAction(args.CellAction);
+        }
+
+        private void btnTextNewSpec_Click(object sender, RoutedEventArgs e)
+        {
+            string text = _SplitManager.GetNewSpecText(_PackageViewModel.GetNewSpec);
+            TextWindow tw = new TextWindow(text);
+            tw.Show();
         }
     }
 }

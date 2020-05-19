@@ -1,5 +1,5 @@
 ﻿using PackageSplitter.Model;
-using PackageSplitter.Splitter;
+using PackageSplitter.Model.SplitterGrid;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,10 +33,10 @@ namespace PackageSplitter.View.Templates
         public static readonly RoutedEvent SplitterCellActionEvent =
             EventManager.RegisterRoutedEvent("SplitterCellActionEventRoute",
             RoutingStrategy.Bubble,
-            typeof(SplitterCellActionEventHandler),
+            typeof(CellSplitterActionEventHandler),
             typeof(SplitterCell));
 
-        public event SplitterCellActionEventHandler SplitterCellAction
+        public event CellSplitterActionEventHandler SplitterCellAction
         {
             add { AddHandler(SplitterCellActionEvent, value); }
             remove { RemoveHandler(SplitterCellActionEvent, value); }
@@ -47,9 +47,9 @@ namespace PackageSplitter.View.Templates
             InitializeComponent();
         }
 
-        private void AnyButton_Click(object sender, SplitterCellAction e)
+        private void AnyButton_Click(object sender, CellSplitterAction e)
         {
-            RaiseEvent(new SplitterCellActionEventArgs(
+            RaiseEvent(new CellSplitterActionEventArgs(
                 routedEvent: SplitterCell.SplitterCellActionEvent,
                 source: sender,
                 cellAction: e));

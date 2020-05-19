@@ -1,4 +1,4 @@
-﻿using PackageSplitter.Splitter;
+﻿using PackageSplitter.Model.SplitterGrid;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,25 +19,25 @@ namespace PackageSplitter.View.Templates
     /// </summary>
     public partial class SplitterCellButton : UserControl
     {
-        SplitterCellActionHandler _splitterCellActionHandler;
-        private SplitterCellAction _CellAction;
+        CellSplitterActionHandler _splitterCellActionHandler;
+        private CellSplitterAction _CellAction;
 
-        public SplitterCellButton(SplitterCellAction cellAction, SplitterCellActionHandler ClickHandler)
+        public SplitterCellButton(CellSplitterAction cellAction, CellSplitterActionHandler ClickHandler)
         {
             InitializeComponent();
 
             _CellAction = cellAction;
             _splitterCellActionHandler = ClickHandler;
 
-            switch (cellAction.SplitterAction)
+            switch (cellAction.CellSplitterAction)
             {
-                case eSplitterCellActionType.Add:
+                case eCellSplitterActionType.Add:
                     mainButton.Content = "V";
                     break;
-                case eSplitterCellActionType.Delete:
+                case eCellSplitterActionType.Delete:
                     mainButton.Content = "X";
                     break;
-                case eSplitterCellActionType.MakeLink:
+                case eCellSplitterActionType.MakeLink:
                     mainButton.Content = "L";
                     break;
                 default:

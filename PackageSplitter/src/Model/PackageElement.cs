@@ -7,8 +7,8 @@ namespace PackageSplitter.Model
 {
     public class PackageElement
     {
-        private PieceOfCode _PosSpec;
-        private PieceOfCode _PosBody;
+        public PieceOfCode PosSpec { get; private set; }
+        public PieceOfCode PosBody { get; private set; }
 
         public string PackageElementName { get; private set; }
 
@@ -28,13 +28,13 @@ namespace PackageSplitter.Model
 
         public void SetOldSpec(PieceOfCode posSpec)
         {
-            _PosSpec = posSpec;
+            PosSpec = posSpec;
             OldSpec = eElementStateType.Exist;
         }
 
         public void SetOldBody(PieceOfCode posBody)
         {
-            _PosBody = posBody;
+            PosBody = posBody;
             OldBody = eElementStateType.Exist;
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PackageSplitter.Splitter
+namespace PackageSplitter.Model.SplitterGrid
 {
     [Flags]
     public enum eSplitterObjectType

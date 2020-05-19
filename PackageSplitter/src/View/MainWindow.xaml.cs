@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 using DataBaseRepository;
 using DataBaseRepository.Model;
 using OracleParser;
-using PackageSplitter.Convertrs;
+using PackageSplitter.ViewModel.Convertrs;
 using PackageSplitter.Model;
 
 namespace PackageSplitter
@@ -31,9 +31,9 @@ namespace PackageSplitter
             InitializeComponent();
         }
 
-        private void RepositoryObjectView_PushPackageElements(PackageElement[] obj)
+        private void RepositoryObjectView_PushPackageElements(PackageElement[] elements, RepositoryPackage repositoryPackage)
         {
-            Splitter.AddElements(obj);
+            Splitter.AddElements(elements, repositoryPackage);
         }
     }
 }

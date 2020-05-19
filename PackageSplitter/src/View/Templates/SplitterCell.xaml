@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PackageSplitter.View.Templates" 
-             xmlns:Convertrs="clr-namespace:PackageSplitter.Convertrs" x:Class="PackageSplitter.View.Templates.SplitterCell"
+             xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" x:Class="PackageSplitter.View.Templates.SplitterCell"
              x:Name="uc"
              Loaded="uc_Loaded">
     <UserControl.Resources>

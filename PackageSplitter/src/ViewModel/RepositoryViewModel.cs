@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PackageSplitter.ViewModel
 {
-    public class RepositoryVM : PropertyChangedBase
+    public class RepositoryViewModel : PropertyChangedBase
     {
         private string _SelectedOwner;
         public string SelectedOwner
@@ -49,7 +49,7 @@ namespace PackageSplitter.ViewModel
             }
         }
 
-        public RepositoryVM()
+        public RepositoryViewModel()
         {
             _RepositoryPath = Config.Instanse().RepositoryPath;
         }
