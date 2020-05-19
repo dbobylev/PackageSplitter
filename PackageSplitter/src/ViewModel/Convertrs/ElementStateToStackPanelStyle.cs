@@ -19,8 +19,10 @@ namespace PackageSplitter.ViewModel.Convertrs
             switch (state)
             {
                 case eElementStateType.Exist:
-                case eElementStateType.Empty:
                     answer = Application.Current.FindResource("CellStackPanelDefaultStyle") as Style;
+                    break;
+                case eElementStateType.Empty:
+                    answer = Application.Current.FindResource("CellStackPanelEmptytStyle") as Style;
                     break;
                 case eElementStateType.Add:
                     answer = Application.Current.FindResource("CellStackPanelAddStyle") as Style;

@@ -2,7 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PackageSplitter">
     <Style x:Key="CellStackPanelDefaultStyle" TargetType="StackPanel">
-        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="Background" Value="LightGreen"/>
+    </Style>
+    <Style x:Key="CellStackPanelEmptytStyle" TargetType="StackPanel">
+        <Setter Property="Background" Value="LightPink"/>
     </Style>
     <Style x:Key="CellStackPanelAddStyle" TargetType="StackPanel">
         <Setter Property="Background" Value="LimeGreen"/>
