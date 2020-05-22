@@ -1,4 +1,5 @@
-﻿using PackageSplitter.Model;
+﻿using OracleParser.Model;
+using PackageSplitter.Model;
 using PackageSplitter.Model.SplitterGrid;
 using System;
 using System.Collections.Generic;
@@ -8,23 +9,28 @@ namespace PackageSplitter.ViewModel
 {
     public class PackageElementViewModel : PropertyChangedBase
     {
-        public SplitterPackageElement Model { get; private set; }
-
-        public string Name { get => Model.PackageElementName; }
         public int ID { get; private set; }
+        public string Name { get; private set; }
+        public ePackageElementType PackageElementType { get; private set; }
 
-        public eElementStateType OldSpecState { get => Model.OldSpec; set { Model.OldSpec = value; OnPropertyChanged(); } }
-        public eElementStateType OldBodyState { get => Model.OldBody; set { Model.OldBody = value; OnPropertyChanged(); } }
-        public eElementStateType NewSpecState { get => Model.NewSpec; set { Model.NewSpec = value; OnPropertyChanged(); } }
-        public eElementStateType NewBodyState { get => Model.NewBody; set { Model.NewBody = value; OnPropertyChanged(); } }
+        private eElementStateType _OldSpecState;
+        public eElementStateType OldSpecState { get => _OldSpecState; set { _OldSpecState = value; OnPropertyChanged(); } }
 
-        public PackageElementViewModel(SplitterPackageElement model, int index)
+        private eElementStateType _OldBodyState;
+        public eElementStateType OldBodyState { get => _OldBodyState; set { _OldBodyState = value; OnPropertyChanged(); } }
+        
+        private eElementStateType _NewSpecState;
+        public eElementStateType NewSpecState { get => _NewSpecState; set { _NewSpecState = value; OnPropertyChanged(); } }
+
+        private eElementStateType _NewBodyState;
+        public eElementStateType NewBodyState { get => _NewBodyState; set { _NewBodyState = value; OnPropertyChanged(); } }
+
+        public PackageElementViewModel(int index)
         {
-            Model = model;
             ID = index;
         }
 
-        public void PerformElementAction(CellSplitterAction cellAction)
+        /*public void PerformElementAction(CellSplitterAction cellAction)
         {
             if (cellAction.SplitterObject.HasFlag(eSplitterObjectType.OldSpec))
                 OldSpecState = GetNewState(OldSpecState, cellAction.CellSplitterAction);
@@ -66,6 +72,6 @@ namespace PackageSplitter.ViewModel
                     break;
             }
             return answer;
-        }
+        }*/
     }
 }

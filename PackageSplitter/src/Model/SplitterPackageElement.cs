@@ -10,7 +10,7 @@ namespace PackageSplitter.Model
         public PieceOfCode PosSpec { get; private set; }
         public PieceOfCode PosBody { get; private set; }
 
-        public eParsedPackageElementType PackageElementType { get; set; }
+        public ePackageElementType PackageElementType { get; set; }
 
         public string PackageElementName { get; private set; }
 
