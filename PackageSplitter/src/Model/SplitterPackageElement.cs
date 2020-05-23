@@ -8,9 +8,6 @@ namespace PackageSplitter.Model
 {
     public class SplitterPackageElement
     {
-        public PieceOfCode PosSpec { get; private set; }
-        public PieceOfCode PosBody { get; private set; }
-
         public ePackageElementType PackageElementType { get; set; }
 
         public string PackageElementName { get; private set; }
@@ -20,25 +17,14 @@ namespace PackageSplitter.Model
         public eElementStateType NewSpec { get; set; }
         public eElementStateType NewBody { get; set; }
 
-        public SplitterPackageElement(string packageElementNAme)
+        public SplitterPackageElement(string packageElementName, ePackageElementType packageElementType)
         {
-            PackageElementName = packageElementNAme;
+            PackageElementName = packageElementName;
+            PackageElementType = packageElementType;
             OldSpec = eElementStateType.Empty;
             OldBody = eElementStateType.Empty;
             NewSpec = eElementStateType.Empty;
             NewBody = eElementStateType.Empty;
-        }
-
-        public void SetOldSpec(PieceOfCode posSpec)
-        {
-            PosSpec = posSpec;
-            OldSpec = eElementStateType.Exist;
-        }
-
-        public void SetOldBody(PieceOfCode posBody)
-        {
-            PosBody = posBody;
-            OldBody = eElementStateType.Exist;
         }
     }
 }

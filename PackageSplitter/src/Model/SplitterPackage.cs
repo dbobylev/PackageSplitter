@@ -1,4 +1,5 @@
 ﻿using OracleParser.Model;
+using OracleParser.Model.PackageModel;
 using PackageSplitter.Model;
 using PackageSplitter.ViewModel;
 using System;
@@ -10,24 +11,19 @@ namespace PackageSplitter.Model
 {
     public class SplitterPackage
     {
-        private List<SplitterPackageElement> _elements = new List<SplitterPackageElement>();
+        public List<SplitterPackageElement> Elements { get; set; }
 
-        public IReadOnlyCollection<SplitterPackageElement> Elements { get => _elements.AsReadOnly(); }
-
-        public SplitterPackage(ParsedPackage package)
+        public SplitterPackage(Package package)
         {
-            for (int i = 0; i < package.Body.Procedures.Count; i++)
+            for (int i = 0; i < package.elements.Count; i++)
             {
-                string elementName = package.Body.Procedures[i].Name;
-
-                var element = new SplitterPackageElement(elementName);
-                element.SetOldBody(package.Body.Procedures[i]);
-
-                var SpecElement = package.Spec.Procedures.FirstOrDefault(x => x.Name == elementName);
-                if (SpecElement != null)
-                    element.SetOldSpec(SpecElement);
-
-                _elements.Add(element);
+                var packageElement = package.elements[i];
+                var SplitterElement = new SplitterPackageElement(packageElement.Name, packageElement.ElementType);
+                if (packageElement.HasSpec)
+                    SplitterElement.OldSpec = eElementStateType.Exist;
+                if (packageElement.HasBody)
+                    SplitterElement.OldBody = eElementStateType.Exist;
+                Elements.Add(SplitterElement);
             }
         }
     }
