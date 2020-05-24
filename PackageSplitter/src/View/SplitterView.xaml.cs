@@ -38,8 +38,7 @@ namespace PackageSplitter.View
 
         public void AddElements(IEnumerable<SplitterPackageElement> elements, RepositoryPackage repositoryObject)
         {
-            _PackageViewModel.AddElements(elements.Select((x, i) => new SplitterPackageElementViewModel(x, i)));
-            _SplitManager = new SplitManager(repositoryObject);
+            _PackageViewModel
         }
 
         /*private void SplitterCell_SplitterCellAction(object sender, CellSplitterActionEventArgs args)

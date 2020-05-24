@@ -14,7 +14,12 @@ namespace PackageSplitter.ViewModel
         private SplitterPackage _model;
         public ObservableCollection<SplitterPackageElementViewModel> ElementsViewModel { get; private set; }
 
-        public SplitterPackageViewModel(SplitterPackage model)
+        public SplitterPackageViewModel()
+        {
+            ElementsViewModel = new ObservableCollection<SplitterPackageElementViewModel>();
+        }
+
+        public void SetModel(SplitterPackage model)
         {
             _model = model;
             ElementsViewModel = new ObservableCollection<SplitterPackageElementViewModel>();
