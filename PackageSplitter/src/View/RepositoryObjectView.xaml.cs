@@ -27,7 +27,7 @@ namespace PackageSplitter.View
             InitializeComponent();
         }
 
-        public event Action<SplitterPackageElement[], RepositoryPackage> PushPackageElements;
+        public event Action<SplitterPackage> PushPackageElements;
 
         private void SetLastOwnerUed()
         {
@@ -46,6 +46,19 @@ namespace PackageSplitter.View
                 Seri.Log.Verbose($"SetLastUsedOwner end");
         }
 
+        public void SetLastFileUsed()
+        {
+            if (cbRepositoryObjects.Items.Count > 0)
+            {
+                var items = cbRepositoryObjects.Items.Cast<RepositoryObject>();
+                var LastSelected = items
+                    .Select((x, i) => new { val = x, index = i })
+                    .FirstOrDefault(x => x.val.RepFilePath == Config.Instanse().LastFileUsed);
+                if (LastSelected != null)
+                    cbRepositoryObjects.SelectedIndex = LastSelected.index;
+            }
+        }
+
         private void btnLoadObject_Click(object sender, RoutedEventArgs e)
         {
             var repositoryObject = cbRepositoryObjects.SelectedItem as RepositoryObject;
@@ -54,15 +67,15 @@ namespace PackageSplitter.View
 
             var repositoryPackage = new RepositoryPackage(repositoryObject);
             var parsedPackage = OraParser.Instance().GetPackage(repositoryPackage);
-            var PackageModel = new SplitterPackage(parsedPackage);
-            var ElementsList = PackageModel.Elements.ToArray();
+            var PackageModel = new SplitterPackage(parsedPackage, repositoryPackage);
             
-            PushPackageElements?.Invoke(ElementsList, repositoryPackage);
+            PushPackageElements?.Invoke(PackageModel);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             SetLastOwnerUed();
+            SetLastFileUsed();
         }
     }
 }

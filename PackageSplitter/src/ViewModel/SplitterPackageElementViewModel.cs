@@ -19,9 +19,9 @@ namespace PackageSplitter.ViewModel
 
         public string Name => _model.PackageElementName;
         public ePackageElementType ElementType => _model.PackageElementType;
-        public eElementStateType OldSpec { get => _model.OldSpec; set { _model.OldSpec = value; OnPropertyChanged(); } }
-        public eElementStateType OldBody { get => _model.OldBody; set { _model.OldBody = value; OnPropertyChanged(); } }
-        public eElementStateType NewSpec { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); } }
-        public eElementStateType NewBody { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); } }
+        public eElementStateType OldSpecState { get => _model.OldSpec; set { _model.OldSpec = value; OnPropertyChanged(); } }
+        public eElementStateType OldBodyState { get => _model.OldBody; set { _model.OldBody = value; OnPropertyChanged(); } }
+        public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); } }
+        public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); } }
     }
 }

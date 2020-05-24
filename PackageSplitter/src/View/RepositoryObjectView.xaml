@@ -38,7 +38,8 @@
             <Label Content="Поиск"/>
             <TextBox/>
             <Label Content="Объект"/>
-            <ComboBox x:Name="cbRepositoryObjects" 
+            <ComboBox x:Name="cbRepositoryObjects"
+                      SelectedValue="{Binding SelectedFile}"
                       DisplayMemberPath="Name"
                       ItemsSource="{Binding SelectedValue, BindsDirectlyToSource=False, Converter={StaticResource OwnersToRepObjectsConverter}, ElementName=cbOwners, Mode=OneWay}"/>
             <Button x:Name="btnLoadObject" Content="Загрузить" Click="btnLoadObject_Click"/>

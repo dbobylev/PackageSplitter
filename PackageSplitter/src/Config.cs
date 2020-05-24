@@ -20,6 +20,12 @@ namespace PackageSplitter
             set => SetValue("LastOwnerUsed", value);
         }
 
+        public string LastFileUsed
+        {
+            get => GetValue<string>("LastFileUsed");
+            set => SetValue("LastFileUsed", value);
+        }
+
         public string NewPackageName
         {
             get => GetValue<string>("NewPackageName");

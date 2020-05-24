@@ -1,4 +1,5 @@
 ﻿using DataBaseRepository;
+using DataBaseRepository.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +14,24 @@ namespace PackageSplitter.ViewModel
 {
     public class RepositoryViewModel : PropertyChangedBase
     {
+        private RepositoryObject _SelectedFile;
+        public RepositoryObject SelectedFile
+        {
+            get
+            {
+                return _SelectedFile;
+            }
+            set
+            {
+                _SelectedFile = value;
+                if (value != null)
+                {
+                    Config.Instanse().LastFileUsed = value.RepFilePath;
+                    Config.Instanse().Save();
+                }
+            }
+        }
+
         private string _SelectedOwner;
         public string SelectedOwner
         {

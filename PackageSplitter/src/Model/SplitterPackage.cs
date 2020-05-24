@@ -1,4 +1,5 @@
-﻿using OracleParser.Model;
+﻿using DataBaseRepository.Model;
+using OracleParser.Model;
 using OracleParser.Model.PackageModel;
 using PackageSplitter.Model;
 using PackageSplitter.ViewModel;
@@ -12,9 +13,13 @@ namespace PackageSplitter.Model
     public class SplitterPackage
     {
         public List<SplitterPackageElement> Elements { get; set; }
+        public RepositoryPackage RepositoryPackage { get; private set; }
 
-        public SplitterPackage(Package package)
+        public SplitterPackage(Package package, RepositoryPackage repositoryPackage)
         {
+            RepositoryPackage = repositoryPackage;
+            Elements = new List<SplitterPackageElement>();
+
             for (int i = 0; i < package.elements.Count; i++)
             {
                 var packageElement = package.elements[i];

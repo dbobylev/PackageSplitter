@@ -36,14 +36,9 @@ namespace PackageSplitter.View
             _PackageViewModel = MainGrid.DataContext as SplitterPackageViewModel;
         }
 
-        public void AddElements(IEnumerable<SplitterPackageElement> elements, RepositoryPackage repositoryObject)
+        public void SetModel(SplitterPackage splitterPackage)
         {
-            _PackageViewModel
+            _PackageViewModel.SetModel(splitterPackage);
         }
-
-        /*private void SplitterCell_SplitterCellAction(object sender, CellSplitterActionEventArgs args)
-        {
-            _PackageViewModel.PerformElementAction(args.CellAction);
-        }*/
     }
 }

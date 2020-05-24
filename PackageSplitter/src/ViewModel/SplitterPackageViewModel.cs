@@ -22,7 +22,6 @@ namespace PackageSplitter.ViewModel
         public void SetModel(SplitterPackage model)
         {
             _model = model;
-            ElementsViewModel = new ObservableCollection<SplitterPackageElementViewModel>();
 
             for (int i = 0; i < model.Elements.Count; i++)
                 ElementsViewModel.Add(new SplitterPackageElementViewModel(model.Elements[i]));

@@ -28,25 +28,29 @@ namespace PackageSplitter.View.Templates
         public static DependencyProperty ElementStateProperty = DependencyProperty.Register("ElementState", typeof(eElementStateType), typeof(SplitterCell));
         public eElementStateType ElementState { get; set; }
 
-        public eSplitterObjectType CellType { get; set; }
+        //public eSplitterObjectType CellType { get; set; }
 
+        /*
         public static readonly RoutedEvent SplitterCellActionEvent =
             EventManager.RegisterRoutedEvent("SplitterCellActionEventRoute",
             RoutingStrategy.Bubble,
             typeof(CellSplitterActionEventHandler),
             typeof(SplitterCell));
+        */
 
+        /*
         public event CellSplitterActionEventHandler SplitterCellAction
         {
             add { AddHandler(SplitterCellActionEvent, value); }
             remove { RemoveHandler(SplitterCellActionEvent, value); }
-        }
+        }*/
 
         public SplitterCell()
         {
             InitializeComponent();
         }
 
+        /*
         private void AnyButton_Click(object sender, CellSplitterAction e)
         {
             RaiseEvent(new CellSplitterActionEventArgs(
@@ -54,7 +58,7 @@ namespace PackageSplitter.View.Templates
                 source: sender,
                 cellAction: e));
         }
-
+        */
         /*private void uc_Loaded(object sender, RoutedEventArgs e)
         {
             var buttons = _cellButtonsFactory.GetButtons((int)GetValue(PackageElementIDProperty), CellType, AnyButton_Click);

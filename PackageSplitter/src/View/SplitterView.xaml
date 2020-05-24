@@ -34,14 +34,11 @@
                 <DataGridTemplateColumn Header="Spec">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
-                                                    SplitterCellAction="SplitterCell_SplitterCellAction" 
-                                                    CellType="OldSpec"
-                                                    ElementState="{Binding OldSpecState}"/>
+                            <Templates:SplitterCell ElementState="{Binding OldSpecState}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Body">
+                <!--DataGridTemplateColumn Header="Body">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
@@ -70,7 +67,7 @@
                                                     ElementState="{Binding NewBodyState}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                </DataGridTemplateColumn-->
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
