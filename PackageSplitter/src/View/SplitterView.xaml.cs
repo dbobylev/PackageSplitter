@@ -26,7 +26,7 @@ namespace PackageSplitter.View
     public partial class SplitterView : UserControl
     {
         private SplitterPackageViewModel _PackageViewModel;
-        private SplitManager _SplitManager;
+
         private eSplitParam _defaultNewObjParam = eSplitParam.CopyToClipBoard | eSplitParam.GenerateHeader | eSplitParam.OpenNewWindow;
 
         public SplitterView()
@@ -42,19 +42,9 @@ namespace PackageSplitter.View
             _SplitManager = new SplitManager(repositoryObject);
         }
 
-        private void SplitterCell_SplitterCellAction(object sender, CellSplitterActionEventArgs args)
+        /*private void SplitterCell_SplitterCellAction(object sender, CellSplitterActionEventArgs args)
         {
             _PackageViewModel.PerformElementAction(args.CellAction);
-        }
-
-        private void btnTextNewSpec_Click(object sender, RoutedEventArgs e)
-        {
-            _SplitManager.Generate(_PackageViewModel.GetNewSpec, eSplitterObjectType.NewSpec, _defaultNewObjParam);
-        }
-
-        private void btnTextNewBody_Click(object sender, RoutedEventArgs e)
-        {
-            _SplitManager.Generate(_PackageViewModel.GetNewBody, eSplitterObjectType.NewBody, _defaultNewObjParam);
-        }
+        }*/
     }
 }

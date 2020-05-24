@@ -20,7 +20,7 @@ namespace PackageSplitter.View.Templates
     /// </summary>
     public partial class SplitterCell : UserControl
     {
-        private static SplitterCellButtonFactory _cellButtonsFactory = new SplitterCellButtonFactory();
+        //private static SplitterCellButtonFactory _cellButtonsFactory = new SplitterCellButtonFactory();
 
         public static DependencyProperty PackageElementIDProperty = DependencyProperty.Register("PackageElementID", typeof(int), typeof(SplitterCell));
         public int PackageElementID { get; set; }
@@ -55,12 +55,12 @@ namespace PackageSplitter.View.Templates
                 cellAction: e));
         }
 
-        private void uc_Loaded(object sender, RoutedEventArgs e)
+        /*private void uc_Loaded(object sender, RoutedEventArgs e)
         {
             var buttons = _cellButtonsFactory.GetButtons((int)GetValue(PackageElementIDProperty), CellType, AnyButton_Click);
 
             foreach (var item in buttons)
                 mainStack.Children.Add(item);
-        }
+        }*/
     }
 }

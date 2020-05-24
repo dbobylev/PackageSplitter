@@ -11,16 +11,16 @@ namespace PackageSplitter.ViewModel
 {
     public class SplitterPackageViewModel : PropertyChangedBase
     {
-        SplitterPackage _model;
-        List<SplitterPackageElementViewModel> Elements = new List<SplitterPackageElementViewModel>();
+        private SplitterPackage _model;
+        public ObservableCollection<SplitterPackageElementViewModel> ElementsViewModel { get; private set; }
 
         public SplitterPackageViewModel(SplitterPackage model)
         {
             _model = model;
+            ElementsViewModel = new ObservableCollection<SplitterPackageElementViewModel>();
+
             for (int i = 0; i < model.Elements.Count; i++)
-            {
-                Elements.Add(new SplitterPackageElementViewModel(model.Elements[i]));
-            }
+                ElementsViewModel.Add(new SplitterPackageElementViewModel(model.Elements[i]));
         }
     }
 }
