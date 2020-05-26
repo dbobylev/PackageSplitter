@@ -5,13 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PackageSplitter.View.Templates" 
              xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" x:Class="PackageSplitter.View.Templates.SplitterCell"
-             x:Name="uc">
+             x:Name="uc" Loaded="uc_Loaded">
     <UserControl.Resources>
         <Convertrs:ElementStateToStackPanelStyle x:Key="ElementStateToStackPanelStyle"/>
         <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
     </UserControl.Resources>
-    <StackPanel x:Name="mainStack" Orientation="Horizontal" Style="{Binding ElementState, Converter={StaticResource ElementStateToStackPanelStyle}, ElementName=uc}" VerticalAlignment="Center">
-        <TextBlock x:Name="tbActionName" MinWidth="100" Text="{Binding ElementState, Mode=OneWay, Converter={StaticResource ElementStateToStringConverter}, ElementName=uc}" VerticalAlignment="Center"/>
-        <Button Content="Test" Click="Button_Click"/>
-    </StackPanel>
+    <StackPanel x:Name="mainStack" Orientation="Horizontal" Style="{Binding ElementStateType, Converter={StaticResource ElementStateToStackPanelStyle}, ElementName=uc}" VerticalAlignment="Center">
+        <TextBlock x:Name="tbActionName" MinWidth="100" Text="{Binding ElementStateType, Mode=OneWay, Converter={StaticResource ElementStateToStringConverter}, ElementName=uc}" VerticalAlignment="Center"/>
+   </StackPanel>
 </UserControl>

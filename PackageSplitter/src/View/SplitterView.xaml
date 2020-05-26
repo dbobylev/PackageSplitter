@@ -31,43 +31,34 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Header="Spec">
+                <DataGridTemplateColumn Header="Old Spec">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell ElementState="{Binding OldSpecState}"/>
+                            <Templates:SplitterCell SplitterObjectType="OldSpec" ElementStateType="{Binding OldSpecState}" PackageElementType="{Binding ElementType}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <!--DataGridTemplateColumn Header="Body">
+                <DataGridTemplateColumn Header="Old Body">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
-                                                    SplitterCellAction="SplitterCell_SplitterCellAction" 
-                                                    CellType="OldBody"
-                                                    ElementState="{Binding OldBodyState}"/>
+                            <Templates:SplitterCell SplitterObjectType="OldBody" ElementStateType="{Binding OldBodyState}" PackageElementType="{Binding ElementType}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="NEW Spec">
+                <DataGridTemplateColumn Header="New Spec">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
-                                                    SplitterCellAction="SplitterCell_SplitterCellAction" 
-                                                    CellType="NewSpec"
-                                                    ElementState="{Binding NewSpecState}"/>
+                            <Templates:SplitterCell SplitterObjectType="NewSpec" ElementStateType="{Binding NewSpecState}" PackageElementType="{Binding ElementType}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="NEW Body">
+                <DataGridTemplateColumn Header="New Body">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell PackageElementID="{Binding ID, Mode=OneWay}"
-                                                    SplitterCellAction="SplitterCell_SplitterCellAction" 
-                                                    CellType="NewBody"
-                                                    ElementState="{Binding NewBodyState}"/>
+                            <Templates:SplitterCell SplitterObjectType="NewBody" ElementStateType="{Binding NewBodyState}" PackageElementType="{Binding ElementType}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn-->
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -1,4 +1,5 @@
-﻿using PackageSplitter.Model;
+﻿using OracleParser.Model.PackageModel;
+using PackageSplitter.Model;
 using PackageSplitter.Model.SplitterGrid;
 using PackageSplitter.ViewModel;
 using System;
@@ -21,8 +22,15 @@ namespace PackageSplitter.View.Templates
     /// </summary>
     public partial class SplitterCell : UserControl
     {
-        public static DependencyProperty ElementStateProperty = DependencyProperty.Register("ElementState", typeof(eElementStateType), typeof(SplitterCell));
-        public eElementStateType ElementState { get; set; }
+        private static SplitterCellButtonFactory ButtonFactory = new SplitterCellButtonFactory();
+
+        public static DependencyProperty ElementStateTypeProperty = DependencyProperty.Register("ElementStateType", typeof(eElementStateType), typeof(SplitterCell));
+        public eElementStateType ElementStateType { get; set; }
+
+        public static DependencyProperty PackageElementTypeProperty = DependencyProperty.Register("PackageElementType", typeof(ePackageElementType), typeof(SplitterCell));
+        public ePackageElementType PackageElementType { get; set; }
+
+        public eSplitterObjectType SplitterObjectType { get; set; }
 
         public SplitterCell()
         {
@@ -31,8 +39,19 @@ namespace PackageSplitter.View.Templates
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var z = this.DataContext as SplitterPackageElementViewModel;
-            z.DoAction(eElementStateType.Add);
+            var viewModel = this.DataContext as SplitterPackageElementViewModel;
+            var button = sender as SplitterCellButton;
+            viewModel.UpdateStates(button.NewStates);
+        }
+
+        private void uc_Loaded(object sender, RoutedEventArgs e)
+        {
+            var buttons = ButtonFactory.GetButtons(SplitterObjectType, (ePackageElementType)GetValue(PackageElementTypeProperty));
+            foreach (var item in buttons)
+            {
+                item.Click += Button_Click;
+                mainStack.Children.Add(item);
+            }
         }
     }
 }
