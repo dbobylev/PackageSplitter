@@ -24,9 +24,17 @@ namespace PackageSplitter.ViewModel
         public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); } }
         public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); } }
 
-        public void DoAction(eElementStateType newState)
+        public void UpdateStates(Dictionary<eSplitterObjectType, eElementStateType> newStates)
         {
-
+            foreach(var key in newStates.Keys)
+                switch (key)
+                {
+                    case eSplitterObjectType.OldSpec: OldSpecState = newStates[key]; break;
+                    case eSplitterObjectType.OldBody: OldBodyState = newStates[key]; break;
+                    case eSplitterObjectType.NewSpec: NewSpecState = newStates[key]; break;
+                    case eSplitterObjectType.NewBody: NewBodyState = newStates[key]; break;
+                    default: break;
+                }
         }
     }
 }
