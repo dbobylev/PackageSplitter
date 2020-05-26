@@ -12,5 +12,6 @@
     </UserControl.Resources>
     <StackPanel x:Name="mainStack" Orientation="Horizontal" Style="{Binding ElementState, Converter={StaticResource ElementStateToStackPanelStyle}, ElementName=uc}" VerticalAlignment="Center">
         <TextBlock x:Name="tbActionName" MinWidth="100" Text="{Binding ElementState, Mode=OneWay, Converter={StaticResource ElementStateToStringConverter}, ElementName=uc}" VerticalAlignment="Center"/>
+        <Button Content="Test" Click="Button_Click"/>
     </StackPanel>
 </UserControl>

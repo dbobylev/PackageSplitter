@@ -20,11 +20,6 @@ namespace PackageSplitter.View.Templates
     /// </summary>
     public partial class SplitterCell : UserControl
     {
-        //private static SplitterCellButtonFactory _cellButtonsFactory = new SplitterCellButtonFactory();
-
-        public static DependencyProperty PackageElementIDProperty = DependencyProperty.Register("PackageElementID", typeof(int), typeof(SplitterCell));
-        public int PackageElementID { get; set; }
-
         public static DependencyProperty ElementStateProperty = DependencyProperty.Register("ElementState", typeof(eElementStateType), typeof(SplitterCell));
         public eElementStateType ElementState { get; set; }
 
@@ -45,9 +40,16 @@ namespace PackageSplitter.View.Templates
             remove { RemoveHandler(SplitterCellActionEvent, value); }
         }*/
 
+        public event Action<eElementStateType> Go;
+
         public SplitterCell()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Go(eElementStateType.Add);
         }
 
         /*

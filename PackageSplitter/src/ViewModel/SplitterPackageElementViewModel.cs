@@ -23,5 +23,10 @@ namespace PackageSplitter.ViewModel
         public eElementStateType OldBodyState { get => _model.OldBody; set { _model.OldBody = value; OnPropertyChanged(); } }
         public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); } }
         public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); } }
+
+        public void DoAction(eElementStateType newState)
+        {
+
+        }
     }
 }
