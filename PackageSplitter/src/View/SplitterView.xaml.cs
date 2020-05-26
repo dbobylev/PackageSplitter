@@ -40,5 +40,10 @@ namespace PackageSplitter.View
         {
             _PackageViewModel.SetModel(splitterPackage);
         }
+
+        private void SplitterCell_Go(eElementStateType obj)
+        {
+
+        }
     }
 }

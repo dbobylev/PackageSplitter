@@ -34,7 +34,7 @@
                 <DataGridTemplateColumn Header="Spec">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Templates:SplitterCell ElementState="{Binding OldSpecState}" Go="{ViewModel:DoAction}"/>
+                            <Templates:SplitterCell ElementState="{Binding OldSpecState}" Go="SplitterCell_Go"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
