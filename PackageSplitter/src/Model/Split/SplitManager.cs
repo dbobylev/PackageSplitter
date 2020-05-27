@@ -1,4 +1,5 @@
 ﻿using OracleParser.Model.PackageModel;
+using PackageSplitter.Model.SplitterGrid;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -30,6 +31,11 @@ namespace PackageSplitter.Model.Split
         public void SetSplitterPackage(SplitterPackage splitterPackage)
         {
             _splitterPackage = splitterPackage;
+        }
+
+        public void RunSplit(eSplitterObjectType objectType, eSplitParam param)
+        {
+
         }
     }
 }

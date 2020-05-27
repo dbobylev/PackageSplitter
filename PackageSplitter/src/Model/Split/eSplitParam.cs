@@ -5,7 +5,7 @@ using System.Text;
 namespace PackageSplitter.Model.Split
 {
     [Flags]
-    enum eSplitParam
+    public enum eSplitParam
     {
         None              =  0,
         DirectlyUpdateRep =  1 << 0,
