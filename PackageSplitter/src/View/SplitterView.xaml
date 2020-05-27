@@ -61,5 +61,8 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button x:Name="btnNewSpec" Content="NewSpec" Click="btnNewSpec_Click"/>
+        </StackPanel>
     </Grid>
 </UserControl>

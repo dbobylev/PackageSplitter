@@ -31,5 +31,11 @@ namespace PackageSplitter.Model
                 Elements.Add(SplitterElement);
             }
         }
+
+        public SplitterPackage(IEnumerable<SplitterPackageElement> elements, RepositoryPackage repositoryPackage)
+        {
+            RepositoryPackage = repositoryPackage;
+            Elements = new List<SplitterPackageElement>(elements);
+        }
     }
 }

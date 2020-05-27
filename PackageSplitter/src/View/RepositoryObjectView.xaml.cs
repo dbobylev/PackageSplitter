@@ -1,6 +1,7 @@
 ﻿using DataBaseRepository.Model;
 using OracleParser;
 using PackageSplitter.Model;
+using PackageSplitter.Model.Split;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,8 @@ namespace PackageSplitter.View
 
             var repositoryPackage = new RepositoryPackage(repositoryObject);
             var parsedPackage = OraParser.Instance().GetPackage(repositoryPackage);
+            ParsedPackageModel.Instance().SetPackage(parsedPackage);
+
             var PackageModel = new SplitterPackage(parsedPackage, repositoryPackage);
             
             PushPackageElements?.Invoke(PackageModel);

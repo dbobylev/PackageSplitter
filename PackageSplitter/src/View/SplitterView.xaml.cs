@@ -41,9 +41,9 @@ namespace PackageSplitter.View
             _PackageViewModel.SetModel(splitterPackage);
         }
 
-        private void SplitterCell_Go(eElementStateType obj)
+        private void btnNewSpec_Click(object sender, RoutedEventArgs e)
         {
-
+            _PackageViewModel.GetSplitterPackage();
         }
     }
 }
