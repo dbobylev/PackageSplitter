@@ -4,6 +4,7 @@ using PackageSplitter.Model;
 using PackageSplitter.Model.SplitterGrid;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PackageSplitter.ViewModel
@@ -24,8 +25,24 @@ namespace PackageSplitter.ViewModel
         public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); } }
         public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); } }
 
-        public void UpdateStates(Dictionary<eSplitterObjectType, eElementStateType> newStates)
+        public void UpdateStates(Dictionary<eSplitterObjectType, eElementStateType> buttonNewStates)
         {
+            var newStates = new Dictionary<eSplitterObjectType, eElementStateType>(buttonNewStates);
+            Seri.Log.Debug($"UpdateStates: {Name} {string.Join(",", newStates.Select(x => $"[{x.Key}: {x.Value}]"))}");
+
+            // Если удаляем в OldBody ссылку, OldSpec при этом не трогаем
+            if (OldBodyState == eElementStateType.CreateLink
+                && newStates.ContainsKey(eSplitterObjectType.OldBody)
+                && newStates[eSplitterObjectType.OldBody] == eElementStateType.Delete
+                && newStates.ContainsKey(eSplitterObjectType.OldSpec))
+                newStates.Remove(eSplitterObjectType.OldSpec);
+
+            // Если в OldBody Ссылка и удаляется NewSpec, удаляем так же ссылку
+            if (OldBodyState == eElementStateType.CreateLink
+                && newStates.ContainsKey(eSplitterObjectType.NewSpec)
+                && newStates[eSplitterObjectType.NewSpec] == eElementStateType.Delete)
+                newStates.Add(eSplitterObjectType.OldBody, eElementStateType.Delete);
+
             foreach(var key in newStates.Keys)
                 switch (key)
                 {

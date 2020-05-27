@@ -2,6 +2,7 @@
 using OracleParser.Model.PackageModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace PackageSplitter.Model
@@ -12,33 +13,33 @@ namespace PackageSplitter.Model
 
         public string PackageElementName { get; private set; }
 
-        private bool _HasSpec = false;
         private eElementStateType _OldSpec;
         public eElementStateType OldSpec
         {
             get => _OldSpec; 
-            set
-            {
-                if (value == eElementStateType.Exist)
-                {
-                    _HasSpec = true;
-                    _OldSpec = value;
-                }
-                else if (_OldSpec == eElementStateType.Exist && value == eElementStateType.Add && _HasSpec)
-                    return;
-                else if (_OldSpec == eElementStateType.Delete && value == eElementStateType.Add && _HasSpec)
-                    _OldSpec = eElementStateType.Exist;
-                else if (_OldSpec == eElementStateType.Add && value == eElementStateType.Delete && !_HasSpec)
-                    _OldSpec = eElementStateType.Empty;
-                else if (_OldSpec == eElementStateType.Empty && value == eElementStateType.Delete && !_HasSpec)
-                    return;
-                else
-                    _OldSpec = value;
-            }
+            set => _OldSpec = SetState(_OldSpec, value);
         }
-        public eElementStateType OldBody { get; set; }
-        public eElementStateType NewSpec { get; set; }
-        public eElementStateType NewBody { get; set; }
+
+        private eElementStateType _OldBody;
+        public eElementStateType OldBody
+        {
+            get => _OldBody;
+            set => _OldBody = SetState(_OldBody, value);
+        }
+
+        private eElementStateType _NewSpec;
+        public eElementStateType NewSpec
+        {
+            get => _NewSpec;
+            set => _NewSpec = SetState(_NewSpec, value);
+        }
+
+        private eElementStateType _NewBody;
+        public eElementStateType NewBody
+        {
+            get => _NewBody;
+            set => _NewBody = SetState(_NewBody, value);
+        }
 
         public SplitterPackageElement(string packageElementName, ePackageElementType packageElementType)
         {
@@ -48,6 +49,24 @@ namespace PackageSplitter.Model
             OldBody = eElementStateType.Empty;
             NewSpec = eElementStateType.Empty;
             NewBody = eElementStateType.Empty;
+        }
+
+        private eElementStateType SetState(eElementStateType currentValue, eElementStateType newValue)
+        {
+            if (currentValue == eElementStateType.Exist && newValue == eElementStateType.Add)
+                return currentValue;
+            else if (currentValue == eElementStateType.Delete && newValue == eElementStateType.Add)
+                return eElementStateType.Exist;
+            else if (currentValue == eElementStateType.Add && newValue == eElementStateType.Delete)
+                return eElementStateType.Empty;
+            else if (currentValue == eElementStateType.Empty && newValue == eElementStateType.Delete)
+                return currentValue;
+            else if (currentValue == eElementStateType.CreateLink && newValue == eElementStateType.Delete)
+                return eElementStateType.Exist;
+            else if (currentValue == eElementStateType.CreateLink)
+                return currentValue;
+            else
+                return newValue;
         }
     }
 }
