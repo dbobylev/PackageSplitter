@@ -68,7 +68,7 @@ namespace PackageSplitter.View
 
             var repositoryPackage = new RepositoryPackage(repositoryObject);
             var parsedPackage = OraParser.Instance().GetPackage(repositoryPackage);
-            ParsedPackageModel.Instance().SetPackage(parsedPackage);
+            SplitManager.Instance().SetParsedPackage(parsedPackage);
 
             var PackageModel = new SplitterPackage(parsedPackage, repositoryPackage);
             

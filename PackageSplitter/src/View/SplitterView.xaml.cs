@@ -43,7 +43,7 @@ namespace PackageSplitter.View
 
         private void btnNewSpec_Click(object sender, RoutedEventArgs e)
         {
-            _PackageViewModel.GetSplitterPackage();
+            SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
         }
     }
 }
