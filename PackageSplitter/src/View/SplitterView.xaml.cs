@@ -44,7 +44,19 @@ namespace PackageSplitter.View
         private void btnNewSpec_Click(object sender, RoutedEventArgs e)
         {
             SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
-            SplitManager.Instance().RunSplit(eSplitterObjectType.NewSpec, _defaultNewObjParam);
+            SplitManager.Instance().RunSplitNewSpec(eSplitterObjectType.NewSpec, _defaultNewObjParam);
+        }
+
+        private void btnNewBody_Click(object sender, RoutedEventArgs e)
+        {
+            SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
+            SplitManager.Instance().RunSplitNewBody(eSplitterObjectType.NewBody, _defaultNewObjParam);
+        }
+
+        private void btnOldSpec_Click(object sender, RoutedEventArgs e)
+        {
+            SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
+            SplitManager.Instance().RunSplitOldSpec(_defaultNewObjParam);
         }
     }
 }

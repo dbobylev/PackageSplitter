@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PackageSplitter.src.Model.Split
+namespace PackageSplitter.Model.Split
 {
     class SplitOperation
     {
