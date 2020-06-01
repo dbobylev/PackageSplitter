@@ -58,5 +58,11 @@ namespace PackageSplitter.View
             SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
             SplitManager.Instance().RunSplitOldSpec(_defaultNewObjParam);
         }
+
+        private void btnOldBody_Click(object sender, RoutedEventArgs e)
+        {
+            SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
+            SplitManager.Instance().RunSplitOldBody(_defaultNewObjParam);
+        }
     }
 }

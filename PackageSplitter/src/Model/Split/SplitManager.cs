@@ -97,12 +97,12 @@ namespace PackageSplitter.Model.Split
                 .ToArray();
             //var Variables = ...
 
-            var textToAdd = GetNewText(MethodPieces, eRepositoryObjectType.Package_Body, true).Split(Environment.NewLine.ToCharArray());
+            var textToAdd = GetNewText(MethodPieces, eRepositoryObjectType.Package_Body, true).Split("\r\n");
             var Filetext = File.ReadAllLines(_splitterPackage.RepositoryPackage.SpecRepFullPath);
             var LastLine = _package.elements.Where(x => x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
             var BegPartOfText = Filetext.Take(LastLine);
             var EndPartOfText = Filetext.Skip(LastLine);
-            var AllTextLines = BegPartOfText.Concat(textToAdd).Concat(EndPartOfText).ToArray();
+            var AllTextLines = BegPartOfText.Concat(new[] { string.Empty }).Concat(textToAdd).Concat(EndPartOfText).ToArray();
 
             // Удаление
 
@@ -115,7 +115,7 @@ namespace PackageSplitter.Model.Split
                 .ToArray();
 
             string FinalTextString;
-            if (NumLinesToDelete.Count() > 0)
+            if (NumLinesToDelete.Any())
             {
                 var LinesCount = AllTextLines.Count();
                 int NumLinesToDeleteIndex = 0;
@@ -142,6 +142,60 @@ namespace PackageSplitter.Model.Split
             }
         }
 
+
+        public void RunSplitOldBody(eSplitParam param)
+        {
+            var NameToDelete = _splitterPackage.Elements.Where(x => x.OldBody == eElementStateType.Delete || x.OldBody == eElementStateType.CreateLink).Select(x=>x.PackageElementName);
+            var LinesToDelete = _package.elements
+                .Where(x => NameToDelete.Contains(x.Name))
+                .Select(x => x.Position[ePackageElementDefinitionType.BodyFull])
+                .SelectMany(x => Enumerable.Range(x.LineBeg - 1, x.LineEnd - x.LineBeg + 1))
+                .OrderBy(x=>x)
+                .ToArray();
+            var NameToCreteLink = _splitterPackage.Elements.Where(x => x.OldBody == eElementStateType.CreateLink).Select(x => x.PackageElementName);
+            var PartOfLinks = _package.elements
+                .Where(x => NameToCreteLink.Contains(x.Name))
+                .Select(x => new { 
+                    Line = x.Position[ePackageElementDefinitionType.BodyFull].LineBeg, 
+                    Code = GetLink(x, _splitterPackage.RepositoryPackage)
+                });
+
+            var answer = new StringBuilder();
+            string FinalTextString;
+            if (LinesToDelete.Any())
+            {
+                var FileText = File.ReadAllLines(_splitterPackage.RepositoryPackage.BodyRepFullPath);
+                var LineToDeleteIndex = 0;
+                for (int i = 0; i < FileText.Length; i++)
+                {
+                    if (LineToDeleteIndex < LinesToDelete.Length && i == LinesToDelete[LineToDeleteIndex])
+                    {
+                        LineToDeleteIndex++;
+                        if (PartOfLinks.Any(x => x.Line == i))
+                            foreach (var item in PartOfLinks.First(x => x.Line == i).Code)
+                                answer.AppendLine(item);
+                    }
+                    else
+                        answer.AppendLine(FileText[i]);
+                }
+                FinalTextString = answer.ToString();
+            }
+            else
+            {
+                FinalTextString = File.ReadAllText(_splitterPackage.RepositoryPackage.BodyRepFullPath);
+            }
+
+
+            if (param.HasFlag(eSplitParam.CopyToClipBoard))
+                Clipboard.SetText(FinalTextString);
+
+            if (param.HasFlag(eSplitParam.OpenNewWindow))
+            {
+                TextWindow tw = new TextWindow(FinalTextString);
+                tw.Show();
+            }
+        }
+
         private string GetNewText(PieceOfCode[] samples, eRepositoryObjectType repositoryObjectType, bool IsBodyDeclarationCopy = false)
         {
             StringBuilder sb = new StringBuilder();
@@ -151,7 +205,7 @@ namespace PackageSplitter.Model.Split
                 if (IsBodyDeclarationCopy)
                     sb.Append(";");
                 sb.AppendLine();
-                //sb.AppendLine();
+                sb.AppendLine();
             }
             return sb.ToString();
         }
@@ -161,6 +215,37 @@ namespace PackageSplitter.Model.Split
             var bodyWord = repositoryObjectType == eRepositoryObjectType.Package_Body ? "body " : string.Empty;
             var NewPackageName = $"{Config.Instanse().NewPackageOwner}.{Config.Instanse().NewPackageName}";
             return $"create or replace package {bodyWord}{NewPackageName} is\r\n\r\n{text}\r\nend {NewPackageName};";
+        }
+
+        private string[] GetLink(PackageElement element, RepositoryPackage repositoryPackage)
+        {
+            var position = element.Position[ePackageElementDefinitionType.BodyDeclaration];
+            var text = DBRep.Instance().GetTextOfFile(repositoryPackage.BodyRepFullPath, position.LineBeg, position.LineEnd, position.ColumnEnd);
+            var NewPackageNameText = $"{Config.Instanse().NewPackageOwner }.{ Config.Instanse().NewPackageName}";
+            var IndentName = string.Join(string.Empty, Enumerable.Range(0, NewPackageNameText.Count()).Select(x => " "));
+
+            string parametersText = string.Empty;
+            if (element.Parametres.Any())
+            {
+                parametersText += "(";
+                for (int i = 0; i < element.Parametres.Count; i++)
+                {
+                    var paramName = element.Parametres[i].Name;
+                    parametersText += $"{(i==0?string.Empty: $"     {IndentName}")}{paramName} => {paramName},\r\n";
+                }
+                parametersText = parametersText.TrimEnd(new char[] { '\r', '\n', ',' });
+                parametersText += ");\r\n";
+            }
+            else
+            {
+                parametersText += ";\r\n";
+            }
+
+            text = $"{text} is\r\n" +
+                   $"  begin\r\n" +
+                   $"    {NewPackageNameText}{parametersText}" +
+                   $"  end {element.Name};";
+            return text.Split("\r\n");
         }
     }
 }

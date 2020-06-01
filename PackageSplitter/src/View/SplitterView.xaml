@@ -62,9 +62,10 @@
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Orientation="Horizontal" Grid.Row="1">
+            <Button x:Name="btnOldSpec" Content="OldSpec" Click="btnOldSpec_Click"/>
+            <Button x:Name="btnOldBody" Content="OldBody" Click="btnOldBody_Click"/>
             <Button x:Name="btnNewSpec" Content="NewSpec" Click="btnNewSpec_Click"/>
             <Button x:Name="btnNewBody" Content="NewBody" Click="btnNewBody_Click"/>
-            <Button x:Name="btnOldSpec" Content="OldSpec" Click="btnOldSpec_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>

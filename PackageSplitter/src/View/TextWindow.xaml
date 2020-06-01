@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="TextWindow" Height="450" Width="800">
     <Grid>
-        <TextBox x:Name="tbMain">
+        <TextBox x:Name="tbMain" FontFamily="Consolas">
             
         </TextBox>
     </Grid>
