@@ -8,8 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Expr = System.Linq.Expressions;
 using System.Text;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace PackageSplitter.Model.Split
 {
@@ -53,7 +55,7 @@ namespace PackageSplitter.Model.Split
                     break;
             }
 
-            if (param.HasFlag(eSplitParam.GenerateHeader))
+            if (param.HasFlag(eSplitParam.GenerateHeader) && splitterObjectType.IsNew())
                 FinalObjectText = AddHeader(FinalObjectText, splitterObjectType.GetRepositoryType());
 
             if (param.HasFlag(eSplitParam.CopyToClipBoard))
@@ -69,11 +71,10 @@ namespace PackageSplitter.Model.Split
 
         private string RunSplitNewSpec()
         {
-            var Allelements = _splitterPackage.Elements.Where(x => x.NewSpec == eElementStateType.Add).Select(x => x.PackageElementName);
+            var Allelements = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add);
             var SpecElements = _package.elements.Where(x => Allelements.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
             var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name) && !x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.BodyDeclaration]).ToArray();
 
-            var repositoryObjectType = eRepositoryObjectType.Package_Spec;
             var NewText = GetNewText(SpecElements, eRepositoryObjectType.Package_Spec);
             NewText += GetNewText(BodyElements, eRepositoryObjectType.Package_Body, true);
 
@@ -82,7 +83,7 @@ namespace PackageSplitter.Model.Split
 
         private string RunSplitNewBody()
         {
-            var Allelements = _splitterPackage.Elements.Where(x => x.NewBody == eElementStateType.Add).Select(x => x.PackageElementName);
+            var Allelements = GetName(eSplitterObjectType.NewBody, eElementStateType.Add);
             var SpecElements = _package.elements.Where(x => Allelements.Contains(x.Name) && !x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
             var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name) && x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
 
@@ -96,7 +97,7 @@ namespace PackageSplitter.Model.Split
         {
             // Добавление
 
-            var NamesToAdd =  _splitterPackage.Elements.Where(x => x.OldSpec == eElementStateType.Add).Select(x => x.PackageElementName);
+            var NamesToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add);
             var MethodPieces = _package.elements
                 .Where(x => NamesToAdd.Contains(x.Name) && x.ElementType == ePackageElementType.Method)
                 .Select(x => x.Position[ePackageElementDefinitionType.BodyDeclaration])
@@ -112,7 +113,7 @@ namespace PackageSplitter.Model.Split
 
             // Удаление
 
-            var NamesToDelete = _splitterPackage.Elements.Where(x => x.OldSpec == eElementStateType.Delete).Select(x => x.PackageElementName);
+            var NamesToDelete = GetName(eSplitterObjectType.OldSpec, eElementStateType.Delete);
             var NumLinesToDelete = _package.elements
                 .Where(x => NamesToDelete.Contains(x.Name))
                 .Select(x => x.Position[ePackageElementDefinitionType.Spec])
@@ -124,7 +125,7 @@ namespace PackageSplitter.Model.Split
             if (NumLinesToDelete.Any())
             {
                 var LinesCount = AllTextLines.Count();
-                int NumLinesToDeleteIndex = 0;
+                var NumLinesToDeleteIndex = 0;
                 var FinalText = new StringBuilder();
                 for (int i = 0; i < LinesCount; i++)
                     if (NumLinesToDeleteIndex < NumLinesToDelete.Length && i == NumLinesToDelete[NumLinesToDeleteIndex])
@@ -134,9 +135,7 @@ namespace PackageSplitter.Model.Split
                 FinalTextString = FinalText.ToString();
             }
             else
-            {
                 FinalTextString = string.Join("\r\n", AllTextLines);
-            }
 
             return FinalTextString;
         }
@@ -144,14 +143,14 @@ namespace PackageSplitter.Model.Split
 
         private string RunSplitOldBody()
         {
-            var NameToDelete = _splitterPackage.Elements.Where(x => x.OldBody == eElementStateType.Delete || x.OldBody == eElementStateType.CreateLink).Select(x=>x.PackageElementName);
+            var NameToDelete = GetName(eSplitterObjectType.OldBody, eElementStateType.Delete | eElementStateType.CreateLink);
             var LinesToDelete = _package.elements
                 .Where(x => NameToDelete.Contains(x.Name))
                 .Select(x => x.Position[ePackageElementDefinitionType.BodyFull])
                 .SelectMany(x => Enumerable.Range(x.LineBeg - 1, x.LineEnd - x.LineBeg + 1))
                 .OrderBy(x=>x)
                 .ToArray();
-            var NameToCreteLink = _splitterPackage.Elements.Where(x => x.OldBody == eElementStateType.CreateLink).Select(x => x.PackageElementName);
+            var NameToCreteLink = GetName(eSplitterObjectType.OldBody, eElementStateType.CreateLink);
             var PartOfLinks = _package.elements
                 .Where(x => NameToCreteLink.Contains(x.Name))
                 .Select(x => new { 
@@ -185,6 +184,18 @@ namespace PackageSplitter.Model.Split
             }
 
             return FinalTextString;
+        }
+
+        private IEnumerable<string> GetName(eSplitterObjectType splitterObjectType, eElementStateType elementStates)
+        {
+            var x = Expr.Expression.Parameter(typeof(SplitterPackageElement), "x");
+            var body = Expr.Expression.PropertyOrField(x, splitterObjectType.ToString());
+            var bodyAsEnum = Expr.Expression.Convert(body, typeof(Enum));
+            var method = typeof(Enum).GetMethod("HasFlag", new[] { typeof(Enum) });
+            var PatternExpression = Expr.Expression.Call(Expr.Expression.Constant(elementStates, typeof(Enum)), method, bodyAsEnum);
+            var predicateFilter = (Func<SplitterPackageElement, bool>)Expr.Expression.Lambda(PatternExpression, x).Compile();
+            
+            return _splitterPackage.Elements.Where(predicateFilter).Select(x => x.PackageElementName);
         }
 
         private string GetNewText(PieceOfCode[] samples, eRepositoryObjectType repositoryObjectType, bool IsBodyDeclarationCopy = false)

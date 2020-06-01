@@ -5,17 +5,20 @@ using System.Text;
 
 namespace PackageSplitter.Model
 {
+    [Flags]
     public enum eElementStateType
     {
+        [Description("None")]
+        None                            = 0,
         [Description("Оставить")]
-        Exist,
+        Exist                           = 1 << 0,
         [Description("Отсутствует")]
-        Empty,
+        Empty                           = 1 << 1,
         [Description("Добавить")]
-        Add,
+        Add                             = 1 << 2,
         [Description("Удалить")]
-        Delete,
+        Delete                          = 1 << 3,
         [Description("Создать ссылку")]
-        CreateLink
+        CreateLink                      = 1 << 4
     }
 }

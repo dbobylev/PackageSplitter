@@ -24,5 +24,10 @@ namespace PackageSplitter.Model
                     throw new NotImplementedException();
             }
         }
+
+        public static bool IsNew(this eSplitterObjectType source)
+        {
+            return source == eSplitterObjectType.NewBody || source == eSplitterObjectType.NewSpec;
+        }
     }
 }
