@@ -40,53 +40,59 @@ namespace PackageSplitter.Model.Split
             _splitterPackage = splitterPackage;
         }
 
-        public void RunSplitNewSpec(eSplitterObjectType objectType, eSplitParam param)
+        public void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param)
+        {
+            string FinalObjectText = string.Empty;
+            switch (splitterObjectType)
+            {
+                case eSplitterObjectType.OldSpec: FinalObjectText = RunSplitOldSpec(); break;
+                case eSplitterObjectType.OldBody: FinalObjectText = RunSplitOldBody(); break;
+                case eSplitterObjectType.NewSpec: FinalObjectText = RunSplitNewSpec(); break;
+                case eSplitterObjectType.NewBody: FinalObjectText = RunSplitNewBody(); break;
+                default:
+                    break;
+            }
+
+            if (param.HasFlag(eSplitParam.GenerateHeader))
+                FinalObjectText = AddHeader(FinalObjectText, splitterObjectType.GetRepositoryType());
+
+            if (param.HasFlag(eSplitParam.CopyToClipBoard))
+                Clipboard.SetText(FinalObjectText);
+
+            if (param.HasFlag(eSplitParam.OpenNewWindow))
+            {
+                TextWindow tw = new TextWindow(FinalObjectText);
+                tw.Show();
+            }
+        }
+
+
+        private string RunSplitNewSpec()
         {
             var Allelements = _splitterPackage.Elements.Where(x => x.NewSpec == eElementStateType.Add).Select(x => x.PackageElementName);
             var SpecElements = _package.elements.Where(x => Allelements.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
             var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name) && !x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.BodyDeclaration]).ToArray();
 
-            var repositoryObjectType = objectType.GetRepositoryType();
+            var repositoryObjectType = eRepositoryObjectType.Package_Spec;
             var NewText = GetNewText(SpecElements, eRepositoryObjectType.Package_Spec);
             NewText += GetNewText(BodyElements, eRepositoryObjectType.Package_Body, true);
-            
-            if (param.HasFlag(eSplitParam.GenerateHeader))
-                NewText = AddHeader(NewText, repositoryObjectType);
 
-            if (param.HasFlag(eSplitParam.CopyToClipBoard))
-                Clipboard.SetText(NewText);
-
-            if (param.HasFlag(eSplitParam.OpenNewWindow))
-            {
-                TextWindow tw = new TextWindow(NewText);
-                tw.Show();
-            }
+            return NewText;
         }
 
-        public void RunSplitNewBody(eSplitterObjectType objectType, eSplitParam param)
+        private string RunSplitNewBody()
         {
             var Allelements = _splitterPackage.Elements.Where(x => x.NewBody == eElementStateType.Add).Select(x => x.PackageElementName);
             var SpecElements = _package.elements.Where(x => Allelements.Contains(x.Name) && !x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
             var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name) && x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
 
-            var repositoryObjectType = objectType.GetRepositoryType();
             var NewText = GetNewText(SpecElements, eRepositoryObjectType.Package_Spec);
             NewText += GetNewText(BodyElements, eRepositoryObjectType.Package_Body);
 
-            if (param.HasFlag(eSplitParam.GenerateHeader))
-                NewText = AddHeader(NewText, repositoryObjectType);
-
-            if (param.HasFlag(eSplitParam.CopyToClipBoard))
-                Clipboard.SetText(NewText);
-
-            if (param.HasFlag(eSplitParam.OpenNewWindow))
-            {
-                TextWindow tw = new TextWindow(NewText);
-                tw.Show();
-            }
+            return NewText;
         }
 
-        public void RunSplitOldSpec(eSplitParam param)
+        private string RunSplitOldSpec()
         {
             // Добавление
 
@@ -132,18 +138,11 @@ namespace PackageSplitter.Model.Split
                 FinalTextString = string.Join("\r\n", AllTextLines);
             }
 
-            if (param.HasFlag(eSplitParam.CopyToClipBoard))
-                Clipboard.SetText(FinalTextString);
-
-            if (param.HasFlag(eSplitParam.OpenNewWindow))
-            {
-                TextWindow tw = new TextWindow(FinalTextString);
-                tw.Show();
-            }
+            return FinalTextString;
         }
 
 
-        public void RunSplitOldBody(eSplitParam param)
+        private string RunSplitOldBody()
         {
             var NameToDelete = _splitterPackage.Elements.Where(x => x.OldBody == eElementStateType.Delete || x.OldBody == eElementStateType.CreateLink).Select(x=>x.PackageElementName);
             var LinesToDelete = _package.elements
@@ -185,15 +184,7 @@ namespace PackageSplitter.Model.Split
                 FinalTextString = File.ReadAllText(_splitterPackage.RepositoryPackage.BodyRepFullPath);
             }
 
-
-            if (param.HasFlag(eSplitParam.CopyToClipBoard))
-                Clipboard.SetText(FinalTextString);
-
-            if (param.HasFlag(eSplitParam.OpenNewWindow))
-            {
-                TextWindow tw = new TextWindow(FinalTextString);
-                tw.Show();
-            }
+            return FinalTextString;
         }
 
         private string GetNewText(PieceOfCode[] samples, eRepositoryObjectType repositoryObjectType, bool IsBodyDeclarationCopy = false)

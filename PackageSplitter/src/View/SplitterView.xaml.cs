@@ -3,6 +3,7 @@ using PackageSplitter.Model;
 using PackageSplitter.Model.Split;
 using PackageSplitter.Model.SplitterGrid;
 using PackageSplitter.src.View;
+using PackageSplitter.View.Templates;
 using PackageSplitter.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -41,28 +42,12 @@ namespace PackageSplitter.View
             _PackageViewModel.SetModel(splitterPackage);
         }
 
-        private void btnNewSpec_Click(object sender, RoutedEventArgs e)
+        private void RunSplitButton_Click(object sender, RoutedEventArgs e)
         {
-            SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
-            SplitManager.Instance().RunSplitNewSpec(eSplitterObjectType.NewSpec, _defaultNewObjParam);
-        }
+            var SplitterObjectType = (sender as RunSplitButton).SplitterObjectType;
 
-        private void btnNewBody_Click(object sender, RoutedEventArgs e)
-        {
             SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
-            SplitManager.Instance().RunSplitNewBody(eSplitterObjectType.NewBody, _defaultNewObjParam);
-        }
-
-        private void btnOldSpec_Click(object sender, RoutedEventArgs e)
-        {
-            SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
-            SplitManager.Instance().RunSplitOldSpec(_defaultNewObjParam);
-        }
-
-        private void btnOldBody_Click(object sender, RoutedEventArgs e)
-        {
-            SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
-            SplitManager.Instance().RunSplitOldBody(_defaultNewObjParam);
+            SplitManager.Instance().RunSplit(SplitterObjectType, _defaultNewObjParam);
         }
     }
 }
