@@ -239,9 +239,7 @@ namespace PackageSplitter.Model.Split
                 parametersText += ");\r\n";
             }
             else
-            {
                 parametersText += ";\r\n";
-            }
 
             text = $"{text} is\r\n" +
                    $"  begin\r\n" +

@@ -2,6 +2,7 @@
 using OracleParser.Model.PackageModel;
 using PackageSplitter.Model;
 using PackageSplitter.Model.SplitterGrid;
+using PackageSplitter.ViewModel.Convertrs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace PackageSplitter.ViewModel
 
         public string Name => _model.PackageElementName;
         public ePackageElementType ElementType => _model.PackageElementType;
+        public string ElementTypeStr => ElementType.GetDescription();
         public eElementStateType OldSpecState { get => _model.OldSpec; set { _model.OldSpec = value; OnPropertyChanged(); } }
         public eElementStateType OldBodyState { get => _model.OldBody; set { _model.OldBody = value; OnPropertyChanged(); } }
         public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); } }

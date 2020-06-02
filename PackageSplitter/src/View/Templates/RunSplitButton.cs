@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace PackageSplitter.View.Templates
@@ -12,7 +13,8 @@ namespace PackageSplitter.View.Templates
 
         public RunSplitButton() : base()
         {
-
+            Margin = new Thickness(5);
+            Padding = new Thickness(10, 0, 10, 0);
         }
     }
 }

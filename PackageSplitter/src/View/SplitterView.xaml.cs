@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using OracleParser.Model.PackageModel;
 
 namespace PackageSplitter.View
 {
@@ -34,7 +35,7 @@ namespace PackageSplitter.View
         {
             InitializeComponent();
 
-            _PackageViewModel = MainGrid.DataContext as SplitterPackageViewModel;
+            _PackageViewModel = uc.DataContext as SplitterPackageViewModel;
         }
 
         public void SetModel(SplitterPackage splitterPackage)
@@ -48,6 +49,18 @@ namespace PackageSplitter.View
 
             SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
             SplitManager.Instance().RunSplit(SplitterObjectType, _defaultNewObjParam);
+        }
+
+        private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            var elementType = (e.Item as SplitterPackageElementViewModel).ElementType;
+            e.Accepted = (elementType == ePackageElementType.Method && (bool)chkbShowMethods.IsChecked) ||
+                         (elementType == ePackageElementType.Variable && (bool)chkbShowVariables.IsChecked);
+        }
+
+        private void chkbShow_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            ((CollectionViewSource)this.Resources["ViewSourceItems"]).View.Refresh();
         }
     }
 }
