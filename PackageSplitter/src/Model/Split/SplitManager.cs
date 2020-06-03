@@ -13,6 +13,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
 
 namespace PackageSplitter.Model.Split
 {
@@ -55,6 +56,8 @@ namespace PackageSplitter.Model.Split
                 default:
                     break;
             }
+
+            FinalObjectText =  Regex.Replace(FinalObjectText, "\r\n\\s*\r\n\\s*\r\n", "\r\n\r\n");
 
             if (param.HasFlag(eSplitParam.GenerateHeader) && splitterObjectType.IsNew())
                 FinalObjectText = AddHeader(FinalObjectText, splitterObjectType.GetRepositoryType());
@@ -99,49 +102,92 @@ namespace PackageSplitter.Model.Split
 
         private string RunSplitOldSpec()
         {
-            // Добавление
+            var labelMethod = Guid.NewGuid().ToString();
+            var labelVariable = Guid.NewGuid().ToString();
+            var PosMethod = int.MaxValue;
+            var PosVariable = int.MaxValue;
+            var TextMethod = string.Empty;
+            var TextVariable = string.Empty;
+            var oldSpecText = string.Empty;
 
-            var NamesToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add);
-            var MethodPieces = _package.elements
-                .Where(x => NamesToAdd.Contains(x.Name) && x.ElementType == ePackageElementType.Method)
-                .Select(x => x.Position[ePackageElementDefinitionType.BodyDeclaration])
-                .ToArray();
-            //var Variables = ...
+            // Строки исходного файла
+            var FileLines = File.ReadAllLines(_splitterPackage.RepositoryPackage.SpecRepFullPath);
+            
+            // Методы который должны бють добавлены
+            var MethodNameToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add, ePackageElementType.Method);
+            if (MethodNameToAdd.Any())
+            {
+                // Ищем последнюю строку последнего метода
+                PosMethod = _package.elements.Where(x => x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
+                // Вставляем метку, для последующей вставки новых методов
+                FileLines = FileLines.Insert(PosMethod + 1 /*На следующей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelMethod });
+                // Текст новых методов
+                TextMethod = GetNewText(MethodNameToAdd, ePackageElementDefinitionType.BodyDeclaration);
+            }
 
-            var textToAdd = GetNewText(MethodPieces, eRepositoryObjectType.Package_Body, true).Split("\r\n");
-            var Filetext = File.ReadAllLines(_splitterPackage.RepositoryPackage.SpecRepFullPath);
-            var LastLine = _package.elements.Where(x => x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
-            var BegPartOfText = Filetext.Take(LastLine);
-            var EndPartOfText = Filetext.Skip(LastLine);
-            var AllTextLines = BegPartOfText.Concat(new[] { string.Empty }).Concat(textToAdd).Concat(EndPartOfText).ToArray();
+            // Переменные которые должны быть ддобавлены
+            var VariableToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add, ePackageElementType.Variable);
+            if (VariableToAdd.Any())
+            {
+                // Ищем последнюю строку с объявлением перменной
+                if (_package.elements.Any(x => x.ElementType != ePackageElementType.Method && x.HasSpec))
+                {
+                    PosVariable = _package.elements.Where(x => x.HasSpec && x.ElementType != ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
+                    // Вставляем метку, для последующей вставки новых переменных
+                    FileLines = FileLines.Insert(PosVariable + 1 /*На следующей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
+                }
+                // Если переменных в пакете еще нет, вставляем перед первым найденным методом
+                else
+                {
+                    PosVariable = _package.elements.Where(x=> x.HasSpec && x.ElementType == ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineBeg).OrderBy(x => x).First();
+                    // Вставляем метку, для последующей вставки новых переменных
+                    FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
+                }
+                // Текст новых переменных
+                TextVariable = GetNewText(VariableToAdd, ePackageElementDefinitionType.BodyFull);
+            }
 
-            // Удаление
-
-            var NamesToDelete = GetName(eSplitterObjectType.OldSpec, eElementStateType.Delete);
-            var NumLinesToDelete = _package.elements
-                .Where(x => NamesToDelete.Contains(x.Name))
+            // Все кто должны быть удалены
+            var AllDelete = GetName(eSplitterObjectType.OldSpec, eElementStateType.Delete, ePackageElementType.Method | ePackageElementType.Variable);
+            // Номера строк для удаления
+            var LinesToDelete = _package.elements
+                .Where(x => AllDelete.Contains(x.Name) && x.HasSpec)
                 .Select(x => x.Position[ePackageElementDefinitionType.Spec])
-                .SelectMany(x=>Enumerable.Range(x.LineBeg - 1, x.LineEnd - x.LineBeg  + 1))
+                .SelectMany(x => Enumerable.Range(x.LineBeg - 1, x.LineEnd - x.LineBeg + 1))
                 .OrderBy(x => x)
                 .ToArray();
 
-            string FinalTextString;
-            if (NumLinesToDelete.Any())
+            if (LinesToDelete.Any())
             {
-                var LinesCount = AllTextLines.Count();
-                var NumLinesToDeleteIndex = 0;
-                var FinalText = new StringBuilder();
+                // Так как мы вставили метки(двух строчные) для новых переменных и методов, строки для удаления должны быть смещены (При необходимости)
+                for (int i = 0; i < LinesToDelete.Length; i++)
+                {
+                    if (LinesToDelete[i] >= PosMethod)
+                        LinesToDelete[i] += 2;
+
+                    if (LinesToDelete[i] >= PosVariable)
+                        LinesToDelete[i] += 2;
+                }
+
+                // Удаление строк
+                var LinesCount = FileLines.Count();
+                var LinesToDeleteIndex = 0;
+                var sb = new StringBuilder();
                 for (int i = 0; i < LinesCount; i++)
-                    if (NumLinesToDeleteIndex < NumLinesToDelete.Length && i == NumLinesToDelete[NumLinesToDeleteIndex])
-                        NumLinesToDeleteIndex++;
+                    if (LinesToDeleteIndex < LinesToDelete.Length && i == LinesToDelete[LinesToDeleteIndex])
+                        LinesToDeleteIndex++;
                     else
-                        FinalText.AppendLine(AllTextLines[i]);
-                FinalTextString = FinalText.ToString();
+                        sb.AppendLine(FileLines[i]);
+                oldSpecText = sb.ToString();
             }
             else
-                FinalTextString = string.Join("\r\n", AllTextLines);
+                oldSpecText = string.Join("\r\n", FileLines);
 
-            return FinalTextString;
+            // Заменяем метки;
+            oldSpecText = oldSpecText.Replace(labelVariable, TextVariable);
+            oldSpecText = oldSpecText.Replace(labelMethod, TextMethod);
+
+            return oldSpecText;
         }
 
 

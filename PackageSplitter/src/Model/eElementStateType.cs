@@ -5,6 +5,9 @@ using System.Text;
 
 namespace PackageSplitter.Model
 {
+    /// <summary>
+    /// Состояние элемента пакета
+    /// </summary>
     [Flags]
     public enum eElementStateType
     {

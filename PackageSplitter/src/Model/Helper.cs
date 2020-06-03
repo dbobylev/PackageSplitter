@@ -29,5 +29,19 @@ namespace PackageSplitter.Model
         {
             return source == eSplitterObjectType.NewBody || source == eSplitterObjectType.NewSpec;
         }
+
+        public static T[] Insert<T>(this T[] source, int pos, T[] value)
+        {
+            var len = value.Length;
+            Array.Resize(ref source, source.Length + len);
+            for (int i = source.Length - 1; i >= pos; i--)
+            {
+                if (i >= pos + len)
+                    source[i] = source[i - len];
+                else
+                    source[i] = value[i - pos];
+            }
+            return source;
+        }
     }
 }

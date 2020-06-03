@@ -2,6 +2,9 @@
 
 namespace PackageSplitter.Model.SplitterGrid
 {
+    /// <summary>
+    /// Тип объекта сплиттера: Тело/Спека, Исходная/Новая
+    /// </summary>
     [Flags]
     public enum eSplitterObjectType
     {
