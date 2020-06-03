@@ -12,6 +12,7 @@ using Expr = System.Linq.Expressions;
 using System.Text;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Controls;
 
 namespace PackageSplitter.Model.Split
 {
@@ -68,34 +69,17 @@ namespace PackageSplitter.Model.Split
             }
         }
 
-        private PieceOfCode[] GetCodePositions(IEnumerable<string> names, ePackageElementDefinitionType codeDefinitionPart, bool? hasSpec, bool? hasBody)
-        {
-            return _package.elements
-                .Where(x => names.Contains(x.Name) 
-                         && x.HasSpec == (hasSpec??x.HasSpec) 
-                         && x.HasBody == (hasBody??x.HasBody))
-                .Select(x => x.Position[codeDefinitionPart]).ToArray();
-        }
-
 
         private string RunSplitNewSpec()
         {
             var AllVariables = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Variable);
-            var SpecVariableElements = _package.elements.Where(x => AllVariables.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
-            var BodyVariableElements = _package.elements.Where(x => AllVariables.Contains(x.Name) && x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
+            var AllMethods = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
 
-            var NewText = GetNewText(SpecVariableElements, eRepositoryObjectType.Package_Spec);
-            NewText += GetNewText(BodyVariableElements, eRepositoryObjectType.Package_Body);
-
-            var Allelements = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
-
-            bool? wtf = null;
-
-            var SpecElements = _package.elements.Where(x => Allelements.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
-            var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name) && !x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.BodyDeclaration]).ToArray();
-
-            NewText += GetNewText(SpecElements, eRepositoryObjectType.Package_Spec);
-            NewText += GetNewText(BodyElements, eRepositoryObjectType.Package_Body, true);
+            var NewText = string.Empty;
+            NewText += GetNewText(AllVariables, ePackageElementDefinitionType.Spec);
+            NewText += GetNewText(AllVariables, ePackageElementDefinitionType.BodyFull);
+            NewText += GetNewText(AllMethods, ePackageElementDefinitionType.Spec);
+            NewText += GetNewText(AllMethods, ePackageElementDefinitionType.BodyDeclaration);
 
             return NewText;
         }
@@ -103,17 +87,12 @@ namespace PackageSplitter.Model.Split
         private string RunSplitNewBody()
         {
             var AllVariables = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Variable);
-            var SpecVariableElements = _package.elements.Where(x => AllVariables.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
-            var BodyVariableElements = _package.elements.Where(x => AllVariables.Contains(x.Name) && x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
+            var AllMethods = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
 
-            var NewText = GetNewText(SpecVariableElements, eRepositoryObjectType.Package_Spec);
-            NewText += GetNewText(BodyVariableElements, eRepositoryObjectType.Package_Body);
-
-
-            var Allelements = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
-            var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name)).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
-
-            NewText += GetNewText(BodyElements, eRepositoryObjectType.Package_Body);
+            var NewText = string.Empty;
+            NewText += GetNewText(AllVariables, ePackageElementDefinitionType.Spec);
+            NewText += GetNewText(AllVariables, ePackageElementDefinitionType.BodyFull);
+            NewText += GetNewText(AllMethods, ePackageElementDefinitionType.BodyFull);
 
             return NewText;
         }
@@ -228,6 +207,32 @@ namespace PackageSplitter.Model.Split
             Seri.Log.Verbose($"GetName Filter: {FinalExpression}");
 
             return _splitterPackage.Elements.Where(Filter).Select(x => x.PackageElementName);
+        }
+
+        private PieceOfCode[] GetCodePositions(IEnumerable<string> names, ePackageElementDefinitionType codeDefinitionPart, bool? hasSpec, bool? hasBody)
+        {
+            return _package.elements
+                .Where(x => names.Contains(x.Name)
+                         && x.HasSpec == (hasSpec ?? x.HasSpec)
+                         && x.HasBody == (hasBody ?? x.HasBody))
+                .Select(x => x.Position[codeDefinitionPart]).ToArray();
+        }
+
+        private string GetNewText(IEnumerable<string> names, ePackageElementDefinitionType codeDefinitionPart)
+        {
+            bool? hasSpec = null, hasBody = null;
+            switch (codeDefinitionPart)
+            {
+                case ePackageElementDefinitionType.Spec: hasSpec = true; break;
+                case ePackageElementDefinitionType.BodyFull: hasBody = true; break;
+                case ePackageElementDefinitionType.BodyDeclaration: hasSpec = false; break;
+                default: break;
+            }
+
+            var CodeParts = GetCodePositions(names, codeDefinitionPart, hasSpec, hasBody);
+            var repositoryObjectType = codeDefinitionPart == ePackageElementDefinitionType.Spec ? eRepositoryObjectType.Package_Spec : eRepositoryObjectType.Package_Body;
+
+            return GetNewText(CodeParts, repositoryObjectType, codeDefinitionPart == ePackageElementDefinitionType.BodyDeclaration);
         }
 
         private string GetNewText(PieceOfCode[] samples, eRepositoryObjectType repositoryObjectType, bool IsBodyDeclarationCopy = false)
