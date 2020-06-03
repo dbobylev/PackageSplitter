@@ -68,14 +68,33 @@ namespace PackageSplitter.Model.Split
             }
         }
 
+        private PieceOfCode[] GetCodePositions(IEnumerable<string> names, ePackageElementDefinitionType codeDefinitionPart, bool? hasSpec, bool? hasBody)
+        {
+            return _package.elements
+                .Where(x => names.Contains(x.Name) 
+                         && x.HasSpec == (hasSpec??x.HasSpec) 
+                         && x.HasBody == (hasBody??x.HasBody))
+                .Select(x => x.Position[codeDefinitionPart]).ToArray();
+        }
+
 
         private string RunSplitNewSpec()
         {
-            var Allelements = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add);
+            var AllVariables = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Variable);
+            var SpecVariableElements = _package.elements.Where(x => AllVariables.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
+            var BodyVariableElements = _package.elements.Where(x => AllVariables.Contains(x.Name) && x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
+
+            var NewText = GetNewText(SpecVariableElements, eRepositoryObjectType.Package_Spec);
+            NewText += GetNewText(BodyVariableElements, eRepositoryObjectType.Package_Body);
+
+            var Allelements = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
+
+            bool? wtf = null;
+
             var SpecElements = _package.elements.Where(x => Allelements.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
             var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name) && !x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.BodyDeclaration]).ToArray();
 
-            var NewText = GetNewText(SpecElements, eRepositoryObjectType.Package_Spec);
+            NewText += GetNewText(SpecElements, eRepositoryObjectType.Package_Spec);
             NewText += GetNewText(BodyElements, eRepositoryObjectType.Package_Body, true);
 
             return NewText;
@@ -83,11 +102,17 @@ namespace PackageSplitter.Model.Split
 
         private string RunSplitNewBody()
         {
-            var Allelements = GetName(eSplitterObjectType.NewBody, eElementStateType.Add);
-            var SpecElements = _package.elements.Where(x => Allelements.Contains(x.Name) && !x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
-            var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name) && x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
+            var AllVariables = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Variable);
+            var SpecVariableElements = _package.elements.Where(x => AllVariables.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec]).ToArray();
+            var BodyVariableElements = _package.elements.Where(x => AllVariables.Contains(x.Name) && x.HasBody).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
 
-            var NewText = GetNewText(SpecElements, eRepositoryObjectType.Package_Spec);
+            var NewText = GetNewText(SpecVariableElements, eRepositoryObjectType.Package_Spec);
+            NewText += GetNewText(BodyVariableElements, eRepositoryObjectType.Package_Body);
+
+
+            var Allelements = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
+            var BodyElements = _package.elements.Where(x => Allelements.Contains(x.Name)).Select(x => x.Position[ePackageElementDefinitionType.BodyFull]).ToArray();
+
             NewText += GetNewText(BodyElements, eRepositoryObjectType.Package_Body);
 
             return NewText;
@@ -186,16 +211,23 @@ namespace PackageSplitter.Model.Split
             return FinalTextString;
         }
 
-        private IEnumerable<string> GetName(eSplitterObjectType splitterObjectType, eElementStateType elementStates)
+        private IEnumerable<string> GetName(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Method)
         {
             var x = Expr.Expression.Parameter(typeof(SplitterPackageElement), "x");
-            var body = Expr.Expression.PropertyOrField(x, splitterObjectType.ToString());
-            var bodyAsEnum = Expr.Expression.Convert(body, typeof(Enum));
-            var method = typeof(Enum).GetMethod("HasFlag", new[] { typeof(Enum) });
-            var PatternExpression = Expr.Expression.Call(Expr.Expression.Constant(elementStates, typeof(Enum)), method, bodyAsEnum);
-            var predicateFilter = (Func<SplitterPackageElement, bool>)Expr.Expression.Lambda(PatternExpression, x).Compile();
+            var HasFlagMethod = typeof(Enum).GetMethod("HasFlag", new[] { typeof(Enum) });
+
+            var xPackageElementType = Expr.Expression.Convert(Expr.Expression.PropertyOrField(x, "PackageElementType"), typeof(Enum));
+            var xPackageElementTypeHasFlagExpression = Expr.Expression.Call(Expr.Expression.Constant(packageElementType, typeof(Enum)), HasFlagMethod, xPackageElementType);
+
+            var xObjectType = Expr.Expression.Convert(Expr.Expression.PropertyOrField(x, splitterObjectType.ToString()), typeof(Enum));
+            var xObjectTypeHasFlagExpression = Expr.Expression.Call(Expr.Expression.Constant(elementStates, typeof(Enum)), HasFlagMethod, xObjectType);
             
-            return _splitterPackage.Elements.Where(predicateFilter).Select(x => x.PackageElementName);
+            var FinalExpression = Expr.Expression.AndAlso(xPackageElementTypeHasFlagExpression, xObjectTypeHasFlagExpression);
+            var Filter = (Func<SplitterPackageElement, bool>)Expr.Expression.Lambda(FinalExpression, x).Compile();
+
+            Seri.Log.Verbose($"GetName Filter: {FinalExpression}");
+
+            return _splitterPackage.Elements.Where(Filter).Select(x => x.PackageElementName);
         }
 
         private string GetNewText(PieceOfCode[] samples, eRepositoryObjectType repositoryObjectType, bool IsBodyDeclarationCopy = false)
