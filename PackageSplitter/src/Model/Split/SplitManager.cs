@@ -190,50 +190,90 @@ namespace PackageSplitter.Model.Split
             return oldSpecText;
         }
 
-
         private string RunSplitOldBody()
         {
-            var NameToDelete = GetName(eSplitterObjectType.OldBody, eElementStateType.Delete | eElementStateType.CreateLink);
+            var labelVariable = Guid.NewGuid().ToString();
+            var PosVariable = int.MaxValue;
+            Func<int, int> MoveLine = (x) => (x >= PosVariable ? x + 2 : x);
+            var TextVariable = string.Empty;
+            var oldBodyText = string.Empty;
+
+            // Строки исходного файла
+            var FileLines = File.ReadAllLines(_splitterPackage.RepositoryPackage.BodyRepFullPath);
+
+            // Переменные которые должны быть ддобавлены
+            var VariableToAdd = GetName(eSplitterObjectType.OldBody, eElementStateType.Add, ePackageElementType.Variable);
+            if (VariableToAdd.Any())
+            {
+                // Ищем последнюю строку с объявлением перменной
+                if (_package.elements.Any(x => x.ElementType != ePackageElementType.Method && x.HasBody))
+                {
+                    PosVariable = _package.elements.Where(x => x.HasBody && x.ElementType != ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineEnd).OrderBy(x => x).Last();
+                    // Вставляем метку, для последующей вставки новых переменных
+                    FileLines = FileLines.Insert(PosVariable + 1 /*На следующей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
+                }
+                // Если переменных в пакете еще нет, вставляем перед первым найденным методом
+                else
+                {
+                    PosVariable = _package.elements.Where(x => x.HasBody && x.ElementType == ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineBeg).OrderBy(x => x).First();
+                    // Вставляем метку, для последующей вставки новых переменных
+                    FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
+                }
+                // Текст новых переменных
+                TextVariable = GetNewText(VariableToAdd, ePackageElementDefinitionType.Spec);
+            }
+
+            // Все кто должны быть удалены
+            var AllDelete = GetName(eSplitterObjectType.OldBody, eElementStateType.Delete | eElementStateType.CreateLink, ePackageElementType.Method | ePackageElementType.Variable);
+            // Номера строк для удаления
             var LinesToDelete = _package.elements
-                .Where(x => NameToDelete.Contains(x.Name))
+                .Where(x => AllDelete.Contains(x.Name) && x.HasBody)
                 .Select(x => x.Position[ePackageElementDefinitionType.BodyFull])
                 .SelectMany(x => Enumerable.Range(x.LineBeg - 1, x.LineEnd - x.LineBeg + 1))
-                .OrderBy(x=>x)
+                .OrderBy(x => x)
                 .ToArray();
+
+            // Все кто должен обратиться в ссылки на новый пакет
             var NameToCreteLink = GetName(eSplitterObjectType.OldBody, eElementStateType.CreateLink);
             var PartOfLinks = _package.elements
                 .Where(x => NameToCreteLink.Contains(x.Name))
-                .Select(x => new { 
-                    Line = x.Position[ePackageElementDefinitionType.BodyFull].LineBeg, 
+                .Select(x => new
+                {
+                    Line = MoveLine(x.Position[ePackageElementDefinitionType.BodyFull].LineBeg),
                     Code = GetLink(x, _splitterPackage.RepositoryPackage)
-                });
+                })
+                .ToArray();
 
-            var answer = new StringBuilder();
-            string FinalTextString;
             if (LinesToDelete.Any())
             {
-                var FileText = File.ReadAllLines(_splitterPackage.RepositoryPackage.BodyRepFullPath);
-                var LineToDeleteIndex = 0;
-                for (int i = 0; i < FileText.Length; i++)
-                {
-                    if (LineToDeleteIndex < LinesToDelete.Length && i == LinesToDelete[LineToDeleteIndex])
+                // Так как мы вставили метки(двух строчные) для новых переменных и методов, строки для удаления должны быть смещены (При необходимости)
+                for (int i = 0; i < LinesToDelete.Length; i++)
+                    LinesToDelete[i] = MoveLine(LinesToDelete[i]);
+
+                // Удаление строк
+                var LinesCount = FileLines.Count();
+                var LinesToDeleteIndex = 0;
+                var sb = new StringBuilder();
+                for (int i = 0; i < LinesCount; i++)
+                    if (LinesToDeleteIndex < LinesToDelete.Length && i == LinesToDelete[LinesToDeleteIndex])
                     {
-                        LineToDeleteIndex++;
+                        LinesToDeleteIndex++;
+                        // Вставляем блок ссылки на новый пакет
                         if (PartOfLinks.Any(x => x.Line == i))
                             foreach (var item in PartOfLinks.First(x => x.Line == i).Code)
-                                answer.AppendLine(item);
+                                sb.AppendLine(item);
                     }
                     else
-                        answer.AppendLine(FileText[i]);
-                }
-                FinalTextString = answer.ToString();
+                        sb.AppendLine(FileLines[i]);
+                oldBodyText = sb.ToString();
             }
             else
-            {
-                FinalTextString = File.ReadAllText(_splitterPackage.RepositoryPackage.BodyRepFullPath);
-            }
+                oldBodyText = string.Join("\r\n", FileLines);
 
-            return FinalTextString;
+            // Заменяем метки;
+            oldBodyText = oldBodyText.Replace(labelVariable, TextVariable);
+
+            return oldBodyText;
         }
 
         private IEnumerable<string> GetName(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Method)
