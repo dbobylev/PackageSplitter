@@ -19,8 +19,8 @@ namespace PackageSplitter.Model.Split
 {
     public class SplitManager
     {
-        private const ePackageElementType ALL_ELEMENT_TYPES = ePackageElementType.Method | ePackageElementType.Type | ePackageElementType.Variable;
-        private const ePackageElementType NOT_METHOD_TYPES = ePackageElementType.Type | ePackageElementType.Variable;
+        private const ePackageElementType NOT_METHOD_TYPES = ePackageElementType.Type | ePackageElementType.Variable | ePackageElementType.Cursor;
+        private const ePackageElementType ALL_ELEMENT_TYPES = ePackageElementType.Method | NOT_METHOD_TYPES;
 
         private Package _package;
         private SplitterPackage _splitterPackage;

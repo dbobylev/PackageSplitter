@@ -24,9 +24,10 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <CheckBox x:Name="chkbShowMethods" Content="ShowMethod" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
-            <CheckBox x:Name="chkbShowVariables"  Content="ShowVariables" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
-            <CheckBox x:Name="chkbShowTypes"  Content="ShowTypes" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <CheckBox x:Name="chkbShowMethods" Content="Methods" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <CheckBox x:Name="chkbShowVariables"  Content="Variables" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <CheckBox x:Name="chkbShowTypes"  Content="Types" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <CheckBox x:Name="chkbShowCursors"  Content="Cursors" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
         </StackPanel>
         <DataGrid Grid.Row="1" x:Name="MainGrid" ItemsSource="{Binding Source={StaticResource ViewSourceItems}}" AutoGenerateColumns="False">
             <DataGrid.Columns>

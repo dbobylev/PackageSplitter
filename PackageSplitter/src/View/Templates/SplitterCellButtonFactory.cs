@@ -35,6 +35,7 @@ namespace PackageSplitter.View.Templates
             {
                 case ePackageElementType.Method: return GetButtonsForMethod(splitterObject);
                 case ePackageElementType.Type:
+                case ePackageElementType.Cursor:
                 case ePackageElementType.Variable: return GetButtonsForVariables(splitterObject);
                 default: return new SplitterCellButton[] { };
             }
