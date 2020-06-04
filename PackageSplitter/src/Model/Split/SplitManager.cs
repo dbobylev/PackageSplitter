@@ -19,6 +19,9 @@ namespace PackageSplitter.Model.Split
 {
     public class SplitManager
     {
+        private const ePackageElementType ALL_ELEMENT_TYPES = ePackageElementType.Method | ePackageElementType.Type | ePackageElementType.Variable;
+        private const ePackageElementType NOT_METHOD_TYPES = ePackageElementType.Type | ePackageElementType.Variable;
+
         private Package _package;
         private SplitterPackage _splitterPackage;
 
@@ -75,7 +78,7 @@ namespace PackageSplitter.Model.Split
 
         private string RunSplitNewSpec()
         {
-            var AllVariables = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Variable);
+            var AllVariables = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, NOT_METHOD_TYPES);
             var AllMethods = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
 
             var NewText = string.Empty;
@@ -89,7 +92,7 @@ namespace PackageSplitter.Model.Split
 
         private string RunSplitNewBody()
         {
-            var AllVariables = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Variable);
+            var AllVariables = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, NOT_METHOD_TYPES);
             var AllMethods = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
 
             var NewText = string.Empty;
@@ -126,7 +129,7 @@ namespace PackageSplitter.Model.Split
             }
 
             // Переменные которые должны быть ддобавлены
-            var VariableToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add, ePackageElementType.Variable);
+            var VariableToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add, NOT_METHOD_TYPES);
             if (VariableToAdd.Any())
             {
                 // Ищем последнюю строку с объявлением перменной
@@ -148,7 +151,7 @@ namespace PackageSplitter.Model.Split
             }
 
             // Все кто должны быть удалены
-            var AllDelete = GetName(eSplitterObjectType.OldSpec, eElementStateType.Delete, ePackageElementType.Method | ePackageElementType.Variable);
+            var AllDelete = GetName(eSplitterObjectType.OldSpec, eElementStateType.Delete, ALL_ELEMENT_TYPES);
             // Номера строк для удаления
             var LinesToDelete = _package.elements
                 .Where(x => AllDelete.Contains(x.Name) && x.HasSpec)
@@ -202,7 +205,7 @@ namespace PackageSplitter.Model.Split
             var FileLines = File.ReadAllLines(_splitterPackage.RepositoryPackage.BodyRepFullPath);
 
             // Переменные которые должны быть ддобавлены
-            var VariableToAdd = GetName(eSplitterObjectType.OldBody, eElementStateType.Add, ePackageElementType.Variable);
+            var VariableToAdd = GetName(eSplitterObjectType.OldBody, eElementStateType.Add, NOT_METHOD_TYPES);
             if (VariableToAdd.Any())
             {
                 // Ищем последнюю строку с объявлением перменной
@@ -224,7 +227,7 @@ namespace PackageSplitter.Model.Split
             }
 
             // Все кто должны быть удалены
-            var AllDelete = GetName(eSplitterObjectType.OldBody, eElementStateType.Delete | eElementStateType.CreateLink, ePackageElementType.Method | ePackageElementType.Variable);
+            var AllDelete = GetName(eSplitterObjectType.OldBody, eElementStateType.Delete | eElementStateType.CreateLink, ALL_ELEMENT_TYPES);
             // Номера строк для удаления
             var LinesToDelete = _package.elements
                 .Where(x => AllDelete.Contains(x.Name) && x.HasBody)
