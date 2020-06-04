@@ -34,8 +34,9 @@ namespace PackageSplitter.View.Templates
             switch (elementType)
             {
                 case ePackageElementType.Method: return GetButtonsForMethod(splitterObject);
+                case ePackageElementType.Type:
                 case ePackageElementType.Variable: return GetButtonsForVariables(splitterObject);
-                default: return null;
+                default: return new SplitterCellButton[] { };
             }
         }
 

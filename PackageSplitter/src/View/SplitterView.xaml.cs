@@ -55,7 +55,8 @@ namespace PackageSplitter.View
         {
             var elementType = (e.Item as SplitterPackageElementViewModel).ElementType;
             e.Accepted = (elementType == ePackageElementType.Method && (bool)chkbShowMethods.IsChecked) ||
-                         (elementType == ePackageElementType.Variable && (bool)chkbShowVariables.IsChecked);
+                         (elementType == ePackageElementType.Variable && (bool)chkbShowVariables.IsChecked) ||
+                         (elementType == ePackageElementType.Type && (bool)chkbShowTypes.IsChecked);
         }
 
         private void chkbShow_CheckedChanged(object sender, RoutedEventArgs e)
