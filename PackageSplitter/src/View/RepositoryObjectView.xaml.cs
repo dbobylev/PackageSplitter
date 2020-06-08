@@ -2,6 +2,7 @@
 using OracleParser;
 using PackageSplitter.Model;
 using PackageSplitter.Model.Split;
+using PackageSplitter.src.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,12 +68,19 @@ namespace PackageSplitter.View
                 return;
 
             var repositoryPackage = new RepositoryPackage(repositoryObject);
-            var parsedPackage = OraParser.Instance().GetPackage(repositoryPackage);
-            SplitManager.Instance().SetParsedPackage(parsedPackage);
-
-            var PackageModel = new SplitterPackage(parsedPackage, repositoryPackage);
-            
-            PushPackageElements?.Invoke(PackageModel);
+            try
+            {
+                var parsedPackage = OraParser.Instance().GetPackage(repositoryPackage);
+                SplitManager.Instance().SetParsedPackage(parsedPackage);
+                var PackageModel = new SplitterPackage(parsedPackage, repositoryPackage);
+                PushPackageElements?.Invoke(PackageModel);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("При разборе пакета, произошла ошибка.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                TextWindow tw = new TextWindow(ex.ToString());
+                tw.Show();
+            }
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
