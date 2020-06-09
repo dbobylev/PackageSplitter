@@ -7,6 +7,7 @@
              xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel" 
              xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" 
              xmlns:Templates="clr-namespace:PackageSplitter.View.Templates"
+             xmlns:mdl="clr-namespace:PackageSplitter.Model"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" x:Name="uc">
     <UserControl.DataContext>
@@ -78,10 +79,10 @@
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <Templates:RunSplitButton SplitterObjectType="OldSpec" Content="OldSpec" Click="RunSplitButton_Click"/>
-            <Templates:RunSplitButton SplitterObjectType="OldBody" Content="OldBody" Click="RunSplitButton_Click"/>
-            <Templates:RunSplitButton SplitterObjectType="NewSpec" Content="NewSpec" Click="RunSplitButton_Click"/>
-            <Templates:RunSplitButton SplitterObjectType="NewBody" Content="NewBody" Click="RunSplitButton_Click"/>
+            <Button Content="OldSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
+            <Button Content="OldBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
+            <Button Content="NewSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
+            <Button Content="NewBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewBody}"/>
         </StackPanel>
     </Grid>
 </UserControl>

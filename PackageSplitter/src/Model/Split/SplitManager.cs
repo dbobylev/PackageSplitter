@@ -2,7 +2,7 @@
 using DataBaseRepository.Model;
 using OracleParser.Model;
 using OracleParser.Model.PackageModel;
-using PackageSplitter.Model.SplitterGrid;
+using PackageSplitter.Model;
 using PackageSplitter.src.View;
 using System;
 using System.Collections.Generic;

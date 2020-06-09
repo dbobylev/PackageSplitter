@@ -1,5 +1,5 @@
 ﻿using DataBaseRepository.Model;
-using PackageSplitter.Model.SplitterGrid;
+using PackageSplitter.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;

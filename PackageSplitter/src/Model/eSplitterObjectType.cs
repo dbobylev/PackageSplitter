@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PackageSplitter.Model.SplitterGrid
+namespace PackageSplitter.Model
 {
     /// <summary>
     /// Тип объекта сплиттера: Тело/Спека, Исходная/Новая

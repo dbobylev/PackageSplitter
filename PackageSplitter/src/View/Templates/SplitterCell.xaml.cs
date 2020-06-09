@@ -1,6 +1,5 @@
 ﻿using OracleParser.Model.PackageModel;
 using PackageSplitter.Model;
-using PackageSplitter.Model.SplitterGrid;
 using PackageSplitter.ViewModel;
 using System;
 using System.Collections.Generic;

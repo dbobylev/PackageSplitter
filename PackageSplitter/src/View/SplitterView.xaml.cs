@@ -1,7 +1,6 @@
 ﻿using DataBaseRepository.Model;
 using PackageSplitter.Model;
 using PackageSplitter.Model.Split;
-using PackageSplitter.Model.SplitterGrid;
 using PackageSplitter.src.View;
 using PackageSplitter.View.Templates;
 using PackageSplitter.ViewModel;
@@ -29,8 +28,6 @@ namespace PackageSplitter.View
     {
         private SplitterPackageViewModel _PackageViewModel;
 
-        private eSplitParam _defaultNewObjParam = eSplitParam.CopyToClipBoard | eSplitParam.GenerateHeader | eSplitParam.OpenNewWindow;
-
         public SplitterView()
         {
             InitializeComponent();
@@ -41,14 +38,6 @@ namespace PackageSplitter.View
         public void SetModel(SplitterPackage splitterPackage)
         {
             _PackageViewModel.SetModel(splitterPackage);
-        }
-
-        private void RunSplitButton_Click(object sender, RoutedEventArgs e)
-        {
-            var SplitterObjectType = (sender as RunSplitButton).SplitterObjectType;
-
-            SplitManager.Instance().SetSplitterPackage(_PackageViewModel.GetSplitterPackage());
-            SplitManager.Instance().RunSplit(SplitterObjectType, _defaultNewObjParam);
         }
 
         private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
