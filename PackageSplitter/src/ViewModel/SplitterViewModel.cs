@@ -15,11 +15,14 @@ namespace PackageSplitter.ViewModel
 {
     public class SplitterViewModel : PropertyChangedBase
     {
-        private readonly eSplitParam _defaultNewObjParam = eSplitParam.CopyToClipBoard | eSplitParam.GenerateHeader | eSplitParam.OpenNewWindow;
-
         private ISplitManager _SplitManager;
         private Splitter _model;
         public RelayCommand SplitCommand { get; private set; }
+
+        public bool IsCheckedParamNewWindow { get; set; } = true;
+        public bool IsCheckedParamClipboard { get; set; } = true;
+        public bool IsCheckedParamAddHeader { get; set; } = true;
+        public bool IsCheckedParamUpdateRep { get; set; } = false;
 
         public ObservableCollection<SplitterElementViewModel> ElementsViewModel { get; private set; }
 
@@ -45,12 +48,22 @@ namespace PackageSplitter.ViewModel
             if (param is eSplitterObjectType splitterObjectType)
             {
                 _SplitManager.LoadSplitterPackage(_model);
-                _SplitManager.RunSplit(splitterObjectType, _defaultNewObjParam);
+                _SplitManager.RunSplit(splitterObjectType, GetSplitParam());
             }
             else
             {
                 throw new NotImplementedException("Не подходящий параметр для запуска Split");
             }
+        }
+
+        private eSplitParam GetSplitParam()
+        {
+            eSplitParam answer = eSplitParam.None;
+            if (IsCheckedParamNewWindow) answer |= eSplitParam.OpenNewWindow;
+            if (IsCheckedParamClipboard) answer |= eSplitParam.CopyToClipBoard;
+            if (IsCheckedParamAddHeader) answer |= eSplitParam.GenerateHeader;
+            if (IsCheckedParamUpdateRep) answer |= eSplitParam.DirectlyUpdateRep;
+            return answer;
         }
     }
 }

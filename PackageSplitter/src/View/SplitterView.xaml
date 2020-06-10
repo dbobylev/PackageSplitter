@@ -14,18 +14,25 @@
         <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
         <Templates:SplitterCell x:Key="SplitterCell"/>
         <CollectionViewSource x:Key="ViewSourceItems" Source="{Binding ElementsViewModel}" Filter="CollectionViewSource_Filter"/>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="MinWidth" Value="60"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <CheckBox x:Name="chkbShowMethods" Content="Methods" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
-            <CheckBox x:Name="chkbShowVariables"  Content="Variables" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
-            <CheckBox x:Name="chkbShowTypes"  Content="Types" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
-            <CheckBox x:Name="chkbShowCursors"  Content="Cursors" Margin="5" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <CheckBox x:Name="chkbShowMethods" Content="Methods" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <CheckBox x:Name="chkbShowVariables"  Content="Variables" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <CheckBox x:Name="chkbShowTypes"  Content="Types" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <CheckBox x:Name="chkbShowCursors"  Content="Cursors" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
         </StackPanel>
         <DataGrid Grid.Row="1" x:Name="MainGrid" ItemsSource="{Binding Source={StaticResource ViewSourceItems}}" AutoGenerateColumns="False">
             <DataGrid.Columns>
@@ -76,6 +83,14 @@
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Orientation="Horizontal" Grid.Row="2">
+            <StackPanel>
+                <CheckBox Content="Отобразить в окне" IsChecked="{Binding IsCheckedParamNewWindow}" IsThreeState="False"/>
+                <CheckBox Content="Скопировать в буфер" IsChecked="{Binding IsCheckedParamClipboard}" IsThreeState="False"/>
+            </StackPanel>
+            <StackPanel>
+                <CheckBox Content="Добавить заголовок" IsChecked="{Binding IsCheckedParamAddHeader}" IsThreeState="False"/>
+                <CheckBox Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False"/>
+            </StackPanel>
             <Button Content="OldSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
             <Button Content="OldBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
             <Button Content="NewSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
