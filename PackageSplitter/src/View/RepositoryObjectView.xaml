@@ -7,7 +7,7 @@
              xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel"
              xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded" BorderThickness="1,1,1,1">
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded" BorderThickness="1,1,1,1" x:Name="uc">
     <UserControl.Resources>
         <Convertrs:OwnersToRepObjectsConverter x:Key="OwnersToRepObjectsConverter"/>
         <Convertrs:RepPathToOwnersConverter x:Key="RepPathToOwnersConverter"/>
@@ -26,9 +26,6 @@
     </UserControl.Resources>
     <Border BorderThickness="1" BorderBrush="#FFE4CCB7" SnapsToDevicePixels="True" CornerRadius="4" Margin="5,0">
         <StackPanel x:Name="spObjectSelector" Margin="0" Background="#FFDCE1E8">
-            <StackPanel.DataContext>
-                <ViewModel:RepositoryViewModel/>
-            </StackPanel.DataContext>
             <Label Content="Репозиторий"/>
             <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
             <Label Content="Схема"/>
@@ -42,7 +39,7 @@
                       SelectedValue="{Binding SelectedFile}"
                       DisplayMemberPath="Name"
                       ItemsSource="{Binding SelectedValue, BindsDirectlyToSource=False, Converter={StaticResource OwnersToRepObjectsConverter}, ElementName=cbOwners, Mode=OneWay}"/>
-            <Button x:Name="btnLoadObject" Content="Загрузить" Click="btnLoadObject_Click"/>
+            <Button x:Name="btnLoadObject" Content="Загрузить" Command="{Binding LoadOraclePackageCommand}" CommandParameter="{Binding ElementName=cbRepositoryObjects, Path=SelectedItem}"/>
         </StackPanel>
     </Border>
 </UserControl>

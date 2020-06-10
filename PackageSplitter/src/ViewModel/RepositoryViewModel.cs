@@ -1,5 +1,7 @@
 ﻿using DataBaseRepository;
 using DataBaseRepository.Model;
+using PackageSplitter.Model.Split;
+using PackageSplitter.src.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,12 +11,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace PackageSplitter.ViewModel
 {
     public class RepositoryViewModel : PropertyChangedBase
     {
+        private ISplitManager _SplitManager;
         private RepositoryObject _SelectedFile;
+
+        public RelayCommand LoadOraclePackageCommand { get; private set; }
+
         public RepositoryObject SelectedFile
         {
             get
@@ -68,9 +75,20 @@ namespace PackageSplitter.ViewModel
             }
         }
 
-        public RepositoryViewModel()
+        public RepositoryViewModel(ISplitManager splitManager)
         {
             _RepositoryPath = Config.Instanse().RepositoryPath;
+            _SplitManager = splitManager;
+            LoadOraclePackageCommand = new RelayCommand(LoadOraclePackage, (x) => _SelectedFile != null);
+        }
+
+        private void LoadOraclePackage(object obj)
+        {
+            if (obj is RepositoryObject repositoryObject)
+            {
+                var repositoryPackage = new RepositoryPackage(repositoryObject);
+                _SplitManager.LoadOracleParsedPackage(repositoryPackage);
+            }
         }
     }
 }

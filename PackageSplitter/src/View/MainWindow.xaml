@@ -13,7 +13,7 @@
             <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <View:RepositoryObjectView PushPackageElements="RepositoryObjectView_PushPackageElements"/>
-        <View:SplitterView x:Name="Splitter" Grid.Column="1"/>
+        <View:RepositoryObjectView/>
+        <View:SplitterView Grid.Column="1"/>
     </Grid>
 </Window>

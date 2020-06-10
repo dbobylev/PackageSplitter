@@ -14,10 +14,11 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
+using OracleParser;
 
 namespace PackageSplitter.Model.Split
 {
-    public class SplitManager
+    public class SplitManager: ISplitManager
     {
         private const ePackageElementType NOT_METHOD_TYPES = ePackageElementType.Type | ePackageElementType.Variable | ePackageElementType.Cursor;
         private const ePackageElementType ALL_ELEMENT_TYPES = ePackageElementType.Method | NOT_METHOD_TYPES;
@@ -25,6 +26,9 @@ namespace PackageSplitter.Model.Split
         private Package _package;
         private SplitterPackage _splitterPackage;
 
+        public event Action<Package, RepositoryPackage> PackageLoaded;
+
+        #region Singleton
         private static SplitManager _instance;
         public static SplitManager Instance()
         {
@@ -36,17 +40,29 @@ namespace PackageSplitter.Model.Split
         {
 
         }
+        #endregion
 
-        public void SetParsedPackage(Package package)
-        {
-            _package = package;
-        }
-
-        public void SetSplitterPackage(SplitterPackage splitterPackage)
+        public void LoadSplitterPackage(SplitterPackage splitterPackage)
         {
             _splitterPackage = splitterPackage;
         }
 
+        public void LoadOracleParsedPackage(RepositoryPackage repositoryPackage)
+        {
+            try
+            {
+                _package = OraParser.Instance().GetPackage(repositoryPackage);
+                PackageLoaded?.Invoke(_package, repositoryPackage);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("При разборе пакета, произошла ошибка.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                TextWindow textWindow = new TextWindow(ex.ToString());
+                textWindow.Show();
+            }
+        }
+
+        #region Split
         public void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param)
         {
             string FinalObjectText = string.Empty;
@@ -373,6 +389,8 @@ namespace PackageSplitter.Model.Split
                    $"  end {element.Name};";
             return text.Split("\r\n");
         }
+
+        #endregion
     }
 }
  

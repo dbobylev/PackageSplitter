@@ -3,6 +3,7 @@ using OracleParser;
 using PackageSplitter.Model;
 using PackageSplitter.Model.Split;
 using PackageSplitter.src.View;
+using PackageSplitter.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,10 +27,9 @@ namespace PackageSplitter.View
     {
         public RepositoryObjectView()
         {
+            DataContext = new RepositoryViewModel(SplitManager.Instance());
             InitializeComponent();
         }
-
-        public event Action<SplitterPackage> PushPackageElements;
 
         private void SetLastOwnerUed()
         {
@@ -58,28 +58,6 @@ namespace PackageSplitter.View
                     .FirstOrDefault(x => x.val.RepFilePath == Config.Instanse().LastFileUsed);
                 if (LastSelected != null)
                     cbRepositoryObjects.SelectedIndex = LastSelected.index;
-            }
-        }
-
-        private void btnLoadObject_Click(object sender, RoutedEventArgs e)
-        {
-            var repositoryObject = cbRepositoryObjects.SelectedItem as RepositoryObject;
-            if (repositoryObject is null)
-                return;
-
-            var repositoryPackage = new RepositoryPackage(repositoryObject);
-            try
-            {
-                var parsedPackage = OraParser.Instance().GetPackage(repositoryPackage);
-                SplitManager.Instance().SetParsedPackage(parsedPackage);
-                var PackageModel = new SplitterPackage(parsedPackage, repositoryPackage);
-                PushPackageElements?.Invoke(PackageModel);
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("При разборе пакета, произошла ошибка.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                TextWindow tw = new TextWindow(ex.ToString());
-                tw.Show();
             }
         }
 

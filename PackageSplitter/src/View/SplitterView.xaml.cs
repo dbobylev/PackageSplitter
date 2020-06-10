@@ -26,18 +26,10 @@ namespace PackageSplitter.View
     /// </summary>
     public partial class SplitterView : UserControl
     {
-        private SplitterPackageViewModel _PackageViewModel;
-
         public SplitterView()
         {
+            DataContext = new SplitterPackageViewModel(SplitManager.Instance());
             InitializeComponent();
-
-            _PackageViewModel = uc.DataContext as SplitterPackageViewModel;
-        }
-
-        public void SetModel(SplitterPackage splitterPackage)
-        {
-            _PackageViewModel.SetModel(splitterPackage);
         }
 
         private void CollectionViewSource_Filter(object sender, FilterEventArgs e)

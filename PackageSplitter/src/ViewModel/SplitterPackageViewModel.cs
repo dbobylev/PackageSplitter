@@ -1,4 +1,6 @@
-﻿using OracleParser.Model;
+﻿using DataBaseRepository.Model;
+using OracleParser.Model;
+using OracleParser.Model.PackageModel;
 using PackageSplitter.Model;
 using PackageSplitter.Model.Split;
 using PackageSplitter.src.Command;
@@ -13,21 +15,24 @@ namespace PackageSplitter.ViewModel
 {
     public class SplitterPackageViewModel : PropertyChangedBase
     {
+        private ISplitManager _SplitManager;
         private SplitterPackage _model;
         private eSplitParam _defaultNewObjParam = eSplitParam.CopyToClipBoard | eSplitParam.GenerateHeader | eSplitParam.OpenNewWindow;
         public RelayCommand SplitCommand { get; private set; }
 
         public ObservableCollection<SplitterPackageElementViewModel> ElementsViewModel { get; private set; }
 
-        public SplitterPackageViewModel()
+        public SplitterPackageViewModel(ISplitManager splitManager)
         {
+            _SplitManager = splitManager;
+            _SplitManager.PackageLoaded += SetModel;
             ElementsViewModel = new ObservableCollection<SplitterPackageElementViewModel>();
             SplitCommand = new RelayCommand(RunSplit);
         }
 
-        public void SetModel(SplitterPackage model)
+        public void SetModel(Package parsedPackage, RepositoryPackage repositoryPackage)
         {
-            _model = model;
+            _model = new SplitterPackage(parsedPackage, repositoryPackage);
             ElementsViewModel.Clear();
 
             for (int i = 0; i < _model.Elements.Count; i++)
@@ -38,8 +43,8 @@ namespace PackageSplitter.ViewModel
         {
             if (param is eSplitterObjectType splitterObjectType)
             {
-                SplitManager.Instance().SetSplitterPackage(_model);
-                SplitManager.Instance().RunSplit(splitterObjectType, _defaultNewObjParam);
+                _SplitManager.LoadSplitterPackage(_model);
+                _SplitManager.RunSplit(splitterObjectType, _defaultNewObjParam);
             }
             else
             {
