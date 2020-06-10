@@ -18,49 +18,21 @@ using OracleParser;
 
 namespace PackageSplitter.Model.Split
 {
-    class SplitOperations
+    public abstract class SplitOperations
     {
         private const ePackageElementType NOT_METHOD_TYPES = ePackageElementType.Type | ePackageElementType.Variable | ePackageElementType.Cursor;
         private const ePackageElementType ALL_ELEMENT_TYPES = ePackageElementType.Method | NOT_METHOD_TYPES;
 
-        public Package _package;
-        public Splitter _splitter;
+        protected Package _package;
+        protected Splitter _splitter;
 
-        public SplitOperations()
+        protected SplitOperations()
         {
 
-        }
-
-        public void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param)
-        {
-            string FinalObjectText = string.Empty;
-            switch (splitterObjectType)
-            {
-                case eSplitterObjectType.OldSpec: FinalObjectText = RunSplitOldSpec(); break;
-                case eSplitterObjectType.OldBody: FinalObjectText = RunSplitOldBody(); break;
-                case eSplitterObjectType.NewSpec: FinalObjectText = RunSplitNewSpec(); break;
-                case eSplitterObjectType.NewBody: FinalObjectText = RunSplitNewBody(); break;
-                default:
-                    break;
-            }
-
-            FinalObjectText = Regex.Replace(FinalObjectText, "\r\n\\s*\r\n\\s*\r\n", "\r\n\r\n");
-
-            if (param.HasFlag(eSplitParam.GenerateHeader) && splitterObjectType.IsNew())
-                FinalObjectText = AddHeader(FinalObjectText, splitterObjectType.GetRepositoryType());
-
-            if (param.HasFlag(eSplitParam.CopyToClipBoard))
-                Clipboard.SetText(FinalObjectText);
-
-            if (param.HasFlag(eSplitParam.OpenNewWindow))
-            {
-                TextWindow tw = new TextWindow(FinalObjectText);
-                tw.Show();
-            }
         }
 
         #region Split
-        private string RunSplitNewSpec()
+        protected string RunSplitNewSpec()
         {
             var AllVariables = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, NOT_METHOD_TYPES);
             var AllMethods = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
@@ -74,7 +46,7 @@ namespace PackageSplitter.Model.Split
             return NewText;
         }
 
-        private string RunSplitNewBody()
+        protected string RunSplitNewBody()
         {
             var AllVariables = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, NOT_METHOD_TYPES);
             var AllMethods = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
@@ -87,7 +59,7 @@ namespace PackageSplitter.Model.Split
             return NewText;
         }
 
-        private string RunSplitOldSpec()
+        protected string RunSplitOldSpec()
         {
             var labelMethod = Guid.NewGuid().ToString();
             var labelVariable = Guid.NewGuid().ToString();
@@ -177,7 +149,7 @@ namespace PackageSplitter.Model.Split
             return oldSpecText;
         }
 
-        private string RunSplitOldBody()
+        protected string RunSplitOldBody()
         {
             var labelVariable = Guid.NewGuid().ToString();
             var PosVariable = int.MaxValue;
@@ -322,7 +294,7 @@ namespace PackageSplitter.Model.Split
             return sb.ToString();
         }
 
-        private string AddHeader(string text, eRepositoryObjectType repositoryObjectType)
+        protected string AddHeader(string text, eRepositoryObjectType repositoryObjectType)
         {
             var bodyWord = repositoryObjectType == eRepositoryObjectType.Package_Body ? "body " : string.Empty;
             var NewPackageName = $"{Config.Instanse().NewPackageOwner}.{Config.Instanse().NewPackageName}";

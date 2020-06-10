@@ -18,12 +18,8 @@ using OracleParser;
 
 namespace PackageSplitter.Model.Split
 {
-    public class SplitManager: ISplitManager
+    public class SplitManager: SplitOperations, ISplitManager
     {
-        private SplitOperations _splitOperations;
-
-        public event Action<Package, RepositoryPackage> PackageLoaded;
-
         #region Singleton
         private static SplitManager _instance;
         public static SplitManager Instance()
@@ -34,21 +30,22 @@ namespace PackageSplitter.Model.Split
         }
         private SplitManager()
         {
-            _splitOperations = new SplitOperations();
         }
         #endregion
 
+        public event Action<Package, RepositoryPackage> PackageLoaded;
+
         public void LoadSplitterPackage(Splitter splitterPackage)
         {
-            _splitOperations._splitter = splitterPackage;
+            _splitter = splitterPackage;
         }
 
         public void LoadOracleParsedPackage(RepositoryPackage repositoryPackage)
         {
             try
             {
-                _splitOperations._package = OraParser.Instance().GetPackage(repositoryPackage);
-                PackageLoaded?.Invoke(_splitOperations._package, repositoryPackage);
+                _package = OraParser.Instance().GetPackage(repositoryPackage);
+                PackageLoaded?.Invoke(_package, repositoryPackage);
             }
             catch (Exception ex)
             {
@@ -60,7 +57,30 @@ namespace PackageSplitter.Model.Split
 
         public void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param)
         {
-            _splitOperations.RunSplit(splitterObjectType, param);
+            string FinalObjectText = string.Empty;
+            switch (splitterObjectType)
+            {
+                case eSplitterObjectType.OldSpec: FinalObjectText = RunSplitOldSpec(); break;
+                case eSplitterObjectType.OldBody: FinalObjectText = RunSplitOldBody(); break;
+                case eSplitterObjectType.NewSpec: FinalObjectText = RunSplitNewSpec(); break;
+                case eSplitterObjectType.NewBody: FinalObjectText = RunSplitNewBody(); break;
+                default:
+                    break;
+            }
+
+            FinalObjectText = Regex.Replace(FinalObjectText, "\r\n\\s*\r\n\\s*\r\n", "\r\n\r\n");
+
+            if (param.HasFlag(eSplitParam.GenerateHeader) && splitterObjectType.IsNew())
+                FinalObjectText = AddHeader(FinalObjectText, splitterObjectType.GetRepositoryType());
+
+            if (param.HasFlag(eSplitParam.CopyToClipBoard))
+                Clipboard.SetText(FinalObjectText);
+
+            if (param.HasFlag(eSplitParam.OpenNewWindow))
+            {
+                TextWindow tw = new TextWindow(FinalObjectText);
+                tw.Show();
+            }
         }
     }
 }

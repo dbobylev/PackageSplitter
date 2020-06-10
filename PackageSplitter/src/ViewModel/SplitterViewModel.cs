@@ -15,9 +15,10 @@ namespace PackageSplitter.ViewModel
 {
     public class SplitterViewModel : PropertyChangedBase
     {
+        private readonly eSplitParam _defaultNewObjParam = eSplitParam.CopyToClipBoard | eSplitParam.GenerateHeader | eSplitParam.OpenNewWindow;
+
         private ISplitManager _SplitManager;
         private Splitter _model;
-        private eSplitParam _defaultNewObjParam = eSplitParam.CopyToClipBoard | eSplitParam.GenerateHeader | eSplitParam.OpenNewWindow;
         public RelayCommand SplitCommand { get; private set; }
 
         public ObservableCollection<SplitterElementViewModel> ElementsViewModel { get; private set; }
