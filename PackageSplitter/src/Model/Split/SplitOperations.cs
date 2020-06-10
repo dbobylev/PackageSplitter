@@ -77,7 +77,7 @@ namespace PackageSplitter.Model.Split
             if (MethodNameToAdd.Any())
             {
                 // Ищем последнюю строку последнего метода
-                PosMethod = _package.elements.Where(x => x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
+                PosMethod = _package.elements.Where(x => MethodNameToAdd.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
                 // Вставляем метку, для последующей вставки новых методов
                 FileLines = FileLines.Insert(PosMethod + 1 /*На следующей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelMethod });
                 // Текст новых методов
@@ -298,7 +298,7 @@ namespace PackageSplitter.Model.Split
         {
             var bodyWord = repositoryObjectType == eRepositoryObjectType.Package_Body ? "body " : string.Empty;
             var NewPackageName = $"{Config.Instanse().NewPackageOwner}.{Config.Instanse().NewPackageName}";
-            return $"create or replace package {bodyWord}{NewPackageName} is\r\n\r\n{text}\r\nend {NewPackageName};";
+            return $"create or replace package {bodyWord}{NewPackageName} is\r\n\r\n{text}\r\nend {NewPackageName};\r\n/";
         }
 
         private string[] GetLink(PackageElement element, RepositoryPackage repositoryPackage)
