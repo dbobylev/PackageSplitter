@@ -9,11 +9,11 @@ using System.Text;
 
 namespace PackageSplitter.ViewModel
 {
-    public class SplitterPackageElementViewModel : PropertyChangedBase
+    public class SplitterElementViewModel : PropertyChangedBase
     {
-        private SplitterPackageElement _model;
+        private SplitterElement _model;
 
-        public SplitterPackageElementViewModel(SplitterPackageElement model)
+        public SplitterElementViewModel(SplitterElement model)
         {
             _model = model;
         }

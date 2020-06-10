@@ -10,20 +10,20 @@ using System.Text;
 
 namespace PackageSplitter.Model
 {
-    public class SplitterPackage
+    public class Splitter
     {
-        public List<SplitterPackageElement> Elements { get; set; }
+        public List<SplitterElement> Elements { get; set; }
         public RepositoryPackage RepositoryPackage { get; private set; }
 
-        public SplitterPackage(Package package, RepositoryPackage repositoryPackage)
+        public Splitter(Package package, RepositoryPackage repositoryPackage)
         {
             RepositoryPackage = repositoryPackage;
-            Elements = new List<SplitterPackageElement>();
+            Elements = new List<SplitterElement>();
 
             for (int i = 0; i < package.elements.Count; i++)
             {
                 var packageElement = package.elements[i];
-                var SplitterElement = new SplitterPackageElement(packageElement.Name, packageElement.ElementType);
+                var SplitterElement = new SplitterElement(packageElement.Name, packageElement.ElementType);
                 if (packageElement.HasSpec)
                     SplitterElement.OldSpec = eElementStateType.Exist;
                 if (packageElement.HasBody)
@@ -32,10 +32,10 @@ namespace PackageSplitter.Model
             }
         }
 
-        public SplitterPackage(IEnumerable<SplitterPackageElement> elements, RepositoryPackage repositoryPackage)
+        public Splitter(IEnumerable<SplitterElement> elements, RepositoryPackage repositoryPackage)
         {
             RepositoryPackage = repositoryPackage;
-            Elements = new List<SplitterPackageElement>(elements);
+            Elements = new List<SplitterElement>(elements);
         }
     }
 }

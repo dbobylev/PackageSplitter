@@ -10,7 +10,7 @@ namespace PackageSplitter.Model.Split
     {
         event Action<Package, RepositoryPackage> PackageLoaded;
         void LoadOracleParsedPackage(RepositoryPackage repositoryPackage);
-        void LoadSplitterPackage(SplitterPackage splitterPackage);
+        void LoadSplitterPackage(Splitter splitterPackage);
         void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param);
     }
 }

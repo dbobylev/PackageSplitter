@@ -40,7 +40,7 @@ namespace PackageSplitter.View.Templates
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = this.DataContext as SplitterPackageElementViewModel;
+            var viewModel = this.DataContext as SplitterElementViewModel;
             var button = sender as SplitterCellButton;
             viewModel.UpdateStates(button.NewStates);
         }

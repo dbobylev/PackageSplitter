@@ -24,7 +24,7 @@ namespace PackageSplitter.Model.Split
         private const ePackageElementType ALL_ELEMENT_TYPES = ePackageElementType.Method | NOT_METHOD_TYPES;
 
         private Package _package;
-        private SplitterPackage _splitterPackage;
+        private Splitter _splitterPackage;
 
         public event Action<Package, RepositoryPackage> PackageLoaded;
 
@@ -42,7 +42,7 @@ namespace PackageSplitter.Model.Split
         }
         #endregion
 
-        public void LoadSplitterPackage(SplitterPackage splitterPackage)
+        public void LoadSplitterPackage(Splitter splitterPackage)
         {
             _splitterPackage = splitterPackage;
         }
@@ -297,7 +297,7 @@ namespace PackageSplitter.Model.Split
 
         private IEnumerable<string> GetName(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Method)
         {
-            var x = Expr.Expression.Parameter(typeof(SplitterPackageElement), "x");
+            var x = Expr.Expression.Parameter(typeof(SplitterElement), "x");
             var HasFlagMethod = typeof(Enum).GetMethod("HasFlag", new[] { typeof(Enum) });
 
             var xPackageElementType = Expr.Expression.Convert(Expr.Expression.PropertyOrField(x, "PackageElementType"), typeof(Enum));
@@ -307,7 +307,7 @@ namespace PackageSplitter.Model.Split
             var xObjectTypeHasFlagExpression = Expr.Expression.Call(Expr.Expression.Constant(elementStates, typeof(Enum)), HasFlagMethod, xObjectType);
             
             var FinalExpression = Expr.Expression.AndAlso(xPackageElementTypeHasFlagExpression, xObjectTypeHasFlagExpression);
-            var Filter = (Func<SplitterPackageElement, bool>)Expr.Expression.Lambda(FinalExpression, x).Compile();
+            var Filter = (Func<SplitterElement, bool>)Expr.Expression.Lambda(FinalExpression, x).Compile();
 
             Seri.Log.Verbose($"GetName Filter: {FinalExpression}");
 

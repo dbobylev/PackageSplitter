@@ -28,13 +28,13 @@ namespace PackageSplitter.View
     {
         public SplitterView()
         {
-            DataContext = new SplitterPackageViewModel(SplitManager.Instance());
+            DataContext = new SplitterViewModel(SplitManager.Instance());
             InitializeComponent();
         }
 
         private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
         {
-            var elementType = (e.Item as SplitterPackageElementViewModel).ElementType;
+            var elementType = (e.Item as SplitterElementViewModel).ElementType;
             e.Accepted = (elementType == ePackageElementType.Method && (bool)chkbShowMethods.IsChecked) ||
                          (elementType == ePackageElementType.Variable && (bool)chkbShowVariables.IsChecked) ||
                          (elementType == ePackageElementType.Type && (bool)chkbShowTypes.IsChecked) ||

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PackageSplitter.Model
 {
-    public class SplitterPackageElement
+    public class SplitterElement
     {
         public ePackageElementType PackageElementType { get; set; }
 
@@ -41,7 +41,7 @@ namespace PackageSplitter.Model
             set => _NewBody = SetState(_NewBody, value);
         }
 
-        public SplitterPackageElement(string packageElementName, ePackageElementType packageElementType)
+        public SplitterElement(string packageElementName, ePackageElementType packageElementType)
         {
             PackageElementName = packageElementName;
             PackageElementType = packageElementType;

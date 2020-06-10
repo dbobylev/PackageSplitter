@@ -23,9 +23,9 @@ namespace PackageSplitter.View
     /// <summary>
     /// Interaction logic for RepositoryObjectView.xaml
     /// </summary>
-    public partial class RepositoryObjectView : UserControl
+    public partial class RepositoryView : UserControl
     {
-        public RepositoryObjectView()
+        public RepositoryView()
         {
             DataContext = new RepositoryViewModel(SplitManager.Instance());
             InitializeComponent();
