@@ -33,6 +33,8 @@
             <CheckBox x:Name="chkbShowVariables"  Content="Variables" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
             <CheckBox x:Name="chkbShowTypes"  Content="Types" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
             <CheckBox x:Name="chkbShowCursors"  Content="Cursors" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <Button Content="Save" Command="{Binding SaveSplitterCommand}"/>
+            <Button Content="Load" Command="{Binding LoadSplitterCommand}"/>
         </StackPanel>
         <DataGrid Grid.Row="1" x:Name="MainGrid" ItemsSource="{Binding Source={StaticResource ViewSourceItems}}" AutoGenerateColumns="False">
             <DataGrid.Columns>

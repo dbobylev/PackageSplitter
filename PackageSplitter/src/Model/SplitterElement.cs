@@ -1,4 +1,5 @@
-﻿using OracleParser.Model;
+﻿using Newtonsoft.Json;
+using OracleParser.Model;
 using OracleParser.Model.PackageModel;
 using System;
 using System.Collections.Generic;
@@ -9,32 +10,42 @@ namespace PackageSplitter.Model
 {
     public class SplitterElement
     {
+        [JsonProperty]
         public ePackageElementType PackageElementType { get; set; }
-
+        
+        [JsonProperty]
         public string PackageElementName { get; private set; }
 
+        [JsonProperty]
         private eElementStateType _OldSpec;
+        [JsonIgnore]
         public eElementStateType OldSpec
         {
             get => _OldSpec; 
             set => _OldSpec = SetState(_OldSpec, value);
         }
 
+        [JsonProperty]
         private eElementStateType _OldBody;
+        [JsonIgnore]
         public eElementStateType OldBody
         {
             get => _OldBody;
             set => _OldBody = SetState(_OldBody, value);
         }
 
+        [JsonProperty]
         private eElementStateType _NewSpec;
+        [JsonIgnore]
         public eElementStateType NewSpec
         {
             get => _NewSpec;
             set => _NewSpec = SetState(_NewSpec, value);
         }
 
+        [JsonProperty]
         private eElementStateType _NewBody;
+        [JsonIgnore]
         public eElementStateType NewBody
         {
             get => _NewBody;
@@ -50,6 +61,11 @@ namespace PackageSplitter.Model
             NewSpec = eElementStateType.Empty;
             NewBody = eElementStateType.Empty;
         }
+
+        public SplitterElement()
+        {
+
+        } 
 
         private eElementStateType SetState(eElementStateType currentValue, eElementStateType newValue)
         {

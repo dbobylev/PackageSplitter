@@ -1,4 +1,5 @@
 ﻿using DataBaseRepository.Model;
+using Newtonsoft.Json;
 using OracleParser.Model;
 using OracleParser.Model.PackageModel;
 using PackageSplitter.Model;
@@ -12,7 +13,9 @@ namespace PackageSplitter.Model
 {
     public class Splitter
     {
+        [JsonProperty]
         public List<SplitterElement> Elements { get; set; }
+        [JsonProperty]
         public RepositoryPackage RepositoryPackage { get; private set; }
 
         public Splitter(Package package, RepositoryPackage repositoryPackage)
@@ -30,6 +33,11 @@ namespace PackageSplitter.Model
                     SplitterElement.OldBody = eElementStateType.Exist;
                 Elements.Add(SplitterElement);
             }
+        }
+
+        public Splitter()
+        {
+
         }
     }
 }
