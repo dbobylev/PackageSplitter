@@ -39,12 +39,13 @@ namespace PackageSplitter.View
             var elementType = item.ElementType;
             var elementName = item.Name;
 
-            var answer = Regex.IsMatch(elementName, tbElementPattern.Text, RegexOptions.IgnoreCase);
-            if (answer)
-                answer = (elementType == ePackageElementType.Method && (bool)chkbShowMethods.IsChecked) ||
-                         (elementType == ePackageElementType.Variable && (bool)chkbShowVariables.IsChecked) ||
-                         (elementType == ePackageElementType.Type && (bool)chkbShowTypes.IsChecked) ||
-                         (elementType == ePackageElementType.Cursor && (bool)chkbShowCursors.IsChecked);
+            var answer = 
+                Regex.IsMatch(elementName, tbElementPattern.Text, RegexOptions.IgnoreCase) 
+                && (  (elementType == ePackageElementType.Method && (bool)chkbShowMethods.IsChecked) 
+                   || (elementType == ePackageElementType.Variable && (bool)chkbShowVariables.IsChecked) 
+                   || (elementType == ePackageElementType.Type && (bool)chkbShowTypes.IsChecked) 
+                   || (elementType == ePackageElementType.Cursor && (bool)chkbShowCursors.IsChecked)
+                   );
 
             e.Accepted = answer;
         }
