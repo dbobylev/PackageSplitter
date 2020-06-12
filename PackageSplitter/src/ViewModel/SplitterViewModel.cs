@@ -95,7 +95,11 @@ namespace PackageSplitter.ViewModel
 
         public void AnalyzeLinks(object obj)
         {
+            _SplitManager.LoadSplitterPackage(_splitter);
+            _SplitManager.AnalizeLinks();
 
+            foreach (var item in ElementsViewModel)
+                item.UpdateIsRequiried();
         }
     }
 }

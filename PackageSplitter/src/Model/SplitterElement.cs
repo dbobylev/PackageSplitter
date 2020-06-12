@@ -55,6 +55,9 @@ namespace PackageSplitter.Model
         [JsonProperty]
         public bool IsRequiried { get; set; } = false;
 
+        [JsonProperty]
+        public bool MakePrefix { get; set; } = false;
+
         public SplitterElement(string packageElementName, ePackageElementType packageElementType)
         {
             PackageElementName = packageElementName;

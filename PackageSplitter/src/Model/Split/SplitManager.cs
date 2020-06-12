@@ -94,9 +94,9 @@ namespace PackageSplitter.Model.Split
             }
         }
 
-        public void AnalizeLinks()
+        public override void AnalizeLinks()
         {
-            _splitter.Elements.ForEach(x => x.IsRequiried = true);
+            base.AnalizeLinks();
         }
     }
 }

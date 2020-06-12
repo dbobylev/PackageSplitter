@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace PackageSplitter.ViewModel.Convertrs
 {
-    class IsRequiriedToBackgroundColor : IValueConverter
+    class IsRequiriedToVisibility : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool val = (bool)value;
-            if (val)
-                return new SolidColorBrush(Color.FromRgb(255, 255, 100));
-            else
-                return new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            var val = (bool)value;
+            return (bool)value ? Visibility.Visible : Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

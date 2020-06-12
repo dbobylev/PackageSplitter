@@ -27,6 +27,20 @@ namespace PackageSplitter.ViewModel
         public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); } }
 
         public bool IsRequiried { get => _model.IsRequiried; }
+        public bool MakePrefix { 
+            get => _model.MakePrefix; 
+            set  
+            {
+                _model.MakePrefix = value;
+                OnPropertyChanged();
+            } 
+        }
+
+        public void UpdateIsRequiried()
+        {
+            OnPropertyChanged("IsRequiried");
+            OnPropertyChanged("MakePrefix");
+        }
 
         public void UpdateStates(Dictionary<eSplitterObjectType, eElementStateType> buttonNewStates)
         {
