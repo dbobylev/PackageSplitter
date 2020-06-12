@@ -9,30 +9,23 @@ using System.Windows.Data;
 
 namespace PackageSplitter.ViewModel.Convertrs
 {
-    class OwnersToRepObjectsConverter : IValueConverter
+    class OwnersToRepObjectsConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            Seri.Log.Verbose($"OwnersToRepObjectsConverter begin");
-            
-            if (value == null || string.IsNullOrEmpty((string)value))
+            if (values[0] == null || string.IsNullOrEmpty((string)values[0]))
                 return new RepositoryObject[] { };
 
-            if (!(value is string))
-                throw new Exception("Wrong value in OwnersToRepObjectsConverter");
+            string Owner = (string)values[0];
+            string Pattern = (string)values[1];
 
-
-            string Owner = (string)value;
-
-            SelectRequest request = new SelectRequest() { Owner = Owner, FileTypes = new List<eRepositoryObjectType>() { eRepositoryObjectType.Package_Body } };
+            SelectRequest request = new SelectRequest() { Owner = Owner, Pattern = Pattern, FileTypes = new List<eRepositoryObjectType>() { eRepositoryObjectType.Package_Body } };
             RepositoryObject[] objects = DBRep.Instance().GetFiles(request).ToArray();
-
-            Seri.Log.Verbose($"OwnersToRepObjectsConverter find {objects.Count()} objects");
 
             return objects;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
