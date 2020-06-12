@@ -29,10 +29,11 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <CheckBox x:Name="chkbShowMethods" Content="Methods" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
-            <CheckBox x:Name="chkbShowVariables"  Content="Variables" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
-            <CheckBox x:Name="chkbShowTypes"  Content="Types" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
-            <CheckBox x:Name="chkbShowCursors"  Content="Cursors" IsChecked="True" Checked="chkbShow_CheckedChanged" Unchecked="chkbShow_CheckedChanged"/>
+            <TextBox x:Name="tbElementPattern" MinWidth="100" TextChanged="UpdateCollectionViewSource" Margin="5"/>
+            <CheckBox x:Name="chkbShowMethods" Content="Methods" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+            <CheckBox x:Name="chkbShowVariables"  Content="Variables" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+            <CheckBox x:Name="chkbShowTypes"  Content="Types" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+            <CheckBox x:Name="chkbShowCursors"  Content="Cursors" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
             <Button Content="Save" Command="{Binding SaveSplitterCommand}"/>
             <Button Content="Load" Command="{Binding LoadSplitterCommand}"/>
         </StackPanel>
