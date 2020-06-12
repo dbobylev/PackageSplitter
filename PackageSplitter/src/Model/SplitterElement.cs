@@ -52,6 +52,9 @@ namespace PackageSplitter.Model
             set => _NewBody = SetState(_NewBody, value);
         }
 
+        [JsonProperty]
+        public bool IsRequiried { get; set; } = false;
+
         public SplitterElement(string packageElementName, ePackageElementType packageElementType)
         {
             PackageElementName = packageElementName;

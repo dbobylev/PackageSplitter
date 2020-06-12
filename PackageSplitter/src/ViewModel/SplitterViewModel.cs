@@ -21,6 +21,7 @@ namespace PackageSplitter.ViewModel
         public RelayCommand SplitCommand { get; private set; }
         public RelayCommand SaveSplitterCommand { get; private set; }
         public RelayCommand LoadSplitterCommand { get; private set; }
+        public RelayCommand RunAnalyzeLinksCommand { get; private set; }
 
         public bool IsCheckedParamNewWindow { get; set; } = true;
         public bool IsCheckedParamClipboard { get; set; } = true;
@@ -38,6 +39,7 @@ namespace PackageSplitter.ViewModel
             SplitCommand = new RelayCommand(RunSplit, (x) => _splitter != null);
             SaveSplitterCommand = new RelayCommand(SaveModel, (x) => _SplitterSaver != null);
             LoadSplitterCommand = new RelayCommand(LoadModel, (x) => _SplitterSaver != null);
+            RunAnalyzeLinksCommand = new RelayCommand(AnalyzeLinks);
         }
 
         public void SetModel(Package parsedPackage, RepositoryPackage repositoryPackage)
@@ -89,6 +91,11 @@ namespace PackageSplitter.ViewModel
                 _splitter = splitter;
                 FillElements();
             }
+        }
+
+        public void AnalyzeLinks(object obj)
+        {
+
         }
     }
 }

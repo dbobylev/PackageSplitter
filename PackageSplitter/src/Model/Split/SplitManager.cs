@@ -93,6 +93,11 @@ namespace PackageSplitter.Model.Split
                 DBRep.Instance().SaveTextToFile(FinalObjectText, repositoryObject);
             }
         }
+
+        public void AnalizeLinks()
+        {
+            _splitter.Elements.ForEach(x => x.IsRequiried = true);
+        }
     }
 }
  

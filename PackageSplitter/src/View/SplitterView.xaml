@@ -12,6 +12,7 @@
              d:DesignHeight="450" d:DesignWidth="800" x:Name="uc">
     <UserControl.Resources>
         <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
+        <Convertrs:IsRequiriedToBackgroundColor x:Key="IsRequiriedToBackgroundColor"/>
         <Templates:SplitterCell x:Key="SplitterCell"/>
         <CollectionViewSource x:Key="ViewSourceItems" Source="{Binding ElementsViewModel}" Filter="CollectionViewSource_Filter"/>
         <Style TargetType="CheckBox">
@@ -52,6 +53,7 @@
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="Margin" Value="5,2"/>
+                            <Setter Property="Background" Value="{Binding IsRequiried, Converter={StaticResource IsRequiriedToBackgroundColor}}"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -94,6 +96,7 @@
                 <CheckBox Content="Добавить заголовок" IsChecked="{Binding IsCheckedParamAddHeader}" IsThreeState="False"/>
                 <CheckBox Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False"/>
             </StackPanel>
+            <Button Content="Analyze" Command="{Binding RunAnalyzeLinksCommand}"/>
             <Button Content="OldSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
             <Button Content="OldBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
             <Button Content="NewSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
