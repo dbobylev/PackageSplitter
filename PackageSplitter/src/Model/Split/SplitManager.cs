@@ -81,6 +81,17 @@ namespace PackageSplitter.Model.Split
                 TextWindow tw = new TextWindow(FinalObjectText);
                 tw.Show();
             }
+
+            if (param.HasFlag(eSplitParam.DirectlyUpdateRep))
+            {
+                RepositoryObject repositoryObject;
+                if (splitterObjectType.IsNew())
+                    repositoryObject = new RepositoryObject(Config.Instanse().NewPackageName, Config.Instanse().NewPackageOwner, splitterObjectType.IsSpec() ? eRepositoryObjectType.Package_Spec : eRepositoryObjectType.Package_Body);
+                else
+                    repositoryObject = splitterObjectType.IsSpec() ? _splitter.RepositoryPackage.GetObjectSpec() : _splitter.RepositoryPackage.GetObjectBody();
+
+                DBRep.Instance().SaveTextToFile(FinalObjectText, repositoryObject);
+            }
         }
     }
 }

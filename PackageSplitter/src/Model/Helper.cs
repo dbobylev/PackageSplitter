@@ -30,6 +30,11 @@ namespace PackageSplitter.Model
             return source == eSplitterObjectType.NewBody || source == eSplitterObjectType.NewSpec;
         }
 
+        public static bool IsSpec(this eSplitterObjectType source)
+        {
+            return source == eSplitterObjectType.OldSpec || source == eSplitterObjectType.NewSpec;
+        }
+
         public static T[] Insert<T>(this T[] source, int pos, T[] value)
         {
             var len = value.Length;
