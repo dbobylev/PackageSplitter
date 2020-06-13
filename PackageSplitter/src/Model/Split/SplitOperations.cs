@@ -15,6 +15,7 @@ using System.Windows.Documents;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using OracleParser;
+using System.Threading;
 
 namespace PackageSplitter.Model.Split
 {
@@ -38,7 +39,7 @@ namespace PackageSplitter.Model.Split
                    .Concat(GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ALL_ELEMENT_TYPES))
                    .Distinct()
                    .Select(x => x.ToUpper());
-            var AllNewBodies = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x=>x.ToUpper());
+            var AllNewBodies = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
             var AllLinks = _package.elements.Where(x => AllNewBodies.Contains(x.Name.ToUpper())).SelectMany(x => x.Links.ToArray()).Select(x => x.Text).Distinct();
             var LinkedOldNames = AllNames.Except(NewNames).Intersect(AllLinks);
 
@@ -63,6 +64,15 @@ namespace PackageSplitter.Model.Split
 
         protected string RunSplitNewBody()
         {
+            // Делаем заготовку для временного файла
+            var tmpObj = new TempRepositoryObject(_package);
+
+            // Проверяем был ли создан временный файл с обновленнными ссылками
+            var NeedUpdatePrefix = MakePrefix(tmpObj);
+            if (NeedUpdatePrefix)
+                // Заменяем путь до пакета на временный (с обновленными ссылками)
+                _package.repositoryPackage = tmpObj.TempRepObject;
+
             var AllVariables = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, NOT_METHOD_TYPES);
             var AllMethods = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
 
@@ -70,6 +80,12 @@ namespace PackageSplitter.Model.Split
             NewText += GetNewText(AllVariables, ePackageElementDefinitionType.Spec);
             NewText += GetNewText(AllVariables, ePackageElementDefinitionType.BodyFull);
             NewText += GetNewText(AllMethods, ePackageElementDefinitionType.BodyFull);
+
+            if (NeedUpdatePrefix)
+            {
+                _package.repositoryPackage = tmpObj.OriginalRepObject;
+                tmpObj.DeleteTempFile();
+            }
 
             return NewText;
         }
@@ -343,6 +359,83 @@ namespace PackageSplitter.Model.Split
                    $"    {NewPackageNameText}{parametersText}" +
                    $"  end {element.Name};";
             return text.Split("\r\n");
+        }
+
+        /// <summary>
+        /// Добавляем префиксы исходного пакета к помеченным ссылкам в новом теле пакета.
+        /// Создаём временный файл тела пакета, копию исходного тела, где обновим все необходимые ссылки
+        /// Этот временный файл будем использовать при генерации нового тела пакета, таким образом в новом пакете будут ссылки на исходжный пакет.
+        /// Такой подход необходим так как у нас имеются точные позициии ссылок в _исхордном пакете_ (т.е. при создании нового, мы не знаем в каком месте окажется ссылка, которую нужно обновить)
+        /// </summary>
+        /// <param name="tmpRepObject"></param>
+        /// <returns>Имеются обновленные данные: Да/Нет</returns>
+        private bool MakePrefix(TempRepositoryObject tmpRepObject)
+        {
+            // Переменная ответа, пока обновлять ничего не нужно
+            var answer = false;
+
+            // Название всех ссылок(объектов) которые мы должны обновить
+            var AllPrefixNames = _splitter.Elements.Where(x => x.MakePrefix).Select(x => x.PackageElementName.ToUpper());
+
+            // Назхвание всех новых методов в новом теле пакета, где будем обновлять ссылки
+            var AllNewBodyNames = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
+
+            // Все позхиции ссылок, которые должны быть обновлены 
+            var PosToUpgrade = _package.elements
+                .Where(x => AllNewBodyNames.Contains(x.Name) && x.Links.Any(u => AllPrefixNames.Contains(u.Text)))
+                .SelectMany(x => x.Links.ToArray())
+                .Where(x => AllPrefixNames.Contains(x.Text))
+                .OrderBy(x => x.LineBeg)
+                .ThenBy(x => x.ColumnBeg)
+                .ToArray();
+
+            if (PosToUpgrade.Any())
+            {
+                // Имеются ссылки для обновления, создаём временные файлы ниже
+                answer = true;
+
+                // Счётчик строчек
+                var LineCounter = 0;
+
+                // Индекс для отсортированной коллекции PosToUpgrade
+                var PosIndex = 0;
+
+                // Ссылка которую будем добавлять 
+                var LinkStr = $"{Config.Instanse().NewPackageName}.".ToLower();
+
+                // Добавляем название схемы в префикс если название скхемы у нового объекта отличается
+                if (Config.Instanse().NewPackageOwner.ToUpper() != tmpRepObject.OriginalRepObject.Owner.ToUpper())
+                    LinkStr = $"{Config.Instanse().NewPackageOwner.ToLower()}.{LinkStr}";
+
+                // Создаём временный файл тела исходног опакета с обновленными ссылками
+                using (StreamReader sr = new StreamReader(tmpRepObject.OriginalRepObject.BodyRepFullPath))
+                {
+                    using (StreamWriter sw = new StreamWriter(tmpRepObject.TempRepObject.BodyRepFullPath))
+                    {
+                        while (sr.Peek() >= 0)
+                        {
+                            var str = sr.ReadLine();
+                            LineCounter++;
+                            // В обной строчке может быть несколько замен, считаем их
+                            var OneLineReplaceCounter = 0;
+                            while (PosIndex < PosToUpgrade.Length && LineCounter == PosToUpgrade[PosIndex].LineBeg)
+                            {
+                                // Вставляем ссылку
+                                str = str.Insert(PosToUpgrade[PosIndex++].ColumnBeg + LinkStr.Length * OneLineReplaceCounter++, LinkStr);
+                            }
+                            sw.WriteLine(str);
+                        }
+                    }
+                }
+
+                // Создаём временный файл Спеки исходного пакета, т.к. они должны быть в паре в рамках объекта RepositoryObject
+                using (StreamReader sr = new StreamReader(tmpRepObject.OriginalRepObject.SpecRepFullPath))
+                    using (StreamWriter sw = new StreamWriter(tmpRepObject.TempRepObject.SpecRepFullPath))
+                        while (sr.Peek() >= 0)
+                            sw.WriteLine(sr.ReadLine());
+            }
+
+            return answer;
         }
 
         #endregion
