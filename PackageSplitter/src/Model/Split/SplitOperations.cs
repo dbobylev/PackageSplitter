@@ -85,7 +85,7 @@ namespace PackageSplitter.Model.Split
             var oldSpecText = string.Empty;
 
             // Строки исходного файла
-            var FileLines = File.ReadAllLines(_splitter.RepositoryPackage.SpecRepFullPath);
+            var FileLines = File.ReadAllLines(_package.repositoryPackage.SpecRepFullPath);
 
             // Методы который должны бють добавлены
             var MethodNameToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add, ePackageElementType.Method);
@@ -173,7 +173,7 @@ namespace PackageSplitter.Model.Split
             var oldBodyText = string.Empty;
 
             // Строки исходного файла
-            var FileLines = File.ReadAllLines(_splitter.RepositoryPackage.BodyRepFullPath);
+            var FileLines = File.ReadAllLines(_package.repositoryPackage.BodyRepFullPath);
 
             // Переменные которые должны быть ддобавлены
             var VariableToAdd = GetName(eSplitterObjectType.OldBody, eElementStateType.Add, NOT_METHOD_TYPES);
@@ -214,7 +214,7 @@ namespace PackageSplitter.Model.Split
                 .Select(x => new
                 {
                     Line = MoveLine(x.Position[ePackageElementDefinitionType.BodyFull].LineBeg),
-                    Code = GetLink(x, _splitter.RepositoryPackage)
+                    Code = GetLink(x, _package.repositoryPackage)
                 })
                 .ToArray();
 
@@ -300,7 +300,7 @@ namespace PackageSplitter.Model.Split
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < samples.Length; i++)
             {
-                sb.Append(DBRep.Instance().GetTextOfFile(_splitter.RepositoryPackage.RepFullPath(repositoryObjectType), samples[i].LineBeg, samples[i].LineEnd, samples[i].ColumnEnd));
+                sb.Append(DBRep.Instance().GetTextOfFile(_package.repositoryPackage.RepFullPath(repositoryObjectType), samples[i].LineBeg, samples[i].LineEnd, samples[i].ColumnEnd));
                 if (IsBodyDeclarationCopy)
                     sb.Append(";");
                 sb.AppendLine();

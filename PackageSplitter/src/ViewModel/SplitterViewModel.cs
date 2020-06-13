@@ -42,10 +42,10 @@ namespace PackageSplitter.ViewModel
             RunAnalyzeLinksCommand = new RelayCommand(AnalyzeLinks);
         }
 
-        public void SetModel(Package parsedPackage, RepositoryPackage repositoryPackage)
+        public void SetModel(Package parsedPackage)
         {
-            _SplitterSaver = new SplitterSaver(repositoryPackage.ObjectName, parsedPackage.SHA);
-            _splitter = new Splitter(parsedPackage, repositoryPackage);
+            _SplitterSaver = new SplitterSaver(parsedPackage.repositoryPackage.ObjectName, parsedPackage.SHA);
+            _splitter = new Splitter(parsedPackage);
             FillElements();
         }
 

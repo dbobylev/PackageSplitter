@@ -33,7 +33,7 @@ namespace PackageSplitter.Model.Split
         }
         #endregion
 
-        public event Action<Package, RepositoryPackage> PackageLoaded;
+        public event Action<Package> PackageLoaded;
 
         public void LoadSplitterPackage(Splitter splitterPackage)
         {
@@ -45,7 +45,7 @@ namespace PackageSplitter.Model.Split
             try
             {
                 _package = OraParser.Instance().GetPackage(repositoryPackage);
-                PackageLoaded?.Invoke(_package, repositoryPackage);
+                PackageLoaded?.Invoke(_package);
             }
             catch (Exception ex)
             {
@@ -88,7 +88,7 @@ namespace PackageSplitter.Model.Split
                 if (splitterObjectType.IsNew())
                     repositoryObject = new RepositoryObject(Config.Instanse().NewPackageName, Config.Instanse().NewPackageOwner, splitterObjectType.IsSpec() ? eRepositoryObjectType.Package_Spec : eRepositoryObjectType.Package_Body);
                 else
-                    repositoryObject = splitterObjectType.IsSpec() ? _splitter.RepositoryPackage.GetObjectSpec() : _splitter.RepositoryPackage.GetObjectBody();
+                    repositoryObject = splitterObjectType.IsSpec() ? _package.repositoryPackage.GetObjectSpec() : _package.repositoryPackage.GetObjectBody();
 
                 DBRep.Instance().SaveTextToFile(FinalObjectText, repositoryObject);
             }

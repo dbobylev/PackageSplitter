@@ -15,12 +15,9 @@ namespace PackageSplitter.Model
     {
         [JsonProperty]
         public List<SplitterElement> Elements { get; set; }
-        [JsonProperty]
-        public RepositoryPackage RepositoryPackage { get; private set; }
 
-        public Splitter(Package package, RepositoryPackage repositoryPackage)
+        public Splitter(Package package)
         {
-            RepositoryPackage = repositoryPackage;
             Elements = new List<SplitterElement>();
 
             for (int i = 0; i < package.elements.Count; i++)

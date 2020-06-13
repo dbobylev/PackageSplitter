@@ -8,7 +8,7 @@ namespace PackageSplitter.Model.Split
 {
     public interface ISplitManager
     {
-        event Action<Package, RepositoryPackage> PackageLoaded;
+        event Action<Package> PackageLoaded;
         void LoadOracleParsedPackage(RepositoryPackage repositoryPackage);
         void LoadSplitterPackage(Splitter splitterPackage);
         void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param);
