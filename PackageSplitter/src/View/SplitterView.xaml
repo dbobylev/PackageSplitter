@@ -24,6 +24,9 @@
             <Setter Property="Padding" Value="5"/>
             <Setter Property="MinWidth" Value="60"/>
         </Style>
+        <Style x:Key="IsRequiriedCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+            <Setter Property="Background" Value="{Binding IsRequiried, Converter={StaticResource IsRequiriedToBackgroundColor}}"/>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -61,7 +64,7 @@
         </StackPanel>
         <DataGrid Grid.Row="1" x:Name="MainGrid" ItemsSource="{Binding Source={StaticResource ViewSourceItems}}" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding ElementTypeStr}" Header="Type" Width="90">
+                <DataGridTextColumn Binding="{Binding ElementTypeStr}" Header="Type" Width="90" CellStyle="{StaticResource IsRequiriedCell}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center" />
@@ -69,7 +72,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Name}" Header="Name" MinWidth="150">
+                <DataGridTextColumn Binding="{Binding Name}" Header="Name" MinWidth="150" CellStyle="{StaticResource IsRequiriedCell}">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center" />
@@ -77,10 +80,10 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn Header="Make Prefix" SortMemberPath="IsRequiried">
+                <DataGridTemplateColumn Header="Make Prefix" SortMemberPath="IsRequiried" CellStyle="{StaticResource IsRequiriedCell}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Background="{Binding IsRequiried, Converter={StaticResource IsRequiriedToBackgroundColor}}">
+                            <StackPanel>
                                 <CheckBox IsThreeState="False" 
                                           IsChecked="{Binding MakePrefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           IsEnabled="{Binding IsRequiried}"/>
