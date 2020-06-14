@@ -19,7 +19,7 @@
         <Style TargetType="CheckBox">
             <Setter Property="Margin" Value="5"/>
         </Style>
-        <Style x:Key="IsRequiriedCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+        <Style x:Key="IsRequiriedCell" TargetType="DataGridCell">
             <Setter Property="Background" Value="{Binding IsRequiried, Converter={StaticResource IsRequiriedToBackgroundColor}}"/>
         </Style>
         <Style TargetType="Border" BasedOn="{StaticResource MainBorder}"/>
@@ -27,7 +27,7 @@
     </UserControl.Resources>
     <Grid UseLayoutRounding="True" Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="76"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border>
@@ -59,7 +59,7 @@
                     </StackPanel>
                 </Border>
                 <Border>
-                    <Button Content="Анализ ссылок" Command="{Binding RunAnalyzeLinksCommand}"/>
+                    <Button Content="Анализ&#x0a;ссылок" Command="{Binding RunAnalyzeLinksCommand}"/>
                 </Border>
                 <Border>
                     <StackPanel Orientation="Horizontal">
