@@ -7,7 +7,7 @@
         xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel"
         xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" 
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1400" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="800" Width="1400" WindowStartupLocation="CenterScreen" Background="#FFFFD755">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>

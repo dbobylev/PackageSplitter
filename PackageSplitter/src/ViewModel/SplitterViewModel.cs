@@ -39,7 +39,7 @@ namespace PackageSplitter.ViewModel
             SplitCommand = new RelayCommand(RunSplit, (x) => _splitter != null);
             SaveSplitterCommand = new RelayCommand(SaveModel, (x) => _SplitterSaver != null);
             LoadSplitterCommand = new RelayCommand(LoadModel, (x) => _SplitterSaver != null);
-            RunAnalyzeLinksCommand = new RelayCommand(AnalyzeLinks);
+            RunAnalyzeLinksCommand = new RelayCommand(AnalyzeLinks, (x) => _splitter != null);
         }
 
         public void SetModel(Package parsedPackage)

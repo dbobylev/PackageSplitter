@@ -13,39 +13,59 @@
         <Convertrs:RepPathToOwnersConverter x:Key="RepPathToOwnersConverter"/>
         <Style TargetType="ComboBox">
             <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="#FFFFD755"/>
         </Style>
         <Style TargetType="Label">
             <Setter Property="Margin" Value="5,0"/>
         </Style>
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="5"/>
-        </Style>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="5"/>
-        </Style>        
+            <Setter Property="Background" Value="#FFFFD755"/>
+        </Style>
+        <Style TargetType="Border" BasedOn="{StaticResource MainBorder}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource MainButton}"/>
     </UserControl.Resources>
-    <Border BorderThickness="1" BorderBrush="#FFE4CCB7" SnapsToDevicePixels="True" CornerRadius="4" Margin="5,0">
-        <StackPanel x:Name="spObjectSelector" Margin="0" Background="#FFDCE1E8">
-            <Label Content="Репозиторий"/>
-            <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
-            <Label Content="Схема"/>
-            <ComboBox x:Name="cbOwners" 
+    <Border Margin="5,5,-5,5">
+        <StackPanel x:Name="spObjectSelector">
+            <StackPanel.Resources>
+                <Style TargetType="Border" BasedOn="{StaticResource SubBorder}"/>
+            </StackPanel.Resources>
+            <Border>
+                <StackPanel>
+                    <Label Content="Репозиторий"/>
+                    <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
+                </StackPanel>
+            </Border>
+            <Border>
+                <StackPanel>
+                    <Label Content="Схема"/>
+                    <ComboBox x:Name="cbOwners" 
                       SelectedValue="{Binding SelectedOwner}"
                       ItemsSource="{Binding Text, Converter={StaticResource RepPathToOwnersConverter}, ElementName=tbRepositoryPath, Mode=OneWay}"/>
-            <Label Content="Поиск"/>
-            <TextBox x:Name="tbFilePattern"/>
-            <Label Content="Объект"/>
-            <ComboBox x:Name="cbRepositoryObjects"
+                </StackPanel>
+            </Border>
+            <Border>
+                <StackPanel>
+                    <Label Content="Фильтр"/>
+                    <TextBox x:Name="tbFilePattern"/>
+                </StackPanel>
+            </Border>
+            <Border>
+                <StackPanel>
+                    <Label Content="Объект"/>
+                    <ComboBox x:Name="cbRepositoryObjects"
                       SelectedValue="{Binding SelectedFile}"
                       DisplayMemberPath="Name">
-                <ComboBox.ItemsSource>
-                    <MultiBinding Converter="{StaticResource OwnersToRepObjectsConverter}">
-                        <Binding ElementName="cbOwners" Path="SelectedValue"/>
-                        <Binding ElementName="tbFilePattern" Path="Text"/>
-                    </MultiBinding>
-                </ComboBox.ItemsSource>
-            </ComboBox>
-            <Button x:Name="btnLoadObject" Content="Загрузить" Command="{Binding LoadOraclePackageCommand}" CommandParameter="{Binding ElementName=cbRepositoryObjects, Path=SelectedItem}"/>
+                        <ComboBox.ItemsSource>
+                            <MultiBinding Converter="{StaticResource OwnersToRepObjectsConverter}">
+                                <Binding ElementName="cbOwners" Path="SelectedValue"/>
+                                <Binding ElementName="tbFilePattern" Path="Text"/>
+                            </MultiBinding>
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
+                    <Button x:Name="btnLoadObject" Content="Загрузить" Command="{Binding LoadOraclePackageCommand}" CommandParameter="{Binding ElementName=cbRepositoryObjects, Path=SelectedItem}"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </Border>
 </UserControl>

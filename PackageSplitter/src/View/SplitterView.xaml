@@ -19,107 +19,128 @@
         <Style TargetType="CheckBox">
             <Setter Property="Margin" Value="5"/>
         </Style>
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="MinWidth" Value="60"/>
-        </Style>
         <Style x:Key="IsRequiriedCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
             <Setter Property="Background" Value="{Binding IsRequiried, Converter={StaticResource IsRequiriedToBackgroundColor}}"/>
+        </Style>
+        <Style TargetType="Border" BasedOn="{StaticResource MainBorder}">
+            <Setter Property="Margin" Value="5"/>
         </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="62"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Button Content="Save" Command="{Binding SaveSplitterCommand}"/>
-            <Button Content="Load" Command="{Binding LoadSplitterCommand}"/>
-            <StackPanel>
-                <TextBlock Text="Фильтр" Margin="5,2"/>
-                <TextBox x:Name="tbElementPattern" MinWidth="100" TextChanged="UpdateCollectionViewSource" Margin="5" VerticalAlignment="Center"/>
+        <Border>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource MainButton}"/>
+                </StackPanel.Resources>
+                <Button Content="Save" Command="{Binding SaveSplitterCommand}"/>
+                <Button Content="Load" Command="{Binding LoadSplitterCommand}"/>
+                <StackPanel>
+                    <TextBlock Text="Фильтр" Margin="5,2"/>
+                    <TextBox x:Name="tbElementPattern" MinWidth="100" TextChanged="UpdateCollectionViewSource" Margin="5" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel>
+                    <CheckBox x:Name="chkbShowMethods" Content="Методы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+                    <CheckBox x:Name="chkbShowVariables"  Content="Переменные" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+                </StackPanel>
+                <StackPanel>
+                    <CheckBox x:Name="chkbShowTypes"  Content="Типы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+                    <CheckBox x:Name="chkbShowCursors"  Content="Курсоры" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+                </StackPanel>
+                <Button Content="Анализ ссылок" Command="{Binding RunAnalyzeLinksCommand}"/>
+                <StackPanel>
+                    <CheckBox Content="Отобразить в окне" IsChecked="{Binding IsCheckedParamNewWindow}" IsThreeState="False"/>
+                    <CheckBox Content="Скопировать в буфер" IsChecked="{Binding IsCheckedParamClipboard}" IsThreeState="False"/>
+                </StackPanel>
+                <StackPanel>
+                    <CheckBox Content="Добавить заголовок" IsChecked="{Binding IsCheckedParamAddHeader}" IsThreeState="False"/>
+                    <CheckBox Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False"/>
+                </StackPanel>
+                <Button Content="OldSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
+                <Button Content="OldBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
+                <Button Content="NewSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
+                <Button Content="NewBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewBody}"/>
             </StackPanel>
-            <StackPanel>
-                <CheckBox x:Name="chkbShowMethods" Content="Методы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
-                <CheckBox x:Name="chkbShowVariables"  Content="Переменные" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
-            </StackPanel>
-            <StackPanel>
-                <CheckBox x:Name="chkbShowTypes"  Content="Типы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
-                <CheckBox x:Name="chkbShowCursors"  Content="Курсоры" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
-            </StackPanel>
-            <Button Content="Анализ ссылок" Command="{Binding RunAnalyzeLinksCommand}"/>
-            <StackPanel>
-                <CheckBox Content="Отобразить в окне" IsChecked="{Binding IsCheckedParamNewWindow}" IsThreeState="False"/>
-                <CheckBox Content="Скопировать в буфер" IsChecked="{Binding IsCheckedParamClipboard}" IsThreeState="False"/>
-            </StackPanel>
-            <StackPanel>
-                <CheckBox Content="Добавить заголовок" IsChecked="{Binding IsCheckedParamAddHeader}" IsThreeState="False"/>
-                <CheckBox Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False"/>
-            </StackPanel>
-            <Button Content="OldSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
-            <Button Content="OldBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
-            <Button Content="NewSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
-            <Button Content="NewBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewBody}"/>
-        </StackPanel>
-        <DataGrid Grid.Row="1" x:Name="MainGrid" ItemsSource="{Binding Source={StaticResource ViewSourceItems}}" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding ElementTypeStr}" Header="Type" Width="90" CellStyle="{StaticResource IsRequiriedCell}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Margin" Value="5,2"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Name}" Header="Name" MinWidth="150" CellStyle="{StaticResource IsRequiriedCell}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Margin" Value="5,2"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTemplateColumn Header="Make Prefix" SortMemberPath="IsRequiried" CellStyle="{StaticResource IsRequiriedCell}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <CheckBox IsThreeState="False" 
+        </Border>
+        <Border Grid.Row="1" Padding="5">
+            <DataGrid  x:Name="MainGrid" ItemsSource="{Binding Source={StaticResource ViewSourceItems}}" 
+                       AutoGenerateColumns="False" 
+                       RowHeaderWidth="0" 
+                       SelectionMode="Single"
+                       BorderThickness="0"
+                       Background="{StaticResource cRed}"
+                       VerticalScrollBarVisibility="Hidden">
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <Style.Resources>
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+                        </Style.Resources>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding ElementTypeStr, Mode=OneWay}" Header="Type" Width="90" CellStyle="{StaticResource IsRequiriedCell}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="5,2"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Name, Mode=OneWay}" Header="Name" MinWidth="200" CellStyle="{StaticResource IsRequiriedCell}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="5,2"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Make Prefix" SortMemberPath="IsRequiried" CellStyle="{StaticResource IsRequiriedCell}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <CheckBox IsThreeState="False" 
                                           IsChecked="{Binding MakePrefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           IsEnabled="{Binding IsRequiried}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Old Spec" SortMemberPath="OldSpecState">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Templates:SplitterCell SplitterObjectType="OldSpec" ElementStateType="{Binding OldSpecState}" PackageElementType="{Binding ElementType}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Old Body" SortMemberPath="OldBodyState">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Templates:SplitterCell SplitterObjectType="OldBody" ElementStateType="{Binding OldBodyState}" PackageElementType="{Binding ElementType}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="New Spec" SortMemberPath="NewSpecState">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Templates:SplitterCell SplitterObjectType="NewSpec" ElementStateType="{Binding NewSpecState}" PackageElementType="{Binding ElementType}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="New Body" SortMemberPath="NewBodyState">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Templates:SplitterCell SplitterObjectType="NewBody" ElementStateType="{Binding NewBodyState}" PackageElementType="{Binding ElementType}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Old Spec" SortMemberPath="OldSpecState" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Templates:SplitterCell SplitterObjectType="OldSpec" ElementStateType="{Binding OldSpecState}" PackageElementType="{Binding ElementType}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Old Body" SortMemberPath="OldBodyState" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Templates:SplitterCell SplitterObjectType="OldBody" ElementStateType="{Binding OldBodyState}" PackageElementType="{Binding ElementType}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="New Spec" SortMemberPath="NewSpecState" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Templates:SplitterCell SplitterObjectType="NewSpec" ElementStateType="{Binding NewSpecState}" PackageElementType="{Binding ElementType}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="New Body" SortMemberPath="NewBodyState" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Templates:SplitterCell SplitterObjectType="NewBody" ElementStateType="{Binding NewBodyState}" PackageElementType="{Binding ElementType}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
     </Grid>
 </UserControl>
