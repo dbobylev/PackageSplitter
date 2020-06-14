@@ -66,6 +66,18 @@
                     <Button x:Name="btnLoadObject" Content="Загрузить" Command="{Binding LoadOraclePackageCommand}" CommandParameter="{Binding ElementName=cbRepositoryObjects, Path=SelectedItem}"/>
                 </StackPanel>
             </Border>
+            <Border>
+                <StackPanel>
+                    <Label Content="Новая схема"/>
+                    <TextBox Text="{Binding NewPackageOwner, UpdateSourceTrigger=LostFocus}"/>
+                </StackPanel>
+            </Border>
+            <Border>
+                <StackPanel>
+                    <Label Content="Новый пакет"/>
+                    <TextBox Text="{Binding NewPackageName, UpdateSourceTrigger=LostFocus}"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </Border>
 </UserControl>

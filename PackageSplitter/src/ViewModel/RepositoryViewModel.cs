@@ -75,9 +75,41 @@ namespace PackageSplitter.ViewModel
             }
         }
 
+        private string _NewPackageName;
+        public string NewPackageName
+        {
+            get
+            {
+                return _NewPackageName;
+            }
+            set
+            {
+                _NewPackageName = value;
+                Config.Instanse().NewPackageName = value;
+                Config.Instanse().Save();
+            }
+        }
+
+        private string _NewPackageOwner;
+        public string NewPackageOwner
+        {
+            get
+            {
+                return _NewPackageOwner;
+            }
+            set
+            {
+                _NewPackageOwner = value;
+                Config.Instanse().NewPackageOwner = value;
+                Config.Instanse().Save();
+            }
+        }
+
         public RepositoryViewModel(ISplitManager splitManager)
         {
             _RepositoryPath = Config.Instanse().RepositoryPath;
+            _NewPackageName = Config.Instanse().NewPackageName;
+            _NewPackageOwner = Config.Instanse().NewPackageOwner;
             _SplitManager = splitManager;
             LoadOraclePackageCommand = new RelayCommand(LoadOraclePackage, (x) => _SelectedFile != null);
         }
