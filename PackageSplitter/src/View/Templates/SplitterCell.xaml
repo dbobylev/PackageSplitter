@@ -7,10 +7,16 @@
              xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" x:Class="PackageSplitter.View.Templates.SplitterCell"
              x:Name="uc" Loaded="uc_Loaded">
     <UserControl.Resources>
-        <Convertrs:ElementStateToStackPanelStyle x:Key="ElementStateToStackPanelStyle"/>
         <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
+        <Convertrs:ElementStateToGridStyle x:Key="ElementStateToGridStyle"/>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource MainTextBlock}"/>
     </UserControl.Resources>
-    <StackPanel x:Name="mainStack" Orientation="Horizontal" Style="{Binding ElementStateType, Converter={StaticResource ElementStateToStackPanelStyle}, ElementName=uc}" VerticalAlignment="Center">
-        <TextBlock x:Name="tbActionName" MinWidth="100" Text="{Binding ElementStateType, Mode=OneWay, Converter={StaticResource ElementStateToStringConverter}, ElementName=uc}" VerticalAlignment="Center"/>
-   </StackPanel>
+    <Grid Style="{Binding ElementStateType, Converter={StaticResource ElementStateToGridStyle}, ElementName=uc}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="tbActionName" Text="{Binding ElementStateType, Mode=OneWay, Converter={StaticResource ElementStateToStringConverter}, ElementName=uc}" VerticalAlignment="Center"/>
+        <StackPanel HorizontalAlignment="Right" Grid.Column="1" x:Name="mainStack" Orientation="Horizontal" VerticalAlignment="Center"/>
+    </Grid>
 </UserControl>

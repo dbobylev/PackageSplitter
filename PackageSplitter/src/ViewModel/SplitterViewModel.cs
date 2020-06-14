@@ -30,6 +30,17 @@ namespace PackageSplitter.ViewModel
 
         public ObservableCollection<SplitterElementViewModel> ElementsViewModel { get; private set; }
 
+        public bool? HasRequiried
+        {
+            get
+            {
+                if (ElementsViewModel == null && ElementsViewModel.Count == 0)
+                    return null;
+                else
+                    return ElementsViewModel.Any(x => x.IsRequiried && !x.MakePrefix);
+            }
+        }
+
         public SplitterViewModel(ISplitManager splitManager)
         {
             _SplitManager = splitManager;
@@ -91,6 +102,7 @@ namespace PackageSplitter.ViewModel
                 _splitter = splitter;
                 FillElements();
             }
+            OnPropertyChanged("HasRequiried");
         }
 
         public void AnalyzeLinks(object obj)
@@ -100,6 +112,8 @@ namespace PackageSplitter.ViewModel
 
             foreach (var item in ElementsViewModel)
                 item.UpdateIsRequiried();
+
+            OnPropertyChanged("HasRequiried");
         }
     }
 }

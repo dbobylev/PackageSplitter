@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace PackageSplitter.ViewModel.Convertrs
 {
@@ -21,5 +22,11 @@ namespace PackageSplitter.ViewModel.Convertrs
             var attribute = value.GetAttributeOfType<DescriptionAttribute>();
             return attribute == null ? value.ToString() : attribute.Description;
         }
+
+        public static T FindResource<T>(this string source)
+        {
+            return (T)Application.Current.FindResource(source);
+        }
+
     }
 }

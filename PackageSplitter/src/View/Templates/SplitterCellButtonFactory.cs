@@ -53,9 +53,9 @@ namespace PackageSplitter.View.Templates
                 case eSplitterObjectType.OldBody:
                     return new SplitterCellButton[]
                     {
+                        new SplitterCellButton(eSplitterCellButtonType.LinkButton, new Dictionary<eSplitterObjectType, eElementStateType>(new[] {LinkOldBody, AddNewSpec, AddNewBody})),
                         new SplitterCellButton(eSplitterCellButtonType.AddButton, new Dictionary<eSplitterObjectType, eElementStateType>(new[] { AddOldBody })),
-                        new SplitterCellButton(eSplitterCellButtonType.RemoveButton, new Dictionary<eSplitterObjectType, eElementStateType>(new[] { DelOldSpec, DelOldBody })),
-                        new SplitterCellButton(eSplitterCellButtonType.LinkButton, new Dictionary<eSplitterObjectType, eElementStateType>(new[] {LinkOldBody, AddNewSpec, AddNewBody}))
+                        new SplitterCellButton(eSplitterCellButtonType.RemoveButton, new Dictionary<eSplitterObjectType, eElementStateType>(new[] { DelOldSpec, DelOldBody }))
                     };
                 case eSplitterObjectType.NewSpec:
                     return new SplitterCellButton[]

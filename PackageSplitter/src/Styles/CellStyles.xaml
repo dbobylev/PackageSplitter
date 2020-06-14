@@ -2,31 +2,34 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PackageSplitter">
 
+    <SolidColorBrush x:Key="cCellYellow" Color="#FFFFFF64"/>
+    <SolidColorBrush x:Key="cCellGreen" Color="LightGreen"/>
+
     <SolidColorBrush x:Key="cCellEmpty" Color="Azure"/>
     <SolidColorBrush x:Key="cCellAdd" Color="LimeGreen"/>
     <SolidColorBrush x:Key="cCellDelete" Color="Red"/>
     <SolidColorBrush x:Key="cCellLink" Color="DarkMagenta"/>
     <SolidColorBrush x:Key="cCellExist" Color="#FFCAFF9E"/>
 
-    <Style x:Key="CellStackPanelDefaultStyle" TargetType="StackPanel">
-        <Setter Property="Background" Value="#FFCAFF9E"/>
+    <Style x:Key="CellStackPanelDefaultStyle" TargetType="Grid">
+        <Setter Property="Background" Value="{StaticResource cCellExist}"/>
     </Style>
-    <Style x:Key="CellStackPanelEmptytStyle" TargetType="StackPanel">
+    <Style x:Key="CellStackPanelEmptytStyle" TargetType="Grid">
         <Setter Property="Background" Value="{StaticResource cCellEmpty}"/>
     </Style>
-    <Style x:Key="CellStackPanelAddStyle" TargetType="StackPanel">
+    <Style x:Key="CellStackPanelAddStyle" TargetType="Grid">
         <Setter Property="Background" Value="{StaticResource cCellAdd}"/>
         <Setter Property="TextBlock.Foreground" Value="#FF002E00"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
-    <Style x:Key="CellStackPanelDeleteStyle" TargetType="StackPanel">
+    <Style x:Key="CellStackPanelDeleteStyle" TargetType="Grid">
         <Setter Property="Background" Value="{StaticResource cCellDelete}"/>
         <Setter Property="TextBlock.Foreground" Value="#FFFFE6EA"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
-    <Style x:Key="CellStackPanelLinkStyle" TargetType="StackPanel">
-        <Setter Property="Background" Value="#FFD8B100"/>
-        <Setter Property="TextBlock.Foreground" Value="{StaticResource cCellLink}"/>
+    <Style x:Key="CellStackPanelLinkStyle" TargetType="Grid">
+        <Setter Property="Background" Value="{StaticResource cCellLink}"/>
+        <Setter Property="TextBlock.Foreground" Value="Black"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
 </ResourceDictionary>

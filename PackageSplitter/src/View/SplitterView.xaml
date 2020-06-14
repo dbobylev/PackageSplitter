@@ -14,6 +14,7 @@
         <Convertrs:ElementStateToStringConverter x:Key="ElementStateToStringConverter"/>
         <Convertrs:IsRequiriedToBackgroundColor x:Key="IsRequiriedToBackgroundColor"/>
         <Convertrs:IsRequiriedToVisibility x:Key="IsRequiriedToVisibility"/>
+        <Convertrs:ButtonAnalizeLinkBackColorConverter x:Key="ButtonAnalizeLinkBackColorConverter"/>
         <Templates:SplitterCell x:Key="SplitterCell"/>
         <CollectionViewSource x:Key="ViewSourceItems" Source="{Binding ElementsViewModel}" Filter="CollectionViewSource_Filter"/>
         <Style TargetType="CheckBox">
@@ -30,7 +31,7 @@
             <RowDefinition Height="76"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border>
+        <Border HorizontalAlignment="Left">
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style TargetType="Button" BasedOn="{StaticResource MainButton}"/>
@@ -59,7 +60,7 @@
                     </StackPanel>
                 </Border>
                 <Border>
-                    <Button Content="Анализ&#x0a;ссылок" Command="{Binding RunAnalyzeLinksCommand}"/>
+                    <Button Content="Анализ&#x0a;ссылок" Command="{Binding RunAnalyzeLinksCommand}" Background="{Binding HasRequiried, Converter={StaticResource ButtonAnalizeLinkBackColorConverter}}"/>
                 </Border>
                 <Border>
                     <StackPanel Orientation="Horizontal">
@@ -101,7 +102,7 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding ElementTypeStr, Mode=OneWay}" Header="Type" Width="90" CellStyle="{StaticResource IsRequiriedCell}">
+                    <DataGridTextColumn Binding="{Binding ElementTypeStr, Mode=OneWay}" Header="Тип" Width="90" CellStyle="{StaticResource IsRequiriedCell}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -109,7 +110,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Name, Mode=OneWay}" Header="Name" MinWidth="200" CellStyle="{StaticResource IsRequiriedCell}">
+                    <DataGridTextColumn Binding="{Binding Name, Mode=OneWay}" Header="Название" MinWidth="200" CellStyle="{StaticResource IsRequiriedCell}">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -117,7 +118,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTemplateColumn Header="Make Prefix" SortMemberPath="IsRequiried" CellStyle="{StaticResource IsRequiriedCell}">
+                    <DataGridTemplateColumn Header="Префикс" SortMemberPath="IsRequiried" CellStyle="{StaticResource IsRequiriedCell}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -128,28 +129,28 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Old Spec" SortMemberPath="OldSpecState" Width="*">
+                    <DataGridTemplateColumn Header="Спец. (Исходный пкакет)" SortMemberPath="OldSpecState" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Templates:SplitterCell SplitterObjectType="OldSpec" ElementStateType="{Binding OldSpecState}" PackageElementType="{Binding ElementType}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Old Body" SortMemberPath="OldBodyState" Width="*">
+                    <DataGridTemplateColumn Header="Тело (Исходный пкакет)" SortMemberPath="OldBodyState" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Templates:SplitterCell SplitterObjectType="OldBody" ElementStateType="{Binding OldBodyState}" PackageElementType="{Binding ElementType}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="New Spec" SortMemberPath="NewSpecState" Width="*">
+                    <DataGridTemplateColumn Header="Спец. (новый пакет)" SortMemberPath="NewSpecState" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Templates:SplitterCell SplitterObjectType="NewSpec" ElementStateType="{Binding NewSpecState}" PackageElementType="{Binding ElementType}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="New Body" SortMemberPath="NewBodyState" Width="*">
+                    <DataGridTemplateColumn Header="Тело (новый пакет)" SortMemberPath="NewBodyState" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Templates:SplitterCell SplitterObjectType="NewBody" ElementStateType="{Binding NewBodyState}" PackageElementType="{Binding ElementType}"/>

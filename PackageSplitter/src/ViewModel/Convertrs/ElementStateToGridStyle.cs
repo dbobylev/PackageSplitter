@@ -8,7 +8,7 @@ using System.Windows.Data;
 
 namespace PackageSplitter.ViewModel.Convertrs
 {
-    class ElementStateToStackPanelStyle : IValueConverter
+    class ElementStateToGridStyle : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

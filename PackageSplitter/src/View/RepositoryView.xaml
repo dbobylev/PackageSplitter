@@ -19,7 +19,6 @@
         <Style TargetType="TextBox" BasedOn="{StaticResource MainTextBox}"/>
         <Style TargetType="ComboBox" BasedOn="{StaticResource MainComboBox}"/>
         <Style TargetType="TextBlock" BasedOn="{StaticResource MainTextBlock}"/>
-        <Style TargetType="{x:Type Control}" BasedOn="{StaticResource MainText}"/>
     </UserControl.Resources>
     <Border Margin="3,3,-3,3" VerticalAlignment="Top">
         <StackPanel x:Name="spObjectSelector">
