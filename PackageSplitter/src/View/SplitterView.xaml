@@ -72,10 +72,10 @@
                             <CheckBox Content="Добавить заголовок" IsChecked="{Binding IsCheckedParamAddHeader}" IsThreeState="False"/>
                             <CheckBox Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False"/>
                         </StackPanel>
-                        <Button Content="OldSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
-                        <Button Content="OldBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
-                        <Button Content="NewSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
-                        <Button Content="NewBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewBody}"/>
+                        <Button Content="СПЕЦ.&#x0a;OLD" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
+                        <Button Content="ТЕЛО&#x0a;OLD" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
+                        <Button Content="СПЕЦ.&#x0a;NEW" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
+                        <Button Content="ТЕЛО&#x0a;NEW" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewBody}"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
