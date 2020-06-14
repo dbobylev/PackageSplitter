@@ -22,47 +22,61 @@
         <Style x:Key="IsRequiriedCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
             <Setter Property="Background" Value="{Binding IsRequiried, Converter={StaticResource IsRequiriedToBackgroundColor}}"/>
         </Style>
-        <Style TargetType="Border" BasedOn="{StaticResource MainBorder}">
-            <Setter Property="Margin" Value="5"/>
-        </Style>
+        <Style TargetType="Border" BasedOn="{StaticResource MainBorder}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource MainTextBox}"/>
     </UserControl.Resources>
-    <Grid>
+    <Grid UseLayoutRounding="True" Margin="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="62"/>
+            <RowDefinition Height="80"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border>
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style TargetType="Button" BasedOn="{StaticResource MainButton}"/>
+                    <Style TargetType="Border" BasedOn="{StaticResource SubBorder}"/>
                 </StackPanel.Resources>
-                <Button Content="Save" Command="{Binding SaveSplitterCommand}"/>
-                <Button Content="Load" Command="{Binding LoadSplitterCommand}"/>
-                <StackPanel>
-                    <TextBlock Text="Фильтр" Margin="5,2"/>
-                    <TextBox x:Name="tbElementPattern" MinWidth="100" TextChanged="UpdateCollectionViewSource" Margin="5" VerticalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel>
-                    <CheckBox x:Name="chkbShowMethods" Content="Методы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
-                    <CheckBox x:Name="chkbShowVariables"  Content="Переменные" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
-                </StackPanel>
-                <StackPanel>
-                    <CheckBox x:Name="chkbShowTypes"  Content="Типы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
-                    <CheckBox x:Name="chkbShowCursors"  Content="Курсоры" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
-                </StackPanel>
-                <Button Content="Анализ ссылок" Command="{Binding RunAnalyzeLinksCommand}"/>
-                <StackPanel>
-                    <CheckBox Content="Отобразить в окне" IsChecked="{Binding IsCheckedParamNewWindow}" IsThreeState="False"/>
-                    <CheckBox Content="Скопировать в буфер" IsChecked="{Binding IsCheckedParamClipboard}" IsThreeState="False"/>
-                </StackPanel>
-                <StackPanel>
-                    <CheckBox Content="Добавить заголовок" IsChecked="{Binding IsCheckedParamAddHeader}" IsThreeState="False"/>
-                    <CheckBox Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False"/>
-                </StackPanel>
-                <Button Content="OldSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
-                <Button Content="OldBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
-                <Button Content="NewSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
-                <Button Content="NewBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewBody}"/>
+                <Border>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Save" Command="{Binding SaveSplitterCommand}"/>
+                        <Button Content="Load" Command="{Binding LoadSplitterCommand}"/>
+                    </StackPanel>
+                </Border>
+                <Border>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel>
+                            <TextBlock Text="Фильтр:" Margin="5,3"/>
+                            <TextBox x:Name="tbElementPattern" MinWidth="100" TextChanged="UpdateCollectionViewSource" Margin="5" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <CheckBox x:Name="chkbShowMethods" Content="Методы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+                            <CheckBox x:Name="chkbShowVariables"  Content="Переменные" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <CheckBox x:Name="chkbShowTypes"  Content="Типы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+                            <CheckBox x:Name="chkbShowCursors"  Content="Курсоры" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border>
+                    <Button Content="Анализ ссылок" Command="{Binding RunAnalyzeLinksCommand}"/>
+                </Border>
+                <Border>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel>
+                            <CheckBox Content="Отобразить в окне" IsChecked="{Binding IsCheckedParamNewWindow}" IsThreeState="False"/>
+                            <CheckBox Content="Скопировать в буфер" IsChecked="{Binding IsCheckedParamClipboard}" IsThreeState="False"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <CheckBox Content="Добавить заголовок" IsChecked="{Binding IsCheckedParamAddHeader}" IsThreeState="False"/>
+                            <CheckBox Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False"/>
+                        </StackPanel>
+                        <Button Content="OldSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
+                        <Button Content="OldBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
+                        <Button Content="NewSpec" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
+                        <Button Content="NewBody" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewBody}"/>
+                    </StackPanel>
+                </Border>
             </StackPanel>
         </Border>
         <Border Grid.Row="1" Padding="5">
@@ -71,7 +85,7 @@
                        RowHeaderWidth="0" 
                        SelectionMode="Single"
                        BorderThickness="0"
-                       Background="{StaticResource cRed}"
+                       Background="{StaticResource cPanel}"
                        VerticalScrollBarVisibility="Visible"
                        ScrollViewer.CanContentScroll="True"   
                        EnableRowVirtualization="True"

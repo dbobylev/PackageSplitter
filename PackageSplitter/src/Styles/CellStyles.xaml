@@ -1,25 +1,32 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PackageSplitter">
+
+    <SolidColorBrush x:Key="cCellEmpty" Color="Azure"/>
+    <SolidColorBrush x:Key="cCellAdd" Color="LimeGreen"/>
+    <SolidColorBrush x:Key="cCellDelete" Color="Red"/>
+    <SolidColorBrush x:Key="cCellLink" Color="DarkMagenta"/>
+    <SolidColorBrush x:Key="cCellExist" Color="#FFCAFF9E"/>
+
     <Style x:Key="CellStackPanelDefaultStyle" TargetType="StackPanel">
-        <Setter Property="Background" Value="LightGreen"/>
+        <Setter Property="Background" Value="#FFCAFF9E"/>
     </Style>
     <Style x:Key="CellStackPanelEmptytStyle" TargetType="StackPanel">
-        <Setter Property="Background" Value="LightPink"/>
+        <Setter Property="Background" Value="{StaticResource cCellEmpty}"/>
     </Style>
     <Style x:Key="CellStackPanelAddStyle" TargetType="StackPanel">
-        <Setter Property="Background" Value="LimeGreen"/>
+        <Setter Property="Background" Value="{StaticResource cCellAdd}"/>
         <Setter Property="TextBlock.Foreground" Value="#FF002E00"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
     <Style x:Key="CellStackPanelDeleteStyle" TargetType="StackPanel">
-        <Setter Property="Background" Value="Red"/>
+        <Setter Property="Background" Value="{StaticResource cCellDelete}"/>
         <Setter Property="TextBlock.Foreground" Value="#FFFFE6EA"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
     <Style x:Key="CellStackPanelLinkStyle" TargetType="StackPanel">
         <Setter Property="Background" Value="#FFD8B100"/>
-        <Setter Property="TextBlock.Foreground" Value="DarkMagenta"/>
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource cCellLink}"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
 </ResourceDictionary>

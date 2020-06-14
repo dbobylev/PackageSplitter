@@ -7,52 +7,40 @@
              xmlns:ViewModel="clr-namespace:PackageSplitter.ViewModel"
              xmlns:Convertrs="clr-namespace:PackageSplitter.ViewModel.Convertrs" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded" BorderThickness="1,1,1,1" x:Name="uc">
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded" x:Name="uc">
     <UserControl.Resources>
         <Convertrs:OwnersToRepObjectsConverter x:Key="OwnersToRepObjectsConverter"/>
         <Convertrs:RepPathToOwnersConverter x:Key="RepPathToOwnersConverter"/>
-        <Style TargetType="ComboBox">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Background" Value="#FFFFD755"/>
-        </Style>
         <Style TargetType="Label">
             <Setter Property="Margin" Value="5,0"/>
         </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Background" Value="#FFFFD755"/>
-        </Style>
         <Style TargetType="Border" BasedOn="{StaticResource MainBorder}"/>
         <Style TargetType="Button" BasedOn="{StaticResource MainButton}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource MainTextBox}"/>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource MainComboBox}"/>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource MainTextBlock}"/>
+        <Style TargetType="{x:Type Control}" BasedOn="{StaticResource MainText}"/>
     </UserControl.Resources>
-    <Border Margin="5,5,-5,5">
+    <Border Margin="3,3,-3,3" VerticalAlignment="Top">
         <StackPanel x:Name="spObjectSelector">
             <StackPanel.Resources>
                 <Style TargetType="Border" BasedOn="{StaticResource SubBorder}"/>
             </StackPanel.Resources>
             <Border>
                 <StackPanel>
-                    <Label Content="Репозиторий"/>
+                    <TextBlock Text="Репозиторий:"/>
                     <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
                 </StackPanel>
             </Border>
             <Border>
                 <StackPanel>
-                    <Label Content="Схема"/>
+                    <TextBlock Text="Схема:"/>
                     <ComboBox x:Name="cbOwners" 
                       SelectedValue="{Binding SelectedOwner}"
                       ItemsSource="{Binding Text, Converter={StaticResource RepPathToOwnersConverter}, ElementName=tbRepositoryPath, Mode=OneWay}"/>
-                </StackPanel>
-            </Border>
-            <Border>
-                <StackPanel>
-                    <Label Content="Фильтр"/>
+                    <TextBlock Text="Фильтр:"/>
                     <TextBox x:Name="tbFilePattern"/>
-                </StackPanel>
-            </Border>
-            <Border>
-                <StackPanel>
-                    <Label Content="Объект"/>
+                    <TextBlock Text="Объект:"/>
                     <ComboBox x:Name="cbRepositoryObjects"
                       SelectedValue="{Binding SelectedFile}"
                       DisplayMemberPath="Name">
@@ -68,13 +56,9 @@
             </Border>
             <Border>
                 <StackPanel>
-                    <Label Content="Новая схема"/>
+                    <TextBlock Text="Новая схема:"/>
                     <TextBox Text="{Binding NewPackageOwner, UpdateSourceTrigger=LostFocus}"/>
-                </StackPanel>
-            </Border>
-            <Border>
-                <StackPanel>
-                    <Label Content="Новый пакет"/>
+                    <TextBlock Text="Новый пакет:"/>
                     <TextBox Text="{Binding NewPackageName, UpdateSourceTrigger=LostFocus}"/>
                 </StackPanel>
             </Border>

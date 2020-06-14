@@ -3,28 +3,53 @@
                     xmlns:local="clr-namespace:PackageSplitter.Styles">
 
     <SolidColorBrush x:Key="cBlack" Color="#FF2C4059"/>
-    <SolidColorBrush x:Key="cRed" Color="#FFEE544E"/>
-    <SolidColorBrush x:Key="cOrange" Color="#FFF47C34"/>
-    <SolidColorBrush x:Key="cYellow" Color="#FFFFD755"/>
+    <SolidColorBrush x:Key="cPanel" Color="#2a9d8f"/>
+    <SolidColorBrush x:Key="cSubPanel" Color="#f4a261"/>
+    <SolidColorBrush x:Key="cBack" Color="#264653"/>
+    <SolidColorBrush x:Key="cUI" Color="#e5e5e5"/>
+    <SolidColorBrush x:Key="cText" Color="#003049"/>
 
+    <Style x:Key="MainText" TargetType="{x:Type Control}">
+        <Setter Property="Foreground" Value="{StaticResource cText}"/>
+    </Style>
+  
     <Style x:Key="MainBorder" TargetType="Border">
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius" Value="5"/>
-        <Setter Property="Margin" Value="5"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Padding" Value="2"/>
         <Setter Property="BorderBrush" Value="{StaticResource cBlack}"/>
-        <Setter Property="Background" Value="{StaticResource cRed}"/>
+        <Setter Property="Background" Value="{StaticResource cPanel}"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
     </Style>
 
     <Style x:Key="SubBorder" TargetType="Border" BasedOn="{StaticResource MainBorder}">
-        <Setter Property="Background" Value="{StaticResource cOrange}"/>
+        <Setter Property="Background" Value="{StaticResource cSubPanel}"/>
+        <Setter Property="Margin" Value="3"/>
     </Style>
 
     <Style x:Key="MainButton" TargetType="Button">
         <Setter Property="Margin" Value="5"/>
-        <Setter Property="Background" Value="{StaticResource cYellow}"/>
+        <Setter Property="Background" Value="{StaticResource cUI}"/>
         <Setter Property="Padding" Value="5"/>
         <Setter Property="MinWidth" Value="60"/>
+    </Style>
+
+    <Style x:Key="MainTextBox" TargetType="TextBox">
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Background" Value="{StaticResource cUI}"/>
+        <Setter Property="MinHeight" Value="20"/>
+    </Style>
+
+    <Style x:Key="MainComboBox" TargetType="ComboBox">
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Background" Value="{StaticResource cUI}"/>
+        <Setter Property="MinHeight" Value="20"/>
+    </Style>
+
+    <Style x:Key="MainTextBlock" TargetType="TextBlock">
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Foreground" Value="{StaticResource cText}"/>
     </Style>
 
 </ResourceDictionary>
