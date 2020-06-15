@@ -20,7 +20,7 @@
         <Style TargetType="ComboBox" BasedOn="{StaticResource MainComboBox}"/>
         <Style TargetType="TextBlock" BasedOn="{StaticResource MainTextBlock}"/>
     </UserControl.Resources>
-    <Border Margin="3,3,-3,3" VerticalAlignment="Top">
+    <Border Margin="3,3,-3,3">
         <StackPanel x:Name="spObjectSelector">
             <StackPanel.Resources>
                 <Style TargetType="Border" BasedOn="{StaticResource SubBorder}"/>

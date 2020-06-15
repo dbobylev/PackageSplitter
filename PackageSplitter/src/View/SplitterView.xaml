@@ -31,7 +31,7 @@
             <RowDefinition Height="76"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Border HorizontalAlignment="Left">
+        <Border>
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style TargetType="Button" BasedOn="{StaticResource MainButton}"/>
