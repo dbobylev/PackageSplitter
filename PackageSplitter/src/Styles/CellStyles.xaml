@@ -2,14 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:PackageSplitter">
 
-    <SolidColorBrush x:Key="cCellYellow" Color="#FFFFFF64"/>
+    <SolidColorBrush x:Key="cCellYellow" Color="#ffd166"/>
     <SolidColorBrush x:Key="cCellGreen" Color="LightGreen"/>
 
     <SolidColorBrush x:Key="cCellEmpty" Color="Azure"/>
-    <SolidColorBrush x:Key="cCellAdd" Color="LimeGreen"/>
-    <SolidColorBrush x:Key="cCellDelete" Color="Red"/>
-    <SolidColorBrush x:Key="cCellLink" Color="DarkMagenta"/>
-    <SolidColorBrush x:Key="cCellExist" Color="#FFCAFF9E"/>
+    <SolidColorBrush x:Key="cCellAdd" Color="#06d6a0"/>
+    <SolidColorBrush x:Key="cCellDelete" Color="#ef476f"/>
+    <SolidColorBrush x:Key="cCellLink" Color="#118ab2"/>
+    <SolidColorBrush x:Key="cCellExist" Color="#57C9EF"/>
 
     <Style x:Key="CellStackPanelDefaultStyle" TargetType="Grid">
         <Setter Property="Background" Value="{StaticResource cCellExist}"/>
@@ -29,7 +29,7 @@
     </Style>
     <Style x:Key="CellStackPanelLinkStyle" TargetType="Grid">
         <Setter Property="Background" Value="{StaticResource cCellLink}"/>
-        <Setter Property="TextBlock.Foreground" Value="Black"/>
+        <Setter Property="TextBlock.Foreground" Value="White"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
 </ResourceDictionary>
