@@ -70,7 +70,7 @@
                         </StackPanel>
                         <StackPanel>
                             <CheckBox Content="Добавить заголовок" IsChecked="{Binding IsCheckedParamAddHeader}" IsThreeState="False"/>
-                            <CheckBox Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False"/>
+                            <CheckBox x:Name="chkBoxRepositoryUpdate" Content="Обновить репозиторий" IsChecked="{Binding IsCheckedParamUpdateRep}" IsThreeState="False" Checked="chkBoxRepositoryUpdate_Checked" Unchecked="chkBoxRepositoryUpdate_Checked"/>
                         </StackPanel>
                         <Button Content="СПЕЦ.&#x0a;OLD" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
                         <Button Content="ТЕЛО&#x0a;OLD" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>

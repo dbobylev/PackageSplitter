@@ -54,5 +54,21 @@ namespace PackageSplitter.View
         {
             ((CollectionViewSource)this.Resources["ViewSourceItems"]).View.Refresh();
         }
+
+        private void chkBoxRepositoryUpdate_Checked(object sender, RoutedEventArgs e)
+        {
+            var box = sender as CheckBox;
+            if ((bool)box.IsChecked)
+            {
+                box.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                box.FontWeight = FontWeights.Bold;
+                MessageBox.Show("Внимание, при разбиение пакета, будет обновлён репозиторий (без комита)! Обязательно перепроверьте все вносимые изменения перед фиксацией.", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                box.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                box.FontWeight = FontWeights.Normal;
+            }
+        }
     }
 }
