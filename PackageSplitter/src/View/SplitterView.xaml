@@ -110,14 +110,16 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Binding="{Binding Name, Mode=OneWay}" Header="Название" MinWidth="200" CellStyle="{StaticResource IsRequiriedCell}">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="VerticalAlignment" Value="Center" />
-                                <Setter Property="Margin" Value="5,2"/>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Название" MinWidth="200" CellStyle="{StaticResource IsRequiriedCell}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel VerticalAlignment="Center" Margin="5,0">
+                                    <TextBlock Text="{Binding Path=Name, Mode=OneWay}"/>
+                                    <TextBlock Text="{Binding Path=ErrorMessage, Mode=OneWay}" Foreground="Red" FontWeight="Bold" Visibility="{Binding Path=ShowError}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Префикс" SortMemberPath="IsRequiried" CellStyle="{StaticResource IsRequiriedCell}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

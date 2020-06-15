@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 
 namespace PackageSplitter.ViewModel
 {
@@ -21,10 +22,10 @@ namespace PackageSplitter.ViewModel
         public string Name => _model.PackageElementName;
         public ePackageElementType ElementType => _model.PackageElementType;
         public string ElementTypeStr => ElementType.GetDescription();
-        public eElementStateType OldSpecState { get => _model.OldSpec; set { _model.OldSpec = value; OnPropertyChanged(); } }
-        public eElementStateType OldBodyState { get => _model.OldBody; set { _model.OldBody = value; OnPropertyChanged(); } }
-        public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); } }
-        public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); } }
+        public eElementStateType OldSpecState { get => _model.OldSpec; set { _model.OldSpec = value; OnPropertyChanged(); ValidateState(); } }
+        public eElementStateType OldBodyState { get => _model.OldBody; set { _model.OldBody = value; OnPropertyChanged(); ValidateState(); } }
+        public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); ValidateState(); } }
+        public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); ValidateState(); } }
 
         public bool IsRequiried { get => _model.IsRequiried; }
         public bool MakePrefix { 
@@ -70,5 +71,45 @@ namespace PackageSplitter.ViewModel
                     default: break;
                 }
         }
+
+        #region Validate
+        private string _ErrorMessage;
+        public string ErrorMessage
+        {
+            get
+            {
+                return _ErrorMessage;
+            }
+            private set
+            {
+                _ErrorMessage = value;
+                ShowError = string.IsNullOrEmpty(_ErrorMessage) ? Visibility.Collapsed : Visibility.Visible;
+                OnPropertyChanged("ErrorMessage");
+                OnPropertyChanged("ShowError");
+            }
+        }
+        public Visibility ShowError { get; private set; } = Visibility.Collapsed;
+        private void ValidateState()
+        {
+            var errorMsg = string.Empty;
+
+            if (ElementType == ePackageElementType.Method)
+            {
+                if (NewSpecState == eElementStateType.Add && NewBodyState == eElementStateType.Empty)
+                    errorMsg = "Необходимо добавить тело метода";
+                else if ((OldSpecState == eElementStateType.Exist | OldSpecState == eElementStateType.Add) && OldBodyState == eElementStateType.Delete)
+                    errorMsg = "Необходимо добавить тело метода";
+            }
+            else
+            {
+                if ((OldSpecState == eElementStateType.Exist | OldSpecState == eElementStateType.Add) && (OldBodyState == eElementStateType.Add | OldBodyState == eElementStateType.Exist))
+                    errorMsg = "Нельзя объявить дважды";
+                if (NewSpecState == eElementStateType.Add && NewBodyState == eElementStateType.Add)
+                    errorMsg = "Нельзя объявить дважды";
+            }
+
+            ErrorMessage = errorMsg;
+        }
+        #endregion
     }
 }
