@@ -90,6 +90,8 @@
                        VerticalScrollBarVisibility="Visible"
                        ScrollViewer.CanContentScroll="True"   
                        EnableRowVirtualization="True"
+                       VerticalGridLinesBrush="LightGray"
+                       HorizontalGridLinesBrush="LightGray"
                        VirtualizingPanel.VirtualizationMode="Standard">
                 <DataGrid.Resources>
                     <Style TargetType="DataGridRow">
@@ -110,7 +112,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTemplateColumn Header="Название" MinWidth="200" CellStyle="{StaticResource IsRequiriedCell}">
+                    <DataGridTemplateColumn Header="Название" MinWidth="200" CellStyle="{StaticResource IsRequiriedCell}" SortMemberPath="Name">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel VerticalAlignment="Center" Margin="5,0">

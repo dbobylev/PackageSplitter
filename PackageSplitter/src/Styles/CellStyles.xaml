@@ -19,12 +19,12 @@
     </Style>
     <Style x:Key="CellStackPanelAddStyle" TargetType="Grid">
         <Setter Property="Background" Value="{StaticResource cCellAdd}"/>
-        <Setter Property="TextBlock.Foreground" Value="#FF002E00"/>
+        <Setter Property="TextBlock.Foreground" Value="White"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
     <Style x:Key="CellStackPanelDeleteStyle" TargetType="Grid">
         <Setter Property="Background" Value="{StaticResource cCellDelete}"/>
-        <Setter Property="TextBlock.Foreground" Value="#FFFFE6EA"/>
+        <Setter Property="TextBlock.Foreground" Value="White"/>
         <Setter Property="TextBlock.FontWeight" Value="Bold"/>
     </Style>
     <Style x:Key="CellStackPanelLinkStyle" TargetType="Grid">
