@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using OracleParser;
 using System.Threading;
+using System.Windows.Xps.Serialization;
 
 namespace PackageSplitter.Model.Split
 {
@@ -334,10 +335,21 @@ namespace PackageSplitter.Model.Split
 
         private string[] GetLink(PackageElement element, RepositoryPackage repositoryPackage)
         {
+            Func<int, string> GetSpaces = (n) => string.Join(string.Empty, Enumerable.Range(0, n).Select(x => " "));
+
             var position = element.Position[ePackageElementDefinitionType.BodyDeclaration];
             var text = DBRep.Instance().GetTextOfFile(repositoryPackage.BodyRepFullPath, position.LineBeg, position.LineEnd, position.ColumnEnd);
-            var NewPackageNameText = $"{Config.Instanse().NewPackageOwner }.{ Config.Instanse().NewPackageName}";
-            var IndentName = string.Join(string.Empty, Enumerable.Range(0, NewPackageNameText.Count()).Select(x => " "));
+
+            var SpaceBeforeTextBegin = 0;
+            var ch = text[SpaceBeforeTextBegin];
+            while (ch == ' ')
+                ch = text[++SpaceBeforeTextBegin];
+            var beginIndent = GetSpaces(SpaceBeforeTextBegin);
+
+            var NewPackageNameText = $"{Config.Instanse().NewPackageName.ToLower()}.{element.Name}";
+            if (repositoryPackage.Owner.ToUpper() != Config.Instanse().NewPackageOwner.ToUpper())
+                NewPackageNameText = $"{Config.Instanse().NewPackageOwner.ToLower()}.{NewPackageNameText}";
+            var IndentName = GetSpaces(NewPackageNameText.Count());
 
             string parametersText = string.Empty;
             if (element.Parametres.Any())
@@ -346,7 +358,7 @@ namespace PackageSplitter.Model.Split
                 for (int i = 0; i < element.Parametres.Count; i++)
                 {
                     var paramName = element.Parametres[i].Name;
-                    parametersText += $"{(i == 0 ? string.Empty : $"     {IndentName}")}{paramName} => {paramName},\r\n";
+                    parametersText += $"{(i == 0 ? string.Empty : $"{beginIndent}  {IndentName} ")}{paramName} => {paramName},\r\n";
                 }
                 parametersText = parametersText.TrimEnd(new char[] { '\r', '\n', ',' });
                 parametersText += ");\r\n";
@@ -355,9 +367,9 @@ namespace PackageSplitter.Model.Split
                 parametersText += ";\r\n";
 
             text = $"{text} is\r\n" +
-                   $"  begin\r\n" +
-                   $"    {NewPackageNameText}{parametersText}" +
-                   $"  end {element.Name};";
+                   $"{beginIndent}begin\r\n" +
+                   $"{beginIndent}  {NewPackageNameText}{parametersText}" +
+                   $"{beginIndent}end {element.Name};";
             return text.Split("\r\n");
         }
 

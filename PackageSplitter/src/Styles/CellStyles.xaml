@@ -5,11 +5,11 @@
     <SolidColorBrush x:Key="cCellYellow" Color="#ffd166"/>
     <SolidColorBrush x:Key="cCellGreen" Color="LightGreen"/>
 
-    <SolidColorBrush x:Key="cCellEmpty" Color="Azure"/>
+    <SolidColorBrush x:Key="cCellEmpty" Color="#ECF9FD"/>
     <SolidColorBrush x:Key="cCellAdd" Color="#06d6a0"/>
     <SolidColorBrush x:Key="cCellDelete" Color="#ef476f"/>
     <SolidColorBrush x:Key="cCellLink" Color="#118ab2"/>
-    <SolidColorBrush x:Key="cCellExist" Color="#57C9EF"/>
+    <SolidColorBrush x:Key="cCellExist" Color="#A3E2F5"/>
 
     <Style x:Key="CellStackPanelDefaultStyle" TargetType="Grid">
         <Setter Property="Background" Value="{StaticResource cCellExist}"/>
