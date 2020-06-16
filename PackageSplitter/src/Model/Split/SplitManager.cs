@@ -45,6 +45,8 @@ namespace PackageSplitter.Model.Split
             try
             {
                 _package = OraParser.Instance().GetPackage(repositoryPackage);
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
                 PackageLoaded?.Invoke(_package);
             }
             catch (Exception ex)
@@ -88,7 +90,17 @@ namespace PackageSplitter.Model.Split
                 if (splitterObjectType.IsNew())
                     repositoryObject = new RepositoryObject(Config.Instanse().NewPackageName, Config.Instanse().NewPackageOwner, splitterObjectType.IsSpec() ? eRepositoryObjectType.Package_Spec : eRepositoryObjectType.Package_Body);
                 else
+                {
                     repositoryObject = splitterObjectType.IsSpec() ? _package.repositoryPackage.GetObjectSpec() : _package.repositoryPackage.GetObjectBody();
+
+                    /* Мы должны одновременно обновить в репозитории и спеку и тело
+                     * Последовательно мы это сделать не может, так как генерация текста зависит от обоих частей
+                     * Обновляем соседнюю часть:
+                     */
+                    var SecondParttext = splitterObjectType.IsSpec() ? RunSplitOldBody() : RunSplitOldSpec();
+                    var SecondPartObj = splitterObjectType.IsSpec() ? _package.repositoryPackage.GetObjectBody() : _package.repositoryPackage.GetObjectSpec();
+                    DBRep.Instance().SaveTextToFile(SecondParttext, SecondPartObj);
+                }
 
                 DBRep.Instance().SaveTextToFile(FinalObjectText, repositoryObject);
             }

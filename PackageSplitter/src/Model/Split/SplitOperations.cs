@@ -109,7 +109,7 @@ namespace PackageSplitter.Model.Split
             if (MethodNameToAdd.Any())
             {
                 // Ищем последнюю строку последнего метода
-                PosMethod = _package.elements.Where(x => MethodNameToAdd.Contains(x.Name) && x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
+                PosMethod = _package.elements.Where(x => x.HasSpec).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
                 // Вставляем метку, для последующей вставки новых методов
                 FileLines = FileLines.Insert(PosMethod + 1 /*На следующей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelMethod });
                 // Текст новых методов
@@ -346,10 +346,12 @@ namespace PackageSplitter.Model.Split
                 ch = text[++SpaceBeforeTextBegin];
             var beginIndent = GetSpaces(SpaceBeforeTextBegin);
 
-            var NewPackageNameText = $"{Config.Instanse().NewPackageName.ToLower()}.{element.Name}";
+            var NewPackageCallText = $"{Config.Instanse().NewPackageName.ToLower()}.{element.Name}";
             if (repositoryPackage.Owner.ToUpper() != Config.Instanse().NewPackageOwner.ToUpper())
-                NewPackageNameText = $"{Config.Instanse().NewPackageOwner.ToLower()}.{NewPackageNameText}";
-            var IndentName = GetSpaces(NewPackageNameText.Count());
+                NewPackageCallText = $"{Config.Instanse().NewPackageOwner.ToLower()}.{NewPackageCallText}";
+            if (text[SpaceBeforeTextBegin] == 'f' || text[SpaceBeforeTextBegin] == 'F')
+                NewPackageCallText = $"return {NewPackageCallText}";
+            var IndentName = GetSpaces(NewPackageCallText.Count());
 
             string parametersText = string.Empty;
             if (element.Parametres.Any())
@@ -368,7 +370,7 @@ namespace PackageSplitter.Model.Split
 
             text = $"{text} is\r\n" +
                    $"{beginIndent}begin\r\n" +
-                   $"{beginIndent}  {NewPackageNameText}{parametersText}" +
+                   $"{beginIndent}  {NewPackageCallText}{parametersText}" +
                    $"{beginIndent}end {element.Name};";
             return text.Split("\r\n");
         }
@@ -413,11 +415,11 @@ namespace PackageSplitter.Model.Split
                 var PosIndex = 0;
 
                 // Ссылка которую будем добавлять 
-                var LinkStr = $"{Config.Instanse().NewPackageName}.".ToLower();
+                var LinkStr = $"{tmpRepObject.OriginalRepObject.Name}.".ToLower();
 
                 // Добавляем название схемы в префикс если название скхемы у нового объекта отличается
                 if (Config.Instanse().NewPackageOwner.ToUpper() != tmpRepObject.OriginalRepObject.Owner.ToUpper())
-                    LinkStr = $"{Config.Instanse().NewPackageOwner.ToLower()}.{LinkStr}";
+                    LinkStr = $"{tmpRepObject.OriginalRepObject.Owner}.{LinkStr}";
 
                 // Создаём временный файл тела исходног опакета с обновленными ссылками
                 using (StreamReader sr = new StreamReader(tmpRepObject.OriginalRepObject.BodyRepFullPath))
