@@ -2,6 +2,7 @@
 using DataBaseRepository.Model;
 using PackageSplitter.Model.Split;
 using PackageSplitter.src.Command;
+using PackageSplitter.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -119,7 +120,9 @@ namespace PackageSplitter.ViewModel
             if (obj is RepositoryObject repositoryObject)
             {
                 var repositoryPackage = new RepositoryPackage(repositoryObject);
-                _SplitManager.LoadOracleParsedPackage(repositoryPackage);
+                //_SplitManager.LoadOracleParsedPackage(repositoryPackage);
+                ParserWindow pw = new ParserWindow(repositoryPackage);
+                pw.Show();
             }
         }
     }

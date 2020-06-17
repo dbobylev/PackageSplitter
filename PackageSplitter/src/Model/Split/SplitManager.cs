@@ -40,14 +40,12 @@ namespace PackageSplitter.Model.Split
             _splitter = splitterPackage;
         }
 
-        public void LoadOracleParsedPackage(RepositoryPackage repositoryPackage)
+        public async void LoadOracleParsedPackage(RepositoryPackage repositoryPackage)
         {
             try
             {
-                _package = OraParser.Instance().GetPackage(repositoryPackage);
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                PackageLoaded?.Invoke(_package);
+                _package = await OraParser.Instance().GetPackage(repositoryPackage);
+                LoadOracleParsedPackage(_package);
             }
             catch (Exception ex)
             {
@@ -55,6 +53,13 @@ namespace PackageSplitter.Model.Split
                 TextWindow textWindow = new TextWindow(ex.ToString());
                 textWindow.Show();
             }
+        }
+
+        public void LoadOracleParsedPackage(Package package)
+        {
+            PackageLoaded?.Invoke(package);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         public void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param)
