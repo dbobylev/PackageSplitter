@@ -19,13 +19,17 @@ namespace PackageSplitter.View
     /// </summary>
     public partial class ParserWindow : Window
     {
+        private RepositoryPackage _repositoryPackage;
+
         public ParserWindow(RepositoryPackage repositoryPackage)
         {
-            var VM = new ParserViewModel(repositoryPackage);
-            VM.CloseAction = () => Close();
-            DataContext = VM;
-
+            _repositoryPackage = repositoryPackage;
             InitializeComponent();
+        }
+
+        private void window_Loaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = new ParserViewModel(_repositoryPackage, (x) => Close());
         }
     }
 }

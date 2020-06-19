@@ -1,8 +1,10 @@
 ﻿using PackageSplitter.Model.Parser;
+using PackageSplitter.ViewModel.Convertrs;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Media;
 
 namespace PackageSplitter.ViewModel
 {
@@ -20,10 +22,9 @@ namespace PackageSplitter.ViewModel
             {
                 _Status = value;
                 OnPropertyChanged("Status");
+                OnPropertyChanged("BackGround");
                 if (value == eParseStatus.InProgress)
-                {
                     LoadTime = TimeSpan.Zero;
-                } 
             }
         }
 
@@ -39,6 +40,30 @@ namespace PackageSplitter.ViewModel
         }
 
         public bool InProgress => _Status == eParseStatus.InProgress;
+
+        public SolidColorBrush BackGround
+        {
+            get
+            {
+                SolidColorBrush brush;
+                switch (_Status)
+                {
+                    case eParseStatus.InProgress:
+                        brush = "cCellYellow".FindResource<SolidColorBrush>();
+                        break;
+                    case eParseStatus.Done:
+                        brush = "cCellAdd".FindResource<SolidColorBrush>();
+                        break;
+                    case eParseStatus.Fail:
+                        brush = "cCellDelete".FindResource<SolidColorBrush>();
+                        break;
+                    default:
+                        brush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                        break;
+                }
+                return brush;
+            }
+        }
 
         public ParserDataViewModel(string path)
         {

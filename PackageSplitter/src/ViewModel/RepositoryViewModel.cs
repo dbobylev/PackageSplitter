@@ -120,7 +120,6 @@ namespace PackageSplitter.ViewModel
             if (obj is RepositoryObject repositoryObject)
             {
                 var repositoryPackage = new RepositoryPackage(repositoryObject);
-                //_SplitManager.LoadOracleParsedPackage(repositoryPackage);
                 ParserWindow pw = new ParserWindow(repositoryPackage);
                 pw.Show();
             }

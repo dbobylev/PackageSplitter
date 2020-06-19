@@ -9,17 +9,17 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows;
 
 namespace PackageSplitter.ViewModel
 {
     public class ParserViewModel :PropertyChangedBase
     {
-        private const int TIMER_INTERVAL_MS = 250;
+        private const int TIMER_INTERVAL_MS = 1000;
         private readonly TimeSpan TIMER_INTERVAL = TimeSpan.FromMilliseconds(TIMER_INTERVAL_MS);
-        private Timer timer = new Timer(TIMER_INTERVAL_MS);
+        private Timer _timer = new Timer(TIMER_INTERVAL_MS);
+        private OraParser _OraParser = OraParser.Instance();
 
-
-        public Action CloseAction;
         public RelayCommand CloseCommand { get; private set; }
 
         private string _ErrorMessage;
@@ -30,25 +30,26 @@ namespace PackageSplitter.ViewModel
             {
                 _ErrorMessage = value;
                 OnPropertyChanged();
+                OnPropertyChanged("HasError");
             }
         }
 
+        public Visibility HasError => string.IsNullOrEmpty(ErrorMessage) ? Visibility.Collapsed : Visibility.Visible;
+
         public ObservableCollection<ParserDataViewModel> ParserData { get; private set; }
 
-        public ParserViewModel(RepositoryPackage repositoryPackage)
+        public ParserViewModel(RepositoryPackage repositoryPackage, Action<object> CloseAction)
         {
-            CloseCommand = new RelayCommand((x) => { CloseAction(); });
+            CloseCommand = new RelayCommand(CloseAction);
 
             ParserData = new ObservableCollection<ParserDataViewModel>();
             ParserData.Add(new ParserDataViewModel(repositoryPackage.SpecRepFullPath));
             ParserData.Add(new ParserDataViewModel(repositoryPackage.BodyRepFullPath));
 
-            timer.Elapsed += Timer_Elapsed;
+            _timer.Elapsed += Timer_Elapsed;
   
             RunParse(repositoryPackage);
         }
-
-
 
         public ParserViewModel()
         {
@@ -57,21 +58,27 @@ namespace PackageSplitter.ViewModel
 
         public async void RunParse(RepositoryPackage repositoryPackage)
         {
-            OraParser.Instance().ObjectWasParsed += ParserViewModel_ObjectWasParsed;
-            ParserData[0].Status = eParseStatus.InProgress;
-            ParserData[1].Status = eParseStatus.Wait;
-
             try
             {
-                timer.Start();
-                var package = await OraParser.Instance().GetPackage(repositoryPackage);
-                timer.Stop();
+                var package = _OraParser.GetSavedPackage(repositoryPackage);
+                var HasSavedPackage = package != null;
+
+                if (!HasSavedPackage)
+                {
+                    ParserData[0].Status = eParseStatus.InProgress;
+                    ParserData[1].Status = eParseStatus.Wait;
+                    _OraParser.ObjectWasParsed += ParserViewModel_ObjectWasParsed;
+                    _timer.Start();
+                    package = await _OraParser.GetParsePackage(repositoryPackage);
+                }
 
                 SplitManager.Instance().LoadOracleParsedPackage(package);
+                if (HasSavedPackage)
+                    CloseCommand.Execute(null);
             }
             catch(Exception ex)
             {
-                timer.Stop();
+                _timer.Stop();
                 ErrorMessage = ex.Message;
                 if (ParserData[0].InProgress)
                     ParserData[0].Status = eParseStatus.Fail;
@@ -90,6 +97,7 @@ namespace PackageSplitter.ViewModel
                     break;
                 case eRepositoryObjectType.Package_Body:
                     ParserData[1].Status = eParseStatus.Done;
+                    _timer.Stop();
                     break;
             }
         }

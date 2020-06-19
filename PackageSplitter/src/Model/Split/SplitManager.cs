@@ -40,12 +40,16 @@ namespace PackageSplitter.Model.Split
             _splitter = splitterPackage;
         }
 
+        /// <summary>
+        /// Старый вариант реализации
+        /// </summary>
+        /// <param name="repositoryPackage"></param>
         public async void LoadOracleParsedPackage(RepositoryPackage repositoryPackage)
         {
             try
             {
-                _package = await OraParser.Instance().GetPackage(repositoryPackage);
-                LoadOracleParsedPackage(_package);
+                var package = await OraParser.Instance().GetPackage(repositoryPackage);
+                LoadOracleParsedPackage(package);
             }
             catch (Exception ex)
             {
@@ -57,7 +61,8 @@ namespace PackageSplitter.Model.Split
 
         public void LoadOracleParsedPackage(Package package)
         {
-            PackageLoaded?.Invoke(package);
+            _package = package;
+            PackageLoaded?.Invoke(_package);
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
