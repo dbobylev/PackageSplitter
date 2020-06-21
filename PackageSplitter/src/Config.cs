@@ -37,7 +37,12 @@ namespace PackageSplitter
             get => GetValue<string>("NewPackageOwner");
             set => SetValue("NewPackageOwner", value);
         }
-        
+
+        public bool AllowNationalChars
+        {
+            get => GetValue<bool>("AllowNationalChars");
+            set => SetValue("AllowNationalChars", value);
+        }
 
         private static Config _Instanse;
         public static Config Instanse()

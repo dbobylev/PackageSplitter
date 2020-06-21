@@ -106,11 +106,29 @@ namespace PackageSplitter.ViewModel
             }
         }
 
+        private bool _AllowNationalChars;
+        public bool AllowNationalChars
+        {
+            get
+            {
+                return _AllowNationalChars;
+            }
+            set
+            {
+                _AllowNationalChars = value;
+                Config.Instanse().AllowNationalChars = value;
+                Config.Instanse().Save();
+            }
+        }
+
+
         public RepositoryViewModel(ISplitManager splitManager)
         {
             _RepositoryPath = Config.Instanse().RepositoryPath;
             _NewPackageName = Config.Instanse().NewPackageName;
             _NewPackageOwner = Config.Instanse().NewPackageOwner;
+            _AllowNationalChars = Config.Instanse().AllowNationalChars;
+
             _SplitManager = splitManager;
             LoadOraclePackageCommand = new RelayCommand(LoadOraclePackage, (x) => _SelectedFile != null);
         }

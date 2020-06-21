@@ -48,7 +48,7 @@ namespace PackageSplitter.Model.Split
         {
             try
             {
-                var package = await OraParser.Instance().GetPackage(repositoryPackage);
+                var package = await OraParser.Instance().GetPackage(repositoryPackage, false);
                 LoadOracleParsedPackage(package);
             }
             catch (Exception ex)

@@ -61,6 +61,11 @@
                     <TextBox Text="{Binding NewPackageName, UpdateSourceTrigger=LostFocus}"/>
                 </StackPanel>
             </Border>
+            <Border>
+                <CheckBox IsThreeState="False" IsChecked="{Binding AllowNationalChars}" Margin="5">
+                    <TextBlock Text="Пропустить ошибки использования кириллицы в именах переменных" TextWrapping="Wrap" Margin="0"/>
+                </CheckBox>
+            </Border>
         </StackPanel>
     </Border>
 </UserControl>

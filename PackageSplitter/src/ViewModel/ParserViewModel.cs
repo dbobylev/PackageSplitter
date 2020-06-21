@@ -69,7 +69,7 @@ namespace PackageSplitter.ViewModel
                     ParserData[1].Status = eParseStatus.Wait;
                     _OraParser.ObjectWasParsed += ParserViewModel_ObjectWasParsed;
                     _timer.Start();
-                    package = await _OraParser.GetParsePackage(repositoryPackage);
+                    package = await _OraParser.GetParsePackage(repositoryPackage, Config.Instanse().AllowNationalChars);
                 }
 
                 SplitManager.Instance().LoadOracleParsedPackage(package);

@@ -4,6 +4,7 @@
   "LastFileUsed": "",
   "NewPackageName": "NewPackageName",
   "NewPackageOwner": "NewPackageOwner",
+  "AllowNationalChars": false,
   "Serilog": {
     "Using": [ "Serilog.Sinks.Console" ],
     "MinimumLevel": "Verbose",
