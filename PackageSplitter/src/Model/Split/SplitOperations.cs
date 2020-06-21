@@ -192,7 +192,47 @@ namespace PackageSplitter.Model.Split
             // Строки исходного файла
             var FileLines = File.ReadAllLines(_package.repositoryPackage.BodyRepFullPath);
 
-            // Переменные которые должны быть ддобавлены
+            #region Заменяем ссылки
+
+            var DeletedMethods = GetName(eSplitterObjectType.OldBody, eElementStateType.Delete, ePackageElementType.Method).Select(x=>x.ToUpper());
+            var ExistedMethods = GetName(eSplitterObjectType.OldBody, eElementStateType.Exist, ePackageElementType.Method);
+            var LinksToDeletedMethod = _package.elements
+                .Where(x => x.ElementType == ePackageElementType.Method && ExistedMethods.Contains(x.Name))
+                .SelectMany(x => x.Links.Where(x => DeletedMethods.Contains(x.Text.ToUpper())))
+                .OrderBy(x=>x.LineBeg)
+                .ThenBy(x=>x.ColumnBeg)
+                .ToArray();
+            if (LinksToDeletedMethod.Any())
+            {
+                var NewSpecMethods = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
+                var WrongLinks = LinksToDeletedMethod.Select(x => x.Text.ToUpper()).Distinct().Except(NewSpecMethods);
+                if (WrongLinks.Any())
+                    throw new Exception($"В исходном пакете остались ссылки на методы, которые были удалены и не объявлены в новой спецификации: {string.Join(", ", WrongLinks)}");
+
+                // Ссылка которую будем добавлять 
+                var LinkStr = $"{Config.Instanse().NewPackageName}.".ToLower();
+
+                // Добавляем название схемы в префикс если название схемы у нового объекта отличается
+                if (Config.Instanse().NewPackageOwner.ToUpper() != _package.repositoryPackage.Owner.ToUpper())
+                    LinkStr = $"{Config.Instanse().NewPackageOwner.ToLower()}.{LinkStr}";
+
+                var LinksToDeletedMethodIndex = 0;
+                for (int i = 0; i < FileLines.Length; i++)
+                {
+                    if (i + 1 == LinksToDeletedMethod[LinksToDeletedMethodIndex].LineBeg)
+                    {
+                        var OneLineReplaceCounter = 0;
+                        while (LinksToDeletedMethodIndex < LinksToDeletedMethod.Length && i + 1 == LinksToDeletedMethod[LinksToDeletedMethodIndex].LineBeg)
+                            FileLines[i] = FileLines[i].Insert(LinksToDeletedMethod[LinksToDeletedMethodIndex++].ColumnBeg + LinkStr.Length * OneLineReplaceCounter++, LinkStr);
+                        if (LinksToDeletedMethodIndex >= LinksToDeletedMethod.Length)
+                            break;
+                    }
+                }
+            }
+
+            #endregion
+
+            // Переменные которые должны быть добавлены
             var VariableToAdd = GetName(eSplitterObjectType.OldBody, eElementStateType.Add, NOT_METHOD_TYPES);
             if (VariableToAdd.Any())
             {
@@ -201,7 +241,8 @@ namespace PackageSplitter.Model.Split
                 {
                     PosVariable = _package.elements.Where(x => x.HasBody && x.ElementType != ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineEnd).OrderBy(x => x).Last();
                     // Вставляем метку, для последующей вставки новых переменных
-                    FileLines = FileLines.Insert(PosVariable + 1 /*На следующей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
+                    FileLines = FileLines.Insert(PosVariable + 1 /*На следующей строке*/
+            -1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
                 }
                 // Если переменных в пакете еще нет, вставляем перед первым найденным методом
                 else
@@ -417,11 +458,11 @@ namespace PackageSplitter.Model.Split
                 // Ссылка которую будем добавлять 
                 var LinkStr = $"{tmpRepObject.OriginalRepObject.Name}.".ToLower();
 
-                // Добавляем название схемы в префикс если название скхемы у нового объекта отличается
+                // Добавляем название схемы в префикс если название схемы у нового объекта отличается
                 if (Config.Instanse().NewPackageOwner.ToUpper() != tmpRepObject.OriginalRepObject.Owner.ToUpper())
                     LinkStr = $"{tmpRepObject.OriginalRepObject.Owner}.{LinkStr}";
 
-                // Создаём временный файл тела исходног опакета с обновленными ссылками
+                // Создаём временный файл тела исходного пакета с обновленными ссылками
                 using (StreamReader sr = new StreamReader(tmpRepObject.OriginalRepObject.BodyRepFullPath))
                 {
                     using (StreamWriter sw = new StreamWriter(tmpRepObject.TempRepObject.BodyRepFullPath))

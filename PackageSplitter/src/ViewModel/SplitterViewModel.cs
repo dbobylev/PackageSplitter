@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Documents;
 
 namespace PackageSplitter.ViewModel
@@ -71,12 +72,15 @@ namespace PackageSplitter.ViewModel
         {
             if (param is eSplitterObjectType splitterObjectType)
             {
-                _SplitManager.LoadSplitterPackage(_splitter);
-                _SplitManager.RunSplit(splitterObjectType, GetSplitParam());
-            }
-            else
-            {
-                throw new NotImplementedException("Не подходящий параметр для запуска Split");
+                try
+                {
+                    _SplitManager.LoadSplitterPackage(_splitter);
+                    _SplitManager.RunSplit(splitterObjectType, GetSplitParam());
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
