@@ -20,6 +20,7 @@ namespace PackageSplitter.ViewModel
     {
         private ISplitManager _SplitManager;
         private RepositoryObject _SelectedFile;
+        private ParserWindow pw;
 
         public RelayCommand LoadOraclePackageCommand { get; private set; }
 
@@ -130,7 +131,7 @@ namespace PackageSplitter.ViewModel
             _AllowNationalChars = Config.Instanse().AllowNationalChars;
 
             _SplitManager = splitManager;
-            LoadOraclePackageCommand = new RelayCommand(LoadOraclePackage, (x) => _SelectedFile != null);
+            LoadOraclePackageCommand = new RelayCommand(LoadOraclePackage, (x) => _SelectedFile != null && (pw == null || !pw.IsLoaded));
         }
 
         private void LoadOraclePackage(object obj)
@@ -138,7 +139,7 @@ namespace PackageSplitter.ViewModel
             if (obj is RepositoryObject repositoryObject)
             {
                 var repositoryPackage = new RepositoryPackage(repositoryObject);
-                ParserWindow pw = new ParserWindow(repositoryPackage);
+                pw = new ParserWindow(repositoryPackage);
                 pw.Show();
             }
         }

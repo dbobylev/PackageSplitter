@@ -73,10 +73,13 @@ namespace PackageSplitter.ViewModel
                 }
 
                 SplitManager.Instance().LoadOracleParsedPackage(package);
-                if (HasSavedPackage)
-                    CloseCommand.Execute(null);
+
+                if (!HasSavedPackage)
+                    await Task.Delay(1000);
+
+                CloseCommand.Execute(null);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _timer.Stop();
                 ErrorMessage = ex.Message;
