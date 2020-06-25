@@ -24,18 +24,12 @@ namespace PackageSplitter.ViewModel
         public string ElementTypeStr => ElementType.GetDescription();
         public eElementStateType OldSpecState { get => _model.OldSpec; set { _model.OldSpec = value; OnPropertyChanged(); ValidateState(); } }
         public eElementStateType OldBodyState { get => _model.OldBody; set { _model.OldBody = value; OnPropertyChanged(); ValidateState(); } }
-        public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); ValidateState(); } }
-        public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); ValidateState(); } }
+        public eElementStateType NewSpecState { get => _model.NewSpec; set { _model.NewSpec = value; OnPropertyChanged(); ValidateState(); ResetRequiried(value); } }
+        public eElementStateType NewBodyState { get => _model.NewBody; set { _model.NewBody = value; OnPropertyChanged(); ValidateState(); ResetRequiried(value); } }
 
-        public bool IsRequiried { get => _model.IsRequiried; }
-        public bool MakePrefix { 
-            get => _model.MakePrefix; 
-            set  
-            {
-                _model.MakePrefix = value;
-                OnPropertyChanged();
-            } 
-        }
+        public bool IsRequiried { get => _model.IsRequiried; set { _model.IsRequiried = value; OnPropertyChanged(); } }
+        public bool MakePrefix { get => _model.MakePrefix; set { _model.MakePrefix = value; OnPropertyChanged(); } }
+
 
         public void UpdateIsRequiried()
         {
@@ -111,5 +105,14 @@ namespace PackageSplitter.ViewModel
             ErrorMessage = errorMsg;
         }
         #endregion
+
+        private void ResetRequiried(eElementStateType state)
+        {
+            if (state == eElementStateType.Add && (IsRequiried || MakePrefix))
+            {
+                IsRequiried = false;
+                MakePrefix = false;
+            }
+        }
     }
 }

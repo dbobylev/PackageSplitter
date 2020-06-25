@@ -39,12 +39,6 @@
                 </StackPanel.Resources>
                 <Border>
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="Save" Command="{Binding SaveSplitterCommand}"/>
-                        <Button Content="Load" Command="{Binding LoadSplitterCommand}"/>
-                    </StackPanel>
-                </Border>
-                <Border>
-                    <StackPanel Orientation="Horizontal">
                         <StackPanel>
                             <TextBlock Text="Фильтр:" Margin="5,3"/>
                             <TextBox x:Name="tbElementPattern" MinWidth="100" TextChanged="UpdateCollectionViewSource" Margin="5" VerticalAlignment="Center"/>
@@ -57,6 +51,12 @@
                             <CheckBox x:Name="chkbShowTypes"  Content="Типы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
                             <CheckBox x:Name="chkbShowCursors"  Content="Курсоры" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
                         </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Save" Command="{Binding SaveSplitterCommand}"/>
+                        <Button Content="Load" Command="{Binding LoadSplitterCommand}"/>
                     </StackPanel>
                 </Border>
                 <Border>

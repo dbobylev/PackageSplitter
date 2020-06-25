@@ -115,7 +115,10 @@ namespace PackageSplitter.ViewModel
             var answer = _SplitManager.AnalizeLinks();
 
             if (answer)
-                MessageBox.Show("There are unsolved links", "Links", MessageBoxButton.OK, MessageBoxImage.Information);
+            {
+                MessageBoxResult result = MessageBox.Show("При анализе нового тела пакета найдены неразрешенные ссылки. Продолжить?", "Links", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                answer = result == MessageBoxResult.No;
+            }
 
             foreach (var item in ElementsViewModel)
                 item.UpdateIsRequiried();
