@@ -1,5 +1,6 @@
 ﻿using DataBaseRepository;
 using DataBaseRepository.Model;
+using Ookii.Dialogs.Wpf;
 using PackageSplitter.Model.Split;
 using PackageSplitter.src.Command;
 using PackageSplitter.View;
@@ -23,6 +24,8 @@ namespace PackageSplitter.ViewModel
         private ParserWindow pw;
 
         public RelayCommand LoadOraclePackageCommand { get; private set; }
+
+        public RelayCommand SelectRepositoryCommand { get; private set; }
 
         public RepositoryObject SelectedFile
         {
@@ -74,6 +77,7 @@ namespace PackageSplitter.ViewModel
                     Config.Instanse().RepositoryPath = value;
                     Config.Instanse().Save();
                 }
+                OnPropertyChanged();
             }
         }
 
@@ -132,6 +136,7 @@ namespace PackageSplitter.ViewModel
 
             _SplitManager = splitManager;
             LoadOraclePackageCommand = new RelayCommand(LoadOraclePackage, (x) => _SelectedFile != null && (pw == null || !pw.IsLoaded));
+            SelectRepositoryCommand = new RelayCommand(SelectRepository);
         }
 
         private void LoadOraclePackage(object obj)
@@ -141,6 +146,15 @@ namespace PackageSplitter.ViewModel
                 var repositoryPackage = new RepositoryPackage(repositoryObject);
                 pw = new ParserWindow(repositoryPackage);
                 pw.Show();
+            }
+        }
+
+        private void SelectRepository(object obj)
+        {
+            var dialog = new VistaFolderBrowserDialog();
+            if (dialog.ShowDialog().GetValueOrDefault())
+            {
+                RepositoryPath = dialog.SelectedPath;
             }
         }
     }

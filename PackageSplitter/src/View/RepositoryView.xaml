@@ -28,7 +28,14 @@
             <Border>
                 <StackPanel>
                     <TextBlock Text="Репозиторий:"/>
-                    <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="tbRepositoryPath" Text="{Binding RepositoryPath, UpdateSourceTrigger=LostFocus}"/>
+                        <Button Grid.Column="1" Command="{Binding SelectRepositoryCommand}" Content="..." Margin="0,5,5,5" Padding="0" MinWidth="24" Width="24"/>
+                    </Grid>
                 </StackPanel>
             </Border>
             <Border>
