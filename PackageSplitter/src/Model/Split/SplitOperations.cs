@@ -33,8 +33,9 @@ namespace PackageSplitter.Model.Split
 
         }
 
-        public virtual void AnalizeLinks()
+        public virtual bool AnalizeLinks()
         {
+            var answer = false;
             var AllNames = _package.elements.Select(x => x.Name.ToUpper());
             var NewNames = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ALL_ELEMENT_TYPES)
                    .Concat(GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ALL_ELEMENT_TYPES))
@@ -43,9 +44,15 @@ namespace PackageSplitter.Model.Split
             var AllNewBodies = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
             var AllLinks = _package.elements.Where(x => AllNewBodies.Contains(x.Name.ToUpper())).SelectMany(x => x.Links.ToArray()).Select(x => x.Text).Distinct();
             var LinkedOldNames = AllNames.Except(NewNames).Intersect(AllLinks);
-
-            _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried).ToList().ForEach(x => x.IsRequiried = true);
+            var NewRequiriedElements = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried);
+           
+            if (NewRequiriedElements.Any())
+            {
+                answer = true;
+                NewRequiriedElements.ToList().ForEach(x => x.IsRequiried = true);
+            }
             _splitter.Elements.Where(x => x.IsRequiried && !LinkedOldNames.Contains(x.PackageElementName.ToUpper())).ToList().ForEach(x => { x.MakePrefix = false; x.IsRequiried = false; });
+            return answer;
         }
 
         #region Split

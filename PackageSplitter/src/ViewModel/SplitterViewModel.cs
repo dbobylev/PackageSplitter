@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Annotations;
 using System.Windows.Documents;
 
 namespace PackageSplitter.ViewModel
@@ -22,7 +23,6 @@ namespace PackageSplitter.ViewModel
         public RelayCommand SplitCommand { get; private set; }
         public RelayCommand SaveSplitterCommand { get; private set; }
         public RelayCommand LoadSplitterCommand { get; private set; }
-        public RelayCommand RunAnalyzeLinksCommand { get; private set; }
 
         public bool IsCheckedParamNewWindow { get; set; } = true;
         public bool IsCheckedParamClipboard { get; set; } = true;
@@ -51,7 +51,6 @@ namespace PackageSplitter.ViewModel
             SplitCommand = new RelayCommand(RunSplit, (x) => _splitter != null);
             SaveSplitterCommand = new RelayCommand(SaveModel, (x) => _SplitterSaver != null);
             LoadSplitterCommand = new RelayCommand(LoadModel, (x) => _SplitterSaver != null);
-            RunAnalyzeLinksCommand = new RelayCommand(AnalyzeLinks, (x) => _splitter != null);
         }
 
         public void SetModel(Package parsedPackage)
@@ -75,6 +74,8 @@ namespace PackageSplitter.ViewModel
                 try
                 {
                     _SplitManager.LoadSplitterPackage(_splitter);
+                    if (splitterObjectType == eSplitterObjectType.NewBody && AnalyzeLinks())
+                        return;
                     _SplitManager.RunSplit(splitterObjectType, GetSplitParam());
                 }
                 catch(Exception ex)
@@ -109,15 +110,18 @@ namespace PackageSplitter.ViewModel
             OnPropertyChanged("HasRequiried");
         }
 
-        public void AnalyzeLinks(object obj)
+        private bool AnalyzeLinks()
         {
-            _SplitManager.LoadSplitterPackage(_splitter);
-            _SplitManager.AnalizeLinks();
+            var answer = _SplitManager.AnalizeLinks();
+
+            if (answer)
+                MessageBox.Show("There are unsolved links", "Links", MessageBoxButton.OK, MessageBoxImage.Information);
 
             foreach (var item in ElementsViewModel)
                 item.UpdateIsRequiried();
-
             OnPropertyChanged("HasRequiried");
+
+            return answer;
         }
     }
 }

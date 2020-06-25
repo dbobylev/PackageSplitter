@@ -12,6 +12,6 @@ namespace PackageSplitter.Model.Split
         void LoadOracleParsedPackage(RepositoryPackage repositoryPackage);
         void LoadSplitterPackage(Splitter splitterPackage);
         void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param);
-        void AnalizeLinks();
+        bool AnalizeLinks();
     }
 }

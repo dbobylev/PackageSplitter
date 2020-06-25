@@ -60,9 +60,6 @@
                     </StackPanel>
                 </Border>
                 <Border>
-                    <Button Content="Анализ&#x0a;ссылок" Command="{Binding RunAnalyzeLinksCommand}" Background="{Binding HasRequiried, Converter={StaticResource ButtonAnalizeLinkBackColorConverter}}"/>
-                </Border>
-                <Border>
                     <StackPanel Orientation="Horizontal">
                         <StackPanel>
                             <CheckBox Content="Отобразить в окне" IsChecked="{Binding IsCheckedParamNewWindow}" IsThreeState="False"/>

@@ -116,9 +116,9 @@ namespace PackageSplitter.Model.Split
             }
         }
 
-        public override void AnalizeLinks()
+        public override bool AnalizeLinks()
         {
-            base.AnalizeLinks();
+            return base.AnalizeLinks();
         }
     }
 }
