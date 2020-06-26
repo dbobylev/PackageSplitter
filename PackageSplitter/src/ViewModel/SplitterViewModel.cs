@@ -29,6 +29,8 @@ namespace PackageSplitter.ViewModel
         public bool IsCheckedParamAddHeader { get; set; } = true;
         public bool IsCheckedParamUpdateRep { get; set; } = false;
 
+        private bool RepositoryObjectWasUpdated = false;
+
         public ObservableCollection<SplitterElementViewModel> ElementsViewModel { get; private set; }
 
         public bool? HasRequiried
@@ -48,13 +50,14 @@ namespace PackageSplitter.ViewModel
             _SplitManager.PackageLoaded += SetModel;
             ElementsViewModel = new ObservableCollection<SplitterElementViewModel>();
             
-            SplitCommand = new RelayCommand(RunSplit, (x) => _splitter != null);
+            SplitCommand = new RelayCommand(RunSplit, (x) => _splitter != null && !RepositoryObjectWasUpdated);
             SaveSplitterCommand = new RelayCommand(SaveModel, (x) => _SplitterSaver != null);
             LoadSplitterCommand = new RelayCommand(LoadModel, (x) => _SplitterSaver != null);
         }
 
         public void SetModel(Package parsedPackage)
         {
+            RepositoryObjectWasUpdated = false;
             _SplitterSaver = new SplitterSaver(parsedPackage.repositoryPackage.ObjectName, parsedPackage.SHA);
             _splitter = new Splitter(parsedPackage);
             FillElements();
@@ -76,6 +79,16 @@ namespace PackageSplitter.ViewModel
                     _SplitManager.LoadSplitterPackage(_splitter);
                     if (splitterObjectType == eSplitterObjectType.NewBody && AnalyzeLinks())
                         return;
+
+                    if (IsCheckedParamUpdateRep && !splitterObjectType.IsNew())
+                    {
+                        var res = MessageBox.Show("Внимание! Сейчас в репозитории будут обновленны исходный файлы пакета: тело и спецификация. Продолжить?", "Обновление репозитория", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        if (res == MessageBoxResult.Yes)
+                            RepositoryObjectWasUpdated = true;
+                        else if (res == MessageBoxResult.No)
+                            return;
+                    }
+
                     _SplitManager.RunSplit(splitterObjectType, GetSplitParam());
                 }
                 catch(Exception ex)
