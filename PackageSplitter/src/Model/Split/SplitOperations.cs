@@ -123,24 +123,15 @@ namespace PackageSplitter.Model.Split
                 TextMethod = GetNewText(MethodNameToAdd, ePackageElementDefinitionType.BodyDeclaration);
             }
 
-            // Переменные которые должны быть ддобавлены
+            // Переменные которые должны быть добавлены
             var VariableToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add, NOT_METHOD_TYPES);
             if (VariableToAdd.Any())
             {
-                // Ищем последнюю строку с объявлением перменной
-                if (_package.elements.Any(x => x.ElementType != ePackageElementType.Method && x.HasSpec))
-                {
-                    PosVariable = _package.elements.Where(x => x.HasSpec && x.ElementType != ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineEnd).OrderBy(x => x).Last();
-                    // Вставляем метку, для последующей вставки новых переменных
-                    FileLines = FileLines.Insert(PosVariable + 1 /*На следующей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
-                }
-                // Если переменных в пакете еще нет, вставляем перед первым найденным методом
-                else
-                {
-                    PosVariable = _package.elements.Where(x => x.HasSpec && x.ElementType == ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineBeg).OrderBy(x => x).First();
-                    // Вставляем метку, для последующей вставки новых переменных
-                    FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
-                }
+                //вставляем перед первым найденным методом
+                PosVariable = _package.elements.Where(x => x.HasSpec && x.ElementType == ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineBeg).OrderBy(x => x).First();
+                // Вставляем метку, для последующей вставки новых переменных
+                FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
+
                 // Текст новых переменных
                 TextVariable = GetNewText(VariableToAdd, ePackageElementDefinitionType.BodyFull);
             }
@@ -160,10 +151,10 @@ namespace PackageSplitter.Model.Split
                 // Так как мы вставили метки(двух строчные) для новых переменных и методов, строки для удаления должны быть смещены (При необходимости)
                 for (int i = 0; i < LinesToDelete.Length; i++)
                 {
-                    if (LinesToDelete[i] >= PosMethod)
+                    if (LinesToDelete[i] >= PosMethod - 2)
                         LinesToDelete[i] += 2;
 
-                    if (LinesToDelete[i] >= PosVariable)
+                    if (LinesToDelete[i] >= PosVariable - 2)
                         LinesToDelete[i] += 2;
                 }
 
@@ -192,7 +183,7 @@ namespace PackageSplitter.Model.Split
         {
             var labelVariable = Guid.NewGuid().ToString();
             var PosVariable = int.MaxValue;
-            Func<int, int> MoveLine = (x) => (x >= PosVariable ? x + 2 : x);
+            Func<int, int> MoveLine = (x) => (x >= PosVariable - 2 ? x + 2 : x);
             var TextVariable = string.Empty;
             var oldBodyText = string.Empty;
 
@@ -248,8 +239,7 @@ namespace PackageSplitter.Model.Split
                 {
                     PosVariable = _package.elements.Where(x => x.HasBody && x.ElementType != ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineEnd).OrderBy(x => x).Last();
                     // Вставляем метку, для последующей вставки новых переменных
-                    FileLines = FileLines.Insert(PosVariable + 1 /*На следующей строке*/
-            -1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
+                    FileLines = FileLines.Insert(PosVariable + 1 /*На следующей строке*/ -1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
                 }
                 // Если переменных в пакете еще нет, вставляем перед первым найденным методом
                 else
