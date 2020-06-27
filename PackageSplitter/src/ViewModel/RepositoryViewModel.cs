@@ -19,7 +19,6 @@ namespace PackageSplitter.ViewModel
 {
     public class RepositoryViewModel : PropertyChangedBase
     {
-        private ISplitManager _SplitManager;
         private RepositoryObject _SelectedFile;
         private ParserWindow pw;
 
@@ -127,14 +126,13 @@ namespace PackageSplitter.ViewModel
         }
 
 
-        public RepositoryViewModel(ISplitManager splitManager)
+        public RepositoryViewModel()
         {
             _RepositoryPath = Config.Instanse().RepositoryPath;
             _NewPackageName = Config.Instanse().NewPackageName;
             _NewPackageOwner = Config.Instanse().NewPackageOwner;
             _AllowNationalChars = Config.Instanse().AllowNationalChars;
 
-            _SplitManager = splitManager;
             LoadOraclePackageCommand = new RelayCommand(LoadOraclePackage, (x) => _SelectedFile != null && (pw == null || !pw.IsLoaded));
             SelectRepositoryCommand = new RelayCommand(SelectRepository);
         }

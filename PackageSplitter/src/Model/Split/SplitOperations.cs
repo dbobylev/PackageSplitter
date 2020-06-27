@@ -56,6 +56,7 @@ namespace PackageSplitter.Model.Split
         }
 
         #region Split
+
         protected string RunSplitNewSpec()
         {
             var AllVariables = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, NOT_METHOD_TYPES);

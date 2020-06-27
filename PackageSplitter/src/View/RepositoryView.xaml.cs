@@ -27,7 +27,7 @@ namespace PackageSplitter.View
     {
         public RepositoryView()
         {
-            DataContext = new RepositoryViewModel(SplitManager.Instance());
+            DataContext = new RepositoryViewModel();
             InitializeComponent();
         }
 

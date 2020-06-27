@@ -1,4 +1,6 @@
 ﻿using DataBaseRepository.Model;
+using OracleParser;
+using PackageSplitter.Model.Split;
 using PackageSplitter.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -29,7 +31,7 @@ namespace PackageSplitter.View
 
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = new ParserViewModel(_repositoryPackage, (x) => Close());
+            DataContext = new ParserViewModel(_repositoryPackage, (x) => Close(), SplitManager.Instance(), OraParser.Instance());
         }
     }
 }

@@ -18,7 +18,7 @@ using OracleParser;
 
 namespace PackageSplitter.Model.Split
 {
-    public class SplitManager: SplitOperations, ISplitManager
+    public class SplitManager: SplitOperations, ISplitManager, IOracleParsedPackageSetter
     {
         #region Singleton
         private static SplitManager _instance;
@@ -33,36 +33,17 @@ namespace PackageSplitter.Model.Split
         }
         #endregion
 
-        public event Action<Package> PackageLoaded;
+        public event Action<Package> OraclePackageSetted;
 
-        public void LoadSplitterPackage(Splitter splitterPackage)
+        public void SetSplitterPackage(Splitter splitterPackage)
         {
             _splitter = splitterPackage;
         }
 
-        /// <summary>
-        /// Старый вариант реализации
-        /// </summary>
-        /// <param name="repositoryPackage"></param>
-        public async void LoadOracleParsedPackage(RepositoryPackage repositoryPackage)
-        {
-            try
-            {
-                var package = await OraParser.Instance().GetPackage(repositoryPackage, false);
-                LoadOracleParsedPackage(package);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("При разборе пакета, произошла ошибка.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                TextWindow textWindow = new TextWindow(ex.ToString());
-                textWindow.Show();
-            }
-        }
-
-        public void LoadOracleParsedPackage(Package package)
+        public void SetOracleParsedPackage(Package package)
         {
             _package = package;
-            PackageLoaded?.Invoke(_package);
+            OraclePackageSetted?.Invoke(_package);
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }

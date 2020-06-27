@@ -18,7 +18,8 @@ namespace PackageSplitter.ViewModel
         private const int TIMER_INTERVAL_MS = 1000;
         private readonly TimeSpan TIMER_INTERVAL = TimeSpan.FromMilliseconds(TIMER_INTERVAL_MS);
         private Timer _timer = new Timer(TIMER_INTERVAL_MS);
-        private OraParser _OraParser = OraParser.Instance();
+        private IOraParser _OraParser = OraParser.Instance();
+        private IOracleParsedPackageSetter _oracleParsedPackageSetter;
 
         public RelayCommand CloseCommand { get; private set; }
 
@@ -38,9 +39,11 @@ namespace PackageSplitter.ViewModel
 
         public ObservableCollection<ParserDataViewModel> ParserData { get; private set; }
 
-        public ParserViewModel(RepositoryPackage repositoryPackage, Action<object> CloseAction)
+        public ParserViewModel(RepositoryPackage repositoryPackage, Action<object> CloseAction, IOracleParsedPackageSetter oracleParsedPackageSetter, IOraParser oraParser)
         {
             CloseCommand = new RelayCommand(CloseAction);
+            _oracleParsedPackageSetter = oracleParsedPackageSetter;
+            _OraParser = oraParser;
 
             ParserData = new ObservableCollection<ParserDataViewModel>();
             ParserData.Add(new ParserDataViewModel(repositoryPackage.SpecRepFullPath));
@@ -69,10 +72,10 @@ namespace PackageSplitter.ViewModel
                     ParserData[1].Status = eParseStatus.Wait;
                     _OraParser.ObjectWasParsed += ParserViewModel_ObjectWasParsed;
                     _timer.Start();
-                    package = await _OraParser.GetParsePackage(repositoryPackage, Config.Instanse().AllowNationalChars);
+                    package = await _OraParser.ParsePackage(repositoryPackage, Config.Instanse().AllowNationalChars);
                 }
 
-                SplitManager.Instance().LoadOracleParsedPackage(package);
+                _oracleParsedPackageSetter.SetOracleParsedPackage(package);
 
                 if (!HasSavedPackage)
                     await Task.Delay(1000);

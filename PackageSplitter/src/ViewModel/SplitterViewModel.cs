@@ -47,7 +47,7 @@ namespace PackageSplitter.ViewModel
         public SplitterViewModel(ISplitManager splitManager)
         {
             _SplitManager = splitManager;
-            _SplitManager.PackageLoaded += SetModel;
+            _SplitManager.OraclePackageSetted += SetModel;
             ElementsViewModel = new ObservableCollection<SplitterElementViewModel>();
             
             SplitCommand = new RelayCommand(RunSplit, (x) => _splitter != null && !RepositoryObjectWasUpdated);
@@ -76,7 +76,7 @@ namespace PackageSplitter.ViewModel
             {
                 try
                 {
-                    _SplitManager.LoadSplitterPackage(_splitter);
+                    _SplitManager.SetSplitterPackage(_splitter);
                     if (splitterObjectType == eSplitterObjectType.NewBody && AnalyzeLinks())
                         return;
 
