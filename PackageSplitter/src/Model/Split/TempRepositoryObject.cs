@@ -7,6 +7,9 @@ using System.Text;
 
 namespace PackageSplitter.Model.Split
 {
+    /// <summary>
+    /// Класс для хранения ссылки на временный файл репозитория
+    /// </summary>
     public class TempRepositoryObject
     {
         private Func<string, string> TempName = (x) => $"{x}.temp";

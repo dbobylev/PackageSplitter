@@ -324,7 +324,6 @@ namespace PackageSplitter.Model.Split
 
         #endregion
 
-
         #region private helpers
 
         private IEnumerable<string> GetNames(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Method)
