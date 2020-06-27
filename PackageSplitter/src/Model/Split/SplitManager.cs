@@ -48,33 +48,41 @@ namespace PackageSplitter.Model.Split
             GC.WaitForPendingFinalizers();
         }
 
+        /// <summary>
+        /// Сгенерировать текст нового объекта
+        /// </summary>
+        /// <param name="splitterObjectType"></param>
+        /// <param name="param"></param>
         public void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param)
         {
             string FinalObjectText = string.Empty;
+
+            // Получаем текст объекта
             switch (splitterObjectType)
             {
                 case eSplitterObjectType.OldSpec: FinalObjectText = RunSplitOldSpec(); break;
                 case eSplitterObjectType.OldBody: FinalObjectText = RunSplitOldBody(); break;
-                case eSplitterObjectType.NewSpec: FinalObjectText = RunSplitNewSpec(); break;
-                case eSplitterObjectType.NewBody: FinalObjectText = RunSplitNewBody(); break;
+                case eSplitterObjectType.NewSpec: FinalObjectText = RunSplitNewSpec(param.HasFlag(eSplitParam.GenerateHeader)); break;
+                case eSplitterObjectType.NewBody: FinalObjectText = RunSplitNewBody(param.HasFlag(eSplitParam.GenerateHeader)); break;
                 default:
                     break;
             }
 
+            // Заменяем двойные пробелы - одинарными
             FinalObjectText = Regex.Replace(FinalObjectText, "\r\n\\s*\r\n\\s*\r\n", "\r\n\r\n");
 
-            if (param.HasFlag(eSplitParam.GenerateHeader) && splitterObjectType.IsNew())
-                FinalObjectText = AddHeader(FinalObjectText, splitterObjectType.GetRepositoryType());
-
+            // Копируем текст в буфер
             if (param.HasFlag(eSplitParam.CopyToClipBoard))
                 Clipboard.SetText(FinalObjectText);
 
+            // Открываем текст в новом окне
             if (param.HasFlag(eSplitParam.OpenNewWindow))
             {
                 TextWindow tw = new TextWindow(FinalObjectText);
                 tw.Show();
             }
 
+            // Обновляем репозиторий
             if (param.HasFlag(eSplitParam.DirectlyUpdateRep))
             {
                 RepositoryObject repositoryObject;
@@ -85,7 +93,7 @@ namespace PackageSplitter.Model.Split
                     repositoryObject = splitterObjectType.IsSpec() ? _package.repositoryPackage.GetObjectSpec() : _package.repositoryPackage.GetObjectBody();
 
                     /* Мы должны одновременно обновить в репозитории и спеку и тело
-                     * Последовательно мы это сделать не может, так как генерация текста зависит от обоих частей
+                     * Последовательно мы это сделать не можем, так как генерация текста зависит от обоих частей
                      * Обновляем соседнюю часть:
                      */
                     var SecondParttext = splitterObjectType.IsSpec() ? RunSplitOldBody() : RunSplitOldSpec();
@@ -97,6 +105,10 @@ namespace PackageSplitter.Model.Split
             }
         }
 
+        /// <summary>
+        /// Найти ссылки из нового тела пакета, на методы и переменные в исходном теле пакета (т.е. на те, которые по разным причинам не были скопированы)
+        /// </summary>
+        /// <returns></returns>
         public override bool AnalizeLinks()
         {
             return base.AnalizeLinks();

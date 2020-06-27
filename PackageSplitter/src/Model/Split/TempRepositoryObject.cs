@@ -12,6 +12,7 @@ namespace PackageSplitter.Model.Split
     /// </summary>
     public class TempRepositoryObject
     {
+        private Action<string> deleteFile = (x) => { if (File.Exists(x)) File.Delete(x); };
         private Func<string, string> TempName = (x) => $"{x}.temp";
 
         public RepositoryPackage OriginalRepObject { get; private set; }
@@ -25,7 +26,6 @@ namespace PackageSplitter.Model.Split
 
         public void DeleteTempFile()
         {
-            Action<string> deleteFile = (x) => { if (File.Exists(x)) File.Delete(x); };
             deleteFile(TempRepObject.BodyRepFullPath);
             deleteFile(TempRepObject.SpecRepFullPath);
         }

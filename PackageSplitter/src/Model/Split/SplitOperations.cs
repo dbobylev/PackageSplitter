@@ -25,7 +25,14 @@ namespace PackageSplitter.Model.Split
         private const ePackageElementType NOT_METHOD_TYPES = ePackageElementType.Type | ePackageElementType.Variable | ePackageElementType.Cursor;
         private const ePackageElementType ALL_ELEMENT_TYPES = ePackageElementType.Method | NOT_METHOD_TYPES;
 
+        /// <summary>
+        /// Распарсенный пакет
+        /// </summary>
         protected Package _package;
+
+        /// <summary>
+        /// Настройки разбиения пакета
+        /// </summary>
         protected Splitter _splitter;
 
         protected SplitOperations()
@@ -33,50 +40,81 @@ namespace PackageSplitter.Model.Split
 
         }
 
-
+        /// <summary>
+        /// Найти ссылки из новго тела пакета, на методы и переменные в исходном теле пакета (т.е. на те, которые по разным причинам не были скопированы)
+        /// </summary>
+        /// <returns></returns>
         public virtual bool AnalizeLinks()
         {
-            var answer = false;
+            // Имена всех элементов в пакете
             var AllNames = _package.elements.Select(x => x.Name.ToUpper());
+
+            // Имена всех скопирвоанных элементов в новой спеке и новом теле
             var NewNames = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ALL_ELEMENT_TYPES)
                    .Concat(GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ALL_ELEMENT_TYPES))
                    .Distinct()
                    .Select(x => x.ToUpper());
+
+            // Имена всех методов в новом теле пакета
             var AllNewBodies = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
+
+            // Список имен элементов на которые ссылаются в этих методах (которые добавлены в новом теле пакета)
             var AllLinks = _package.elements.Where(x => AllNewBodies.Contains(x.Name.ToUpper())).SelectMany(x => x.Links.ToArray()).Select(x => x.Text).Distinct();
+
+            // Из всех элементов вычитаем те которые были скопированы в новое тело/спеку и берем пересечение с ссылками которые есть в новом теле.
             var LinkedOldNames = AllNames.Except(NewNames).Intersect(AllLinks);
+
+            // Проверяем эти методы на флаг IsRequiried
             var NewRequiriedElements = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried);
            
+            // При отсутствии флага, проставляем его (Ячейки подсветятся желтым)
             if (NewRequiriedElements.Any())
-            {
-                answer = true;
                 NewRequiriedElements.ToList().ForEach(x => x.IsRequiried = true);
-            }
+
+            // Удаляем IsRequiried у тех методов которые больше не имеют ссылок из нового тела
             _splitter.Elements.Where(x => x.IsRequiried && !LinkedOldNames.Contains(x.PackageElementName.ToUpper())).ToList().ForEach(x => { x.MakePrefix = false; x.IsRequiried = false; });
-            return answer;
+
+            return NewRequiriedElements.Any();
         }
 
         #region SplitBase
 
-        protected string RunSplitNewSpec()
+        /// <summary>
+        /// Генерация спецификации нового пакета
+        /// </summary>
+        /// <param name="addHeader">Добавить заголовок (create or replace ... end; )</param>
+        /// <returns></returns>
+        protected string RunSplitNewSpec(bool addHeader)
         {
+            // Все переменные которые должны быть скопированы
             var AllVariables = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, NOT_METHOD_TYPES);
+            // Все методы которые должны быть скопирваны
             var AllMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
 
+            // Текст нового тела пакета
             var NewText = string.Empty;
-            NewText += GetNewText(AllVariables, ePackageElementDefinitionType.Spec);
-            NewText += GetNewText(AllVariables, ePackageElementDefinitionType.BodyFull);
-            NewText += GetNewText(AllMethods, ePackageElementDefinitionType.Spec);
-            NewText += GetNewText(AllMethods, ePackageElementDefinitionType.BodyDeclaration);
+
+            // Добавляем переменные из исходной спецификации
+            NewText += GetTextPart(AllVariables, ePackageElementDefinitionType.Spec);
+            // Добавляем переменные из исходного тела пакета
+            NewText += GetTextPart(AllVariables, ePackageElementDefinitionType.BodyFull);
+            // Добавляем методы из исходной спецификации
+            NewText += GetTextPart(AllMethods, ePackageElementDefinitionType.Spec);
+            // Добавляем методы из тела пакета, если их не было в спецификации
+            NewText += GetTextPart(AllMethods, ePackageElementDefinitionType.BodyDeclaration);
+
+            if (addHeader)
+                NewText = AddHeader(NewText, eRepositoryObjectType.Package_Spec);
 
             return NewText;
         }
 
         /// <summary>
-        /// Генерация нового тела пакета
+        /// Генерация тела нового пакета
         /// </summary>
+        /// <param name="addHeader">Добавить заголовок (create or replace ... end; )</param>
         /// <returns>Текст нового тела пакета</returns>
-        protected string RunSplitNewBody()
+        protected string RunSplitNewBody(bool addHeader)
         {
             TempRepositoryObject tmpObj = null;
 
@@ -94,14 +132,14 @@ namespace PackageSplitter.Model.Split
             // Все методы которые должны быть скопирваны
             var AllMethods = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
 
-            // Текст нового тела пакета
+            // Текст тела нового пакета
             var NewText = string.Empty;
             // Дорбавляем переменные из исходной спецификации
-            NewText += GetNewText(AllVariables, ePackageElementDefinitionType.Spec);
+            NewText += GetTextPart(AllVariables, ePackageElementDefinitionType.Spec);
             // Добавляем переменные из исходного тела
-            NewText += GetNewText(AllVariables, ePackageElementDefinitionType.BodyFull);
+            NewText += GetTextPart(AllVariables, ePackageElementDefinitionType.BodyFull);
             // Добавляем методы из исходно тела пакета
-            NewText += GetNewText(AllMethods, ePackageElementDefinitionType.BodyFull);
+            NewText += GetTextPart(AllMethods, ePackageElementDefinitionType.BodyFull);
 
             // Если была подмена ссылки на файл
             if (tmpObj != null)
@@ -112,9 +150,16 @@ namespace PackageSplitter.Model.Split
                 tmpObj.DeleteTempFile();
             }
 
+            if (addHeader)
+                NewText = AddHeader(NewText, eRepositoryObjectType.Package_Body);
+
             return NewText;
         }
 
+        /// <summary>
+        /// Генерации спецификации исходного пакета
+        /// </summary>
+        /// <returns></returns>
         protected string RunSplitOldSpec()
         {
             var labelMethod = Guid.NewGuid().ToString();
@@ -137,7 +182,7 @@ namespace PackageSplitter.Model.Split
                 // Вставляем метку, для последующей вставки новых методов
                 FileLines = FileLines.Insert(PosMethod + 1 /*На следующей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelMethod });
                 // Текст новых методов
-                TextMethod = GetNewText(MethodNameToAdd, ePackageElementDefinitionType.BodyDeclaration);
+                TextMethod = GetTextPart(MethodNameToAdd, ePackageElementDefinitionType.BodyDeclaration);
             }
 
             // Переменные которые должны быть добавлены
@@ -150,7 +195,7 @@ namespace PackageSplitter.Model.Split
                 FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
 
                 // Текст новых переменных
-                TextVariable = GetNewText(VariableToAdd, ePackageElementDefinitionType.BodyFull);
+                TextVariable = GetTextPart(VariableToAdd, ePackageElementDefinitionType.BodyFull);
             }
 
             // Все кто должны быть удалены
@@ -196,6 +241,10 @@ namespace PackageSplitter.Model.Split
             return oldSpecText;
         }
 
+        /// <summary>
+        /// Генерация тела исходного пакета
+        /// </summary>
+        /// <returns></returns>
         protected string RunSplitOldBody()
         {
             var labelVariable = Guid.NewGuid().ToString();
@@ -209,6 +258,9 @@ namespace PackageSplitter.Model.Split
 
             #region Заменяем ссылки
 
+            /* Если мы удаляем метод из исходного пакета, на который продолжают ссылатся в этом же пакете.
+             * То к таким ссылкам добавляем префикс нового пакета. (Обяхательно проверяем, что бы эти пакеты были в новой спецификации
+             */
             var DeletedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Delete, ePackageElementType.Method).Select(x=>x.ToUpper());
             var ExistedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Exist, ePackageElementType.Method);
             var LinksToDeletedMethod = _package.elements
@@ -222,7 +274,7 @@ namespace PackageSplitter.Model.Split
                 var NewSpecMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
                 var WrongLinks = LinksToDeletedMethod.Select(x => x.Text.ToUpper()).Distinct().Except(NewSpecMethods);
                 if (WrongLinks.Any())
-                    throw new Exception($"В исходном пакете остались ссылки на методы, которые были удалены и не объявлены в новой спецификации: {string.Join(", ", WrongLinks)}");
+                    throw new Exception($"В исходном пакете остались ссылки на методы, которые были удалены(в исходном пакете) и не объявлены в новой спецификации: {string.Join(", ", WrongLinks)}");
 
                 // Ссылка которую будем добавлять 
                 var LinkStr = $"{Config.Instanse().NewPackageName}.".ToLower();
@@ -251,22 +303,12 @@ namespace PackageSplitter.Model.Split
             var VariableToAdd = GetNames(eSplitterObjectType.OldBody, eElementStateType.Add, NOT_METHOD_TYPES);
             if (VariableToAdd.Any())
             {
-                // Ищем последнюю строку с объявлением перменной
-                if (_package.elements.Any(x => x.ElementType != ePackageElementType.Method && x.HasBody))
-                {
-                    PosVariable = _package.elements.Where(x => x.HasBody && x.ElementType != ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineEnd).OrderBy(x => x).Last();
-                    // Вставляем метку, для последующей вставки новых переменных
-                    FileLines = FileLines.Insert(PosVariable + 1 /*На следующей строке*/ -1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
-                }
-                // Если переменных в пакете еще нет, вставляем перед первым найденным методом
-                else
-                {
-                    PosVariable = _package.elements.Where(x => x.HasBody && x.ElementType == ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineBeg).OrderBy(x => x).First();
-                    // Вставляем метку, для последующей вставки новых переменных
-                    FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
-                }
+                // Вставляем перед первым найденным методом
+                PosVariable = _package.elements.Where(x => x.HasBody && x.ElementType == ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineBeg).OrderBy(x => x).First();
+                // Вставляем метку, для последующей вставки новых переменных
+                FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
                 // Текст новых переменных
-                TextVariable = GetNewText(VariableToAdd, ePackageElementDefinitionType.Spec);
+                TextVariable = GetTextPart(VariableToAdd, ePackageElementDefinitionType.Spec);
             }
 
             // Все кто должны быть удалены
@@ -326,6 +368,13 @@ namespace PackageSplitter.Model.Split
 
         #region private helpers
 
+        /// <summary>
+        /// Получить имена элементов в зависимости от объекта, типа эемента и состояния элемента
+        /// </summary>
+        /// <param name="splitterObjectType">Тип объекта</param>
+        /// <param name="elementStates">Состояние элемента (можно несколько)</param>
+        /// <param name="packageElementType">Тип элемента  (можно несколько)</param>
+        /// <returns></returns>
         private IEnumerable<string> GetNames(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Method)
         {
             var x = Expr.Expression.Parameter(typeof(SplitterElement), "x");
@@ -342,9 +391,21 @@ namespace PackageSplitter.Model.Split
 
             Seri.Log.Verbose($"GetName Filter: {FinalExpression}");
 
+            /* Пример результата отбора
+             * _splitter.Elements.Where(x => packageElementType.HasFlag(x.PackageElementType) && elementStates.HasFlag(x.NewSpec));
+             * где вместо x.NewSpec подставится поле в зависимости от splitterObjectType
+             */
             return _splitter.Elements.Where(Filter).Select(x => x.PackageElementName);
         }
 
+        /// <summary>
+        /// Получить участки кода для определнных элементов
+        /// </summary>
+        /// <param name="names">Список элементов</param>
+        /// <param name="codeDefinitionPart">Место откуда берем код</param>
+        /// <param name="hasSpec"></param>
+        /// <param name="hasBody"></param>
+        /// <returns></returns>
         private PieceOfCode[] GetCodePositions(IEnumerable<string> names, ePackageElementDefinitionType codeDefinitionPart, bool? hasSpec, bool? hasBody)
         {
             return _package.elements
@@ -354,13 +415,23 @@ namespace PackageSplitter.Model.Split
                 .Select(x => x.Position[codeDefinitionPart]).ToArray();
         }
 
-        private string GetNewText(IEnumerable<string> names, ePackageElementDefinitionType codeDefinitionPart)
+        /// <summary>
+        /// Получить косок текста для определенных элементов
+        /// </summary>
+        /// <param name="names">Имена элементов</param>
+        /// <param name="codeDefinitionPart">Участок откуда забираем код</param>
+        /// <returns></returns>
+        private string GetTextPart(IEnumerable<string> names, ePackageElementDefinitionType codeDefinitionPart)
         {
             bool? hasSpec = null, hasBody = null;
             switch (codeDefinitionPart)
             {
                 case ePackageElementDefinitionType.Spec: hasSpec = true; break;
                 case ePackageElementDefinitionType.BodyFull: hasBody = true; break;
+                /* BodyDeclaration - Участок метода в теле пакета, который сгодится для спецификации 
+                 * (т.е. текст функции/процедуры в теле пакета до IS/AS)
+                 * Эти участки подлежат копированию при отсутствии объявлении метода в исходной спецификации
+                 */
                 case ePackageElementDefinitionType.BodyDeclaration: hasSpec = false; break;
                 default: break;
             }
@@ -368,10 +439,17 @@ namespace PackageSplitter.Model.Split
             var CodeParts = GetCodePositions(names, codeDefinitionPart, hasSpec, hasBody);
             var repositoryObjectType = codeDefinitionPart == ePackageElementDefinitionType.Spec ? eRepositoryObjectType.Package_Spec : eRepositoryObjectType.Package_Body;
 
-            return GetNewText(CodeParts, repositoryObjectType, codeDefinitionPart == ePackageElementDefinitionType.BodyDeclaration);
+            return GetTextPart(CodeParts, repositoryObjectType, codeDefinitionPart == ePackageElementDefinitionType.BodyDeclaration);
         }
 
-        private string GetNewText(PieceOfCode[] samples, eRepositoryObjectType repositoryObjectType, bool IsBodyDeclarationCopy = false)
+        /// <summary>
+        /// Получить текст из заданных участков кода.
+        /// </summary>
+        /// <param name="samples">Участки кода</param>
+        /// <param name="repositoryObjectType">Откуда будем доставать код (спецификация/тело)</param>
+        /// <param name="IsBodyDeclarationCopy">При копировании текста из участка BodyDeclaration в новую спецификацию, необходимо добавить точку с запятой</param>
+        /// <returns></returns>
+        private string GetTextPart(PieceOfCode[] samples, eRepositoryObjectType repositoryObjectType, bool IsBodyDeclarationCopy = false)
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < samples.Length; i++)
@@ -385,33 +463,52 @@ namespace PackageSplitter.Model.Split
             return sb.ToString();
         }
 
-        protected string AddHeader(string text, eRepositoryObjectType repositoryObjectType)
+        /// <summary>
+        /// Добавить заголовок к тексту
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="repositoryObjectType"></param>
+        /// <returns></returns>
+        private string AddHeader(string text, eRepositoryObjectType repositoryObjectType)
         {
             var bodyWord = repositoryObjectType == eRepositoryObjectType.Package_Body ? "body " : string.Empty;
             var NewPackageName = $"{Config.Instanse().NewPackageOwner}.{Config.Instanse().NewPackageName}";
             return $"create or replace package {bodyWord}{NewPackageName} is\r\n\r\n{text}\r\nend {Config.Instanse().NewPackageName};\r\n/";
         }
 
+        /// <summary>
+        /// Получить текст ссылки на метод в новом пакете
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="repositoryPackage"></param>
+        /// <returns></returns>
         private string[] GetLink(PackageElement element, RepositoryPackage repositoryPackage)
         {
             Func<int, string> GetSpaces = (n) => string.Join(string.Empty, Enumerable.Range(0, n).Select(x => " "));
 
+            // Получаем текст метода до ключевого слова IS/AS
             var position = element.Position[ePackageElementDefinitionType.BodyDeclaration];
             var text = DBRep.Instance().GetTextOfFile(repositoryPackage.BodyRepFullPath, position.LineBeg, position.LineEnd, position.ColumnEnd);
 
+            // Считаем количество пробелов до начала метода (до слова function/procedure)
             var SpaceBeforeTextBegin = 0;
             var ch = text[SpaceBeforeTextBegin];
             while (ch == ' ')
                 ch = text[++SpaceBeforeTextBegin];
             var beginIndent = GetSpaces(SpaceBeforeTextBegin);
 
+            // Текст ссылки на метод в новом пакете
             var NewPackageCallText = $"{Config.Instanse().NewPackageName.ToLower()}.{element.Name}";
+            // Добавляем схему если новая схема отличается от текущей
             if (repositoryPackage.Owner.ToUpper() != Config.Instanse().NewPackageOwner.ToUpper())
                 NewPackageCallText = $"{Config.Instanse().NewPackageOwner.ToLower()}.{NewPackageCallText}";
+            // Добавляем слово return для функции
             if (text[SpaceBeforeTextBegin] == 'f' || text[SpaceBeforeTextBegin] == 'F')
                 NewPackageCallText = $"return {NewPackageCallText}";
+            // Отступ длинною в текст ссылки (необходим для отступов для параметров)
             var IndentName = GetSpaces(NewPackageCallText.Count());
 
+            // Добавляем параметры
             string parametersText = string.Empty;
             if (element.Parametres.Any())
             {
@@ -419,6 +516,7 @@ namespace PackageSplitter.Model.Split
                 for (int i = 0; i < element.Parametres.Count; i++)
                 {
                     var paramName = element.Parametres[i].Name;
+                    // Первый параметр без отступов, остальные с отступами
                     parametersText += $"{(i == 0 ? string.Empty : $"{beginIndent}  {IndentName} ")}{paramName} => {paramName},\r\n";
                 }
                 parametersText = parametersText.TrimEnd(new char[] { '\r', '\n', ',' });
@@ -427,6 +525,7 @@ namespace PackageSplitter.Model.Split
             else
                 parametersText += ";\r\n";
 
+            // Формируем финальный текст метода
             text = $"{text} is\r\n" +
                    $"{beginIndent}begin\r\n" +
                    $"{beginIndent}  {NewPackageCallText}{parametersText}" +
