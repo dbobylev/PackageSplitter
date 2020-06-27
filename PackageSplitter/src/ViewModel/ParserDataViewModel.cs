@@ -1,4 +1,4 @@
-﻿using PackageSplitter.Model.Parser;
+﻿using PackageSplitter.Model;
 using PackageSplitter.ViewModel.Convertrs;
 using System;
 using System.Collections.Generic;

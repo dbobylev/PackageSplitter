@@ -3,7 +3,7 @@ using OracleParser.Model;
 using OracleParser.Model.PackageModel;
 using PackageSplitter.Model;
 using PackageSplitter.Model.Split;
-using PackageSplitter.src.Command;
+using PackageSplitter.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

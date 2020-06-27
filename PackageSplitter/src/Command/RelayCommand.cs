@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 
-namespace PackageSplitter.src.Command
+namespace PackageSplitter.Command
 {
     public class RelayCommand : ICommand
     {

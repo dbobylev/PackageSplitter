@@ -22,5 +22,11 @@ namespace PackageSplitter.src.View
             InitializeComponent();
             tbMain.Text = text;
         }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Close();
+        }
     }
 }

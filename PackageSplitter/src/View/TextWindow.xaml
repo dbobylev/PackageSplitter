@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PackageSplitter.src.View"
         mc:Ignorable="d"
-        Title="Обычный текст" Height="450" Width="800">
+        Title="Обычный текст" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown">
     <Grid>
         <ScrollViewer>
             <TextBox x:Name="tbMain" FontFamily="Consolas" TextWrapping="Wrap" IsReadOnly="True">

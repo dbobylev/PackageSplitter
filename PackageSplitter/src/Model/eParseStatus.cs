@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace PackageSplitter.Model.Parser
+namespace PackageSplitter.Model
 {
     [Flags]
     public enum eParseStatus
     {
         [Description("None")]
-        None                                = 0 << 0,
+        None = 0 << 0,
 
         [Description("В ожидании")]
-        Wait                                = 1 << 0,
+        Wait = 1 << 0,
 
         [Description("Обрабатывается")]
-        InProgress                          = 1 << 1,
+        InProgress = 1 << 1,
 
         [Description("Готов")]
-        Done                                = 1 << 2,
+        Done = 1 << 2,
 
         [Description("Ошибка")]
-        Fail                                = 1 << 3
+        Fail = 1 << 3
     }
 }

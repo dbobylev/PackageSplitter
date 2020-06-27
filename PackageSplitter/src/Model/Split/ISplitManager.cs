@@ -13,9 +13,4 @@ namespace PackageSplitter.Model.Split
         void RunSplit(eSplitterObjectType splitterObjectType, eSplitParam param);
         bool AnalizeLinks();
     }
-
-    public interface IOracleParsedPackageSetter
-    {
-        void SetOracleParsedPackage(Package repositoryPackage);
-    }
 }

@@ -2,7 +2,7 @@
 using DataBaseRepository.Model;
 using Ookii.Dialogs.Wpf;
 using PackageSplitter.Model.Split;
-using PackageSplitter.src.Command;
+using PackageSplitter.Command;
 using PackageSplitter.View;
 using System;
 using System.Collections.Generic;
