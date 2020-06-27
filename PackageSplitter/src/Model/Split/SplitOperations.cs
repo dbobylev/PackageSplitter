@@ -33,15 +33,16 @@ namespace PackageSplitter.Model.Split
 
         }
 
+
         public virtual bool AnalizeLinks()
         {
             var answer = false;
             var AllNames = _package.elements.Select(x => x.Name.ToUpper());
-            var NewNames = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ALL_ELEMENT_TYPES)
-                   .Concat(GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ALL_ELEMENT_TYPES))
+            var NewNames = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ALL_ELEMENT_TYPES)
+                   .Concat(GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ALL_ELEMENT_TYPES))
                    .Distinct()
                    .Select(x => x.ToUpper());
-            var AllNewBodies = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
+            var AllNewBodies = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
             var AllLinks = _package.elements.Where(x => AllNewBodies.Contains(x.Name.ToUpper())).SelectMany(x => x.Links.ToArray()).Select(x => x.Text).Distinct();
             var LinkedOldNames = AllNames.Except(NewNames).Intersect(AllLinks);
             var NewRequiriedElements = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried);
@@ -55,12 +56,12 @@ namespace PackageSplitter.Model.Split
             return answer;
         }
 
-        #region Split
+        #region SplitBase
 
         protected string RunSplitNewSpec()
         {
-            var AllVariables = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, NOT_METHOD_TYPES);
-            var AllMethods = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
+            var AllVariables = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, NOT_METHOD_TYPES);
+            var AllMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
 
             var NewText = string.Empty;
             NewText += GetNewText(AllVariables, ePackageElementDefinitionType.Spec);
@@ -71,28 +72,43 @@ namespace PackageSplitter.Model.Split
             return NewText;
         }
 
+        /// <summary>
+        /// Генерация нового тела пакета
+        /// </summary>
+        /// <returns>Текст нового тела пакета</returns>
         protected string RunSplitNewBody()
         {
-            // Делаем заготовку для временного файла
-            var tmpObj = new TempRepositoryObject(_package);
+            TempRepositoryObject tmpObj = null;
 
-            // Проверяем был ли создан временный файл с обновленнными ссылками
-            var NeedUpdatePrefix = MakePrefix(tmpObj);
-            if (NeedUpdatePrefix)
-                // Заменяем путь до пакета на временный (с обновленными ссылками)
+            // Првоеряем должны ли быть обновленны ссылки в новом теле пакета
+            if (CheckNewBodyLinks(out ParsedLink[] PosToUpgrade))
+            {
+                // Обновляем ссылки а исходном пакете, записываем результат во временный файл
+                tmpObj = MakePrefix(PosToUpgrade);
+                // Подменняем ссылку на файл, что бы генерация нового тела пакета шла из обновленного исходного тела пакета
                 _package.repositoryPackage = tmpObj.TempRepObject;
+            }
 
-            var AllVariables = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, NOT_METHOD_TYPES);
-            var AllMethods = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
+            // Все переменные которые должны быть скопированы
+            var AllVariables = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, NOT_METHOD_TYPES);
+            // Все методы которые должны быть скопирваны
+            var AllMethods = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
 
+            // Текст нового тела пакета
             var NewText = string.Empty;
+            // Дорбавляем переменные из исходной спецификации
             NewText += GetNewText(AllVariables, ePackageElementDefinitionType.Spec);
+            // Добавляем переменные из исходного тела
             NewText += GetNewText(AllVariables, ePackageElementDefinitionType.BodyFull);
+            // Добавляем методы из исходно тела пакета
             NewText += GetNewText(AllMethods, ePackageElementDefinitionType.BodyFull);
 
-            if (NeedUpdatePrefix)
+            // Если была подмена ссылки на файл
+            if (tmpObj != null)
             {
+                // Возвращает ссылку назад
                 _package.repositoryPackage = tmpObj.OriginalRepObject;
+                // Удаляем временный файл
                 tmpObj.DeleteTempFile();
             }
 
@@ -113,7 +129,7 @@ namespace PackageSplitter.Model.Split
             var FileLines = File.ReadAllLines(_package.repositoryPackage.SpecRepFullPath);
 
             // Методы который должны бють добавлены
-            var MethodNameToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add, ePackageElementType.Method);
+            var MethodNameToAdd = GetNames(eSplitterObjectType.OldSpec, eElementStateType.Add, ePackageElementType.Method);
             if (MethodNameToAdd.Any())
             {
                 // Ищем последнюю строку последнего метода
@@ -125,7 +141,7 @@ namespace PackageSplitter.Model.Split
             }
 
             // Переменные которые должны быть добавлены
-            var VariableToAdd = GetName(eSplitterObjectType.OldSpec, eElementStateType.Add, NOT_METHOD_TYPES);
+            var VariableToAdd = GetNames(eSplitterObjectType.OldSpec, eElementStateType.Add, NOT_METHOD_TYPES);
             if (VariableToAdd.Any())
             {
                 //вставляем перед первым найденным методом
@@ -138,7 +154,7 @@ namespace PackageSplitter.Model.Split
             }
 
             // Все кто должны быть удалены
-            var AllDelete = GetName(eSplitterObjectType.OldSpec, eElementStateType.Delete, ALL_ELEMENT_TYPES);
+            var AllDelete = GetNames(eSplitterObjectType.OldSpec, eElementStateType.Delete, ALL_ELEMENT_TYPES);
             // Номера строк для удаления
             var LinesToDelete = _package.elements
                 .Where(x => AllDelete.Contains(x.Name) && x.HasSpec)
@@ -193,8 +209,8 @@ namespace PackageSplitter.Model.Split
 
             #region Заменяем ссылки
 
-            var DeletedMethods = GetName(eSplitterObjectType.OldBody, eElementStateType.Delete, ePackageElementType.Method).Select(x=>x.ToUpper());
-            var ExistedMethods = GetName(eSplitterObjectType.OldBody, eElementStateType.Exist, ePackageElementType.Method);
+            var DeletedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Delete, ePackageElementType.Method).Select(x=>x.ToUpper());
+            var ExistedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Exist, ePackageElementType.Method);
             var LinksToDeletedMethod = _package.elements
                 .Where(x => x.ElementType == ePackageElementType.Method && ExistedMethods.Contains(x.Name))
                 .SelectMany(x => x.Links.Where(x => DeletedMethods.Contains(x.Text.ToUpper())))
@@ -203,7 +219,7 @@ namespace PackageSplitter.Model.Split
                 .ToArray();
             if (LinksToDeletedMethod.Any())
             {
-                var NewSpecMethods = GetName(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
+                var NewSpecMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
                 var WrongLinks = LinksToDeletedMethod.Select(x => x.Text.ToUpper()).Distinct().Except(NewSpecMethods);
                 if (WrongLinks.Any())
                     throw new Exception($"В исходном пакете остались ссылки на методы, которые были удалены и не объявлены в новой спецификации: {string.Join(", ", WrongLinks)}");
@@ -232,7 +248,7 @@ namespace PackageSplitter.Model.Split
             #endregion
 
             // Переменные которые должны быть добавлены
-            var VariableToAdd = GetName(eSplitterObjectType.OldBody, eElementStateType.Add, NOT_METHOD_TYPES);
+            var VariableToAdd = GetNames(eSplitterObjectType.OldBody, eElementStateType.Add, NOT_METHOD_TYPES);
             if (VariableToAdd.Any())
             {
                 // Ищем последнюю строку с объявлением перменной
@@ -254,7 +270,7 @@ namespace PackageSplitter.Model.Split
             }
 
             // Все кто должны быть удалены
-            var AllDelete = GetName(eSplitterObjectType.OldBody, eElementStateType.Delete | eElementStateType.CreateLink, ALL_ELEMENT_TYPES);
+            var AllDelete = GetNames(eSplitterObjectType.OldBody, eElementStateType.Delete | eElementStateType.CreateLink, ALL_ELEMENT_TYPES);
             // Номера строк для удаления
             var LinesToDelete = _package.elements
                 .Where(x => AllDelete.Contains(x.Name) && x.HasBody)
@@ -264,7 +280,7 @@ namespace PackageSplitter.Model.Split
                 .ToArray();
 
             // Все кто должен обратиться в ссылки на новый пакет
-            var NameToCreteLink = GetName(eSplitterObjectType.OldBody, eElementStateType.CreateLink);
+            var NameToCreteLink = GetNames(eSplitterObjectType.OldBody, eElementStateType.CreateLink);
             var PartOfLinks = _package.elements
                 .Where(x => NameToCreteLink.Contains(x.Name))
                 .Select(x => new
@@ -306,7 +322,12 @@ namespace PackageSplitter.Model.Split
             return oldBodyText;
         }
 
-        private IEnumerable<string> GetName(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Method)
+        #endregion
+
+
+        #region private helpers
+
+        private IEnumerable<string> GetNames(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Method)
         {
             var x = Expr.Expression.Parameter(typeof(SplitterElement), "x");
             var HasFlagMethod = typeof(Enum).GetMethod("HasFlag", new[] { typeof(Enum) });
@@ -414,27 +435,22 @@ namespace PackageSplitter.Model.Split
             return text.Split("\r\n");
         }
 
-        /// <summary>
-        /// Добавляем префиксы исходного пакета к помеченным ссылкам в новом теле пакета.
-        /// Создаём временный файл тела пакета, копию исходного тела, где обновим все необходимые ссылки
-        /// Этот временный файл будем использовать при генерации нового тела пакета, таким образом в новом пакете будут ссылки на исходжный пакет.
-        /// Такой подход необходим так как у нас имеются точные позициии ссылок в _исхордном пакете_ (т.е. при создании нового, мы не знаем в каком месте окажется ссылка, которую нужно обновить)
-        /// </summary>
-        /// <param name="tmpRepObject"></param>
-        /// <returns>Имеются обновленные данные: Да/Нет</returns>
-        private bool MakePrefix(TempRepositoryObject tmpRepObject)
-        {
-            // Переменная ответа, пока обновлять ничего не нужно
-            var answer = false;
 
+        /// <summary>
+        /// Проверяем наличие ссылок в новом теле пакета (которые мы должны добавить)
+        /// </summary>
+        /// <param name="PosToUpgrade">Позиции ссылок которые необходимо добавить в новом теле пакета</param>
+        /// <returns>Имееются ли ссылки для обновления: Да/Нет</returns>
+        private bool CheckNewBodyLinks(out ParsedLink[] PosToUpgrade)
+        {
             // Название всех ссылок(объектов) которые мы должны обновить
             var AllPrefixNames = _splitter.Elements.Where(x => x.MakePrefix).Select(x => x.PackageElementName.ToUpper());
 
             // Назхвание всех новых методов в новом теле пакета, где будем обновлять ссылки
-            var AllNewBodyNames = GetName(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
+            var AllNewBodyNames = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
 
             // Все позхиции ссылок, которые должны быть обновлены 
-            var PosToUpgrade = _package.elements
+            PosToUpgrade = _package.elements
                 .Where(x => AllNewBodyNames.Contains(x.Name) && x.Links.Any(u => AllPrefixNames.Contains(u.Text)))
                 .SelectMany(x => x.Links.ToArray())
                 .Where(x => AllPrefixNames.Contains(x.Text))
@@ -442,53 +458,64 @@ namespace PackageSplitter.Model.Split
                 .ThenBy(x => x.ColumnBeg)
                 .ToArray();
 
-            if (PosToUpgrade.Any())
+            return PosToUpgrade.Any();
+        }
+
+        /// <summary>
+        /// Добавляем префиксы к указанным ссылкам.
+        /// --------------------------------------------------------------------------------------------------------------------------------------
+        /// Новое тело пакета генерируется из исходного тела пакета. Так как мы имеем точные позиции ссылок для обновления в исходном теле пакета, 
+        /// мы создадим временный файл исходного тела пакета, где обновим наши ссылки. Затем генерация нового тела пакета будет произведенна 
+        /// из этого временного файла с правильными ссылаками.
+        /// --------------------------------------------------------------------------------------------------------------------------------------
+        /// </summary>
+        /// <param name="PosToUpgrade">Позиции для обновления</param>
+        /// <returns>Временные файл с обновленными ссылками</returns>
+        private TempRepositoryObject MakePrefix(ParsedLink[] PosToUpgrade)
+        { 
+            var tmpRepObject = new TempRepositoryObject(_package);
+
+            // Счётчик строчек
+            var LineCounter = 0;
+
+            // Индекс для отсортированной коллекции PosToUpgrade
+            var PosIndex = 0;
+
+            // Ссылка которую будем добавлять 
+            var LinkStr = $"{tmpRepObject.OriginalRepObject.Name}.".ToLower();
+
+            // Добавляем название схемы в префикс если название схемы у нового объекта отличается
+            if (Config.Instanse().NewPackageOwner.ToUpper() != tmpRepObject.OriginalRepObject.Owner.ToUpper())
+                LinkStr = $"{tmpRepObject.OriginalRepObject.Owner}.{LinkStr}";
+
+            // Создаём временный файл тела исходного пакета с обновленными ссылками
+            using (StreamReader sr = new StreamReader(tmpRepObject.OriginalRepObject.BodyRepFullPath))
             {
-                // Имеются ссылки для обновления, создаём временные файлы ниже
-                answer = true;
-
-                // Счётчик строчек
-                var LineCounter = 0;
-
-                // Индекс для отсортированной коллекции PosToUpgrade
-                var PosIndex = 0;
-
-                // Ссылка которую будем добавлять 
-                var LinkStr = $"{tmpRepObject.OriginalRepObject.Name}.".ToLower();
-
-                // Добавляем название схемы в префикс если название схемы у нового объекта отличается
-                if (Config.Instanse().NewPackageOwner.ToUpper() != tmpRepObject.OriginalRepObject.Owner.ToUpper())
-                    LinkStr = $"{tmpRepObject.OriginalRepObject.Owner}.{LinkStr}";
-
-                // Создаём временный файл тела исходного пакета с обновленными ссылками
-                using (StreamReader sr = new StreamReader(tmpRepObject.OriginalRepObject.BodyRepFullPath))
+                using (StreamWriter sw = new StreamWriter(tmpRepObject.TempRepObject.BodyRepFullPath))
                 {
-                    using (StreamWriter sw = new StreamWriter(tmpRepObject.TempRepObject.BodyRepFullPath))
+                    while (sr.Peek() >= 0)
                     {
-                        while (sr.Peek() >= 0)
+                        var str = sr.ReadLine();
+                        LineCounter++;
+                        // В обной строчке может быть несколько замен, считаем их
+                        var OneLineReplaceCounter = 0;
+                        while (PosIndex < PosToUpgrade.Length && LineCounter == PosToUpgrade[PosIndex].LineBeg)
                         {
-                            var str = sr.ReadLine();
-                            LineCounter++;
-                            // В обной строчке может быть несколько замен, считаем их
-                            var OneLineReplaceCounter = 0;
-                            while (PosIndex < PosToUpgrade.Length && LineCounter == PosToUpgrade[PosIndex].LineBeg)
-                            {
-                                // Вставляем ссылку
-                                str = str.Insert(PosToUpgrade[PosIndex++].ColumnBeg + LinkStr.Length * OneLineReplaceCounter++, LinkStr);
-                            }
-                            sw.WriteLine(str);
+                            // Вставляем ссылку
+                            str = str.Insert(PosToUpgrade[PosIndex++].ColumnBeg + LinkStr.Length * OneLineReplaceCounter++, LinkStr);
                         }
+                        sw.WriteLine(str);
                     }
                 }
-
-                // Создаём временный файл Спеки исходного пакета, т.к. они должны быть в паре в рамках объекта RepositoryObject
-                using (StreamReader sr = new StreamReader(tmpRepObject.OriginalRepObject.SpecRepFullPath))
-                    using (StreamWriter sw = new StreamWriter(tmpRepObject.TempRepObject.SpecRepFullPath))
-                        while (sr.Peek() >= 0)
-                            sw.WriteLine(sr.ReadLine());
             }
 
-            return answer;
+            // Создаём временный файл Спеки исходного пакета (просто копируем), т.к. они должны быть в паре в рамках объекта RepositoryObject
+            using (StreamReader sr = new StreamReader(tmpRepObject.OriginalRepObject.SpecRepFullPath))
+                using (StreamWriter sw = new StreamWriter(tmpRepObject.TempRepObject.SpecRepFullPath))
+                    while (sr.Peek() >= 0)
+                        sw.WriteLine(sr.ReadLine());
+
+            return tmpRepObject;
         }
 
         #endregion
