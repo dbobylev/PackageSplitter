@@ -2,21 +2,12 @@
 using DataBaseRepository.Model;
 using OracleParser.Model;
 using OracleParser.Model.PackageModel;
-using PackageSplitter.Model;
-using PackageSplitter.src.View;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Expr = System.Linq.Expressions;
 using System.Text;
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Controls;
-using System.Text.RegularExpressions;
-using OracleParser;
-using System.Threading;
-using System.Windows.Xps.Serialization;
 
 namespace PackageSplitter.Model.Split
 {
@@ -38,43 +29,6 @@ namespace PackageSplitter.Model.Split
         protected SplitOperations()
         {
 
-        }
-
-        /// <summary>
-        /// Найти ссылки из новго тела пакета, на методы и переменные в исходном теле пакета (т.е. на те, которые по разным причинам не были скопированы)
-        /// </summary>
-        /// <returns></returns>
-        public virtual bool AnalizeLinks()
-        {
-            // Имена всех элементов в пакете
-            var AllNames = _package.elements.Select(x => x.Name.ToUpper());
-
-            // Имена всех скопирвоанных элементов в новой спеке и новом теле
-            var NewNames = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ALL_ELEMENT_TYPES)
-                   .Concat(GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ALL_ELEMENT_TYPES))
-                   .Distinct()
-                   .Select(x => x.ToUpper());
-
-            // Имена всех методов в новом теле пакета
-            var AllNewBodies = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
-
-            // Список имен элементов на которые ссылаются в этих методах (которые добавлены в новом теле пакета)
-            var AllLinks = _package.elements.Where(x => AllNewBodies.Contains(x.Name.ToUpper())).SelectMany(x => x.Links.ToArray()).Select(x => x.Text).Distinct();
-
-            // Из всех элементов вычитаем те которые были скопированы в новое тело/спеку и берем пересечение с ссылками которые есть в новом теле.
-            var LinkedOldNames = AllNames.Except(NewNames).Intersect(AllLinks);
-
-            // Проверяем эти методы на флаг IsRequiried
-            var NewRequiriedElements = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried);
-           
-            // При отсутствии флага, проставляем его (Ячейки подсветятся желтым)
-            if (NewRequiriedElements.Any())
-                NewRequiriedElements.ToList().ForEach(x => x.IsRequiried = true);
-
-            // Удаляем IsRequiried у тех методов которые больше не имеют ссылок из нового тела
-            _splitter.Elements.Where(x => x.IsRequiried && !LinkedOldNames.Contains(x.PackageElementName.ToUpper())).ToList().ForEach(x => { x.MakePrefix = false; x.IsRequiried = false; });
-
-            return NewRequiriedElements.Any();
         }
 
         #region SplitBase
@@ -259,19 +213,26 @@ namespace PackageSplitter.Model.Split
             #region Заменяем ссылки
 
             /* Если мы удаляем метод из исходного пакета, на который продолжают ссылатся в этом же пакете.
-             * То к таким ссылкам добавляем префикс нового пакета. (Обяхательно проверяем, что бы эти пакеты были в новой спецификации
+             * То к таким ссылкам добавляем префикс нового пакета. (Обязательно проверяем, что бы эти пакеты были в новой спецификации
              */
+
+            // Методы которые удалены из исходного тела пакета
             var DeletedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Delete, ePackageElementType.Method).Select(x=>x.ToUpper());
+            // Методы которые остались в исходном пакете
             var ExistedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Exist, ePackageElementType.Method);
+            // Позиции ссылок из методов которые остались к удаленным методам
             var LinksToDeletedMethod = _package.elements
                 .Where(x => x.ElementType == ePackageElementType.Method && ExistedMethods.Contains(x.Name))
                 .SelectMany(x => x.Links.Where(x => DeletedMethods.Contains(x.Text.ToUpper())))
                 .OrderBy(x=>x.LineBeg)
                 .ThenBy(x=>x.ColumnBeg)
                 .ToArray();
+
             if (LinksToDeletedMethod.Any())
             {
+                // Методы объявленные в новой спецификации
                 var NewSpecMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
+                // Вычитаем из имен ссылок на удаленные методы те которые существуют в новой смпецификации, если что-то останется, то выводим ошибку
                 var WrongLinks = LinksToDeletedMethod.Select(x => x.Text.ToUpper()).Distinct().Except(NewSpecMethods);
                 if (WrongLinks.Any())
                     throw new Exception($"В исходном пакете остались ссылки на методы, которые были удалены(в исходном пакете) и не объявлены в новой спецификации: {string.Join(", ", WrongLinks)}");
@@ -283,14 +244,22 @@ namespace PackageSplitter.Model.Split
                 if (Config.Instanse().NewPackageOwner.ToUpper() != _package.repositoryPackage.Owner.ToUpper())
                     LinkStr = $"{Config.Instanse().NewPackageOwner.ToLower()}.{LinkStr}";
 
+                // Индекс для коллекции LinksToDeletedMethod
                 var LinksToDeletedMethodIndex = 0;
+                // Пробигаемся по всем строчкам в исходном пакете
                 for (int i = 0; i < FileLines.Length; i++)
                 {
+                    // Доходим до номера строчки, где мы должны вставить префикс
                     if (i + 1 == LinksToDeletedMethod[LinksToDeletedMethodIndex].LineBeg)
                     {
+                        // Замен в одной строке может быть несколько, считаем эти замены
                         var OneLineReplaceCounter = 0;
+
+                        // Добавляем префикс
                         while (LinksToDeletedMethodIndex < LinksToDeletedMethod.Length && i + 1 == LinksToDeletedMethod[LinksToDeletedMethodIndex].LineBeg)
                             FileLines[i] = FileLines[i].Insert(LinksToDeletedMethod[LinksToDeletedMethodIndex++].ColumnBeg + LinkStr.Length * OneLineReplaceCounter++, LinkStr);
+
+                        // Выходлим из цикла если ссылок больше не осталось
                         if (LinksToDeletedMethodIndex >= LinksToDeletedMethod.Length)
                             break;
                     }
@@ -311,7 +280,10 @@ namespace PackageSplitter.Model.Split
                 TextVariable = GetTextPart(VariableToAdd, ePackageElementDefinitionType.Spec);
             }
 
-            // Все кто должны быть удалены
+            /* Все кто должны быть удалены
+             * Мы будем удалять методы помеченные как "Удалить" и "Создать ссылку"
+             * В момент удаления блока метода "Создать ссылку", вместо него будем подставлять текст из метода GetLink
+             */
             var AllDelete = GetNames(eSplitterObjectType.OldBody, eElementStateType.Delete | eElementStateType.CreateLink, ALL_ELEMENT_TYPES);
             // Номера строк для удаления
             var LinesToDelete = _package.elements
@@ -334,11 +306,14 @@ namespace PackageSplitter.Model.Split
 
             if (LinesToDelete.Any())
             {
-                // Так как мы вставили метки(двух строчные) для новых переменных и методов, строки для удаления должны быть смещены (При необходимости)
+                // Так как мы вставили метки(двух строчные) для новых переменных, строки для удаления должны быть смещены (При необходимости)
                 for (int i = 0; i < LinesToDelete.Length; i++)
                     LinesToDelete[i] = MoveLine(LinesToDelete[i]);
 
-                // Удаление строк
+                /* Удаление строк:
+                 * Пробегаемся по всем строчкам исходного файла FileLines
+                 * И копируем в новую переменную, те которые должны остаться
+                 */
                 var LinesCount = FileLines.Count();
                 var LinesToDeleteIndex = 0;
                 var sb = new StringBuilder();
@@ -358,13 +333,50 @@ namespace PackageSplitter.Model.Split
             else
                 oldBodyText = string.Join("\r\n", FileLines);
 
-            // Заменяем метки;
+            // Заменяем метки
             oldBodyText = oldBodyText.Replace(labelVariable, TextVariable);
 
             return oldBodyText;
         }
 
         #endregion
+
+        /// <summary>
+        /// Найти ссылки из нового тела пакета, на методы и переменные в исходном теле пакета (т.е. на те, которые по разным причинам не были скопированы)
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool AnalizeLinks()
+        {
+            // Имена всех элементов в пакете
+            var AllNames = _package.elements.Select(x => x.Name.ToUpper());
+
+            // Имена всех скопирвоанных элементов в новой спеке и новом теле
+            var NewNames = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ALL_ELEMENT_TYPES)
+                   .Concat(GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ALL_ELEMENT_TYPES))
+                   .Distinct()
+                   .Select(x => x.ToUpper());
+
+            // Имена всех методов в новом теле пакета
+            var AllNewBodies = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
+
+            // Список имен элементов на которые ссылаются в этих методах (которые добавлены в новом теле пакета)
+            var AllLinks = _package.elements.Where(x => AllNewBodies.Contains(x.Name.ToUpper())).SelectMany(x => x.Links.ToArray()).Select(x => x.Text).Distinct();
+
+            // Из всех элементов вычитаем те которые были скопированы в новое тело/спеку и берем пересечение с ссылками которые есть в новом теле.
+            var LinkedOldNames = AllNames.Except(NewNames).Intersect(AllLinks);
+
+            // Проверяем эти методы на флаг IsRequiried
+            var NewRequiriedElements = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried);
+
+            // При отсутствии флага, проставляем его (Ячейки подсветятся желтым)
+            if (NewRequiriedElements.Any())
+                NewRequiriedElements.ToList().ForEach(x => x.IsRequiried = true);
+
+            // Удаляем IsRequiried у тех методов которые больше не имеют ссылок из нового тела
+            _splitter.Elements.Where(x => x.IsRequiried && !LinkedOldNames.Contains(x.PackageElementName.ToUpper())).ToList().ForEach(x => { x.MakePrefix = false; x.IsRequiried = false; });
+
+            return NewRequiriedElements.Any();
+        }
 
         #region private helpers
 
@@ -505,7 +517,7 @@ namespace PackageSplitter.Model.Split
             // Добавляем слово return для функции
             if (text[SpaceBeforeTextBegin] == 'f' || text[SpaceBeforeTextBegin] == 'F')
                 NewPackageCallText = $"return {NewPackageCallText}";
-            // Отступ длинною в текст ссылки (необходим для отступов для параметров)
+            // Отступ длинною в текст ссылки (необходим для отступов параметров)
             var IndentName = GetSpaces(NewPackageCallText.Count());
 
             // Добавляем параметры
