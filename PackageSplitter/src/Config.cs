@@ -10,38 +10,38 @@ namespace PackageSplitter
     {
         public string RepositoryPath
         {
-            get => GetValue<string>("RepositoryPath");
-            set => SetValue("RepositoryPath", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string LastOwnerUsed
         {
-            get => GetValue<string>("LastOwnerUsed");
-            set => SetValue("LastOwnerUsed", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string LastFileUsed
         {
-            get => GetValue<string>("LastFileUsed");
-            set => SetValue("LastFileUsed", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string NewPackageName
         {
-            get => GetValue<string>("NewPackageName");
-            set => SetValue("NewPackageName", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string NewPackageOwner
         {
-            get => GetValue<string>("NewPackageOwner");
-            set => SetValue("NewPackageOwner", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public bool AllowNationalChars
         {
-            get => GetValue<bool>("AllowNationalChars");
-            set => SetValue("AllowNationalChars", value);
+            get => GetValue<bool>();
+            set => SetValue(value);
         }
 
         private static Config _Instanse;
