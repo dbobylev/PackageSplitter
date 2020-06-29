@@ -13,8 +13,9 @@ namespace PackageSplitter.Model.Split
 {
     public abstract class SplitOperations
     {
+        private const ePackageElementType METHOD_TYPES = ePackageElementType.Procedure | ePackageElementType.Function;
         private const ePackageElementType NOT_METHOD_TYPES = ePackageElementType.Type | ePackageElementType.Variable | ePackageElementType.Cursor;
-        private const ePackageElementType ALL_ELEMENT_TYPES = ePackageElementType.Method | NOT_METHOD_TYPES;
+        private const ePackageElementType ALL_ELEMENT_TYPES = METHOD_TYPES | NOT_METHOD_TYPES;
 
         /// <summary>
         /// Распарсенный пакет
@@ -43,7 +44,7 @@ namespace PackageSplitter.Model.Split
             // Все переменные которые должны быть скопированы
             var AllVariables = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, NOT_METHOD_TYPES);
             // Все методы которые должны быть скопирваны
-            var AllMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method);
+            var AllMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add);
 
             // Текст нового тела пакета
             var NewText = string.Empty;
@@ -84,7 +85,7 @@ namespace PackageSplitter.Model.Split
             // Все переменные которые должны быть скопированы
             var AllVariables = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, NOT_METHOD_TYPES);
             // Все методы которые должны быть скопирваны
-            var AllMethods = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
+            var AllMethods = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add);
 
             // Текст тела нового пакета
             var NewText = string.Empty;
@@ -128,7 +129,7 @@ namespace PackageSplitter.Model.Split
             var FileLines = File.ReadAllLines(_package.repositoryPackage.SpecRepFullPath);
 
             // Методы который должны бють добавлены
-            var MethodNameToAdd = GetNames(eSplitterObjectType.OldSpec, eElementStateType.Add, ePackageElementType.Method);
+            var MethodNameToAdd = GetNames(eSplitterObjectType.OldSpec, eElementStateType.Add);
             if (MethodNameToAdd.Any())
             {
                 // Ищем последнюю строку последнего метода
@@ -144,7 +145,7 @@ namespace PackageSplitter.Model.Split
             if (VariableToAdd.Any())
             {
                 //вставляем перед первым найденным методом
-                PosVariable = _package.elements.Where(x => x.HasSpec && x.ElementType == ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineBeg).OrderBy(x => x).First();
+                PosVariable = _package.elements.Where(x => x.HasSpec && METHOD_TYPES.HasFlag(x.ElementType)).Select(x => x.Position[ePackageElementDefinitionType.Spec].LineBeg).OrderBy(x => x).First();
                 // Вставляем метку, для последующей вставки новых переменных
                 FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
 
@@ -217,12 +218,12 @@ namespace PackageSplitter.Model.Split
              */
 
             // Методы которые удалены из исходного тела пакета
-            var DeletedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Delete, ePackageElementType.Method).Select(x=>x.ToUpper());
+            var DeletedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Delete).Select(x=>x.ToUpper());
             // Методы которые остались в исходном пакете
-            var ExistedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Exist, ePackageElementType.Method);
+            var ExistedMethods = GetNames(eSplitterObjectType.OldBody, eElementStateType.Exist);
             // Позиции ссылок из методов которые остались к удаленным методам
             var LinksToDeletedMethod = _package.elements
-                .Where(x => x.ElementType == ePackageElementType.Method && ExistedMethods.Contains(x.Name))
+                .Where(x => METHOD_TYPES.HasFlag(x.ElementType) && ExistedMethods.Contains(x.Name))
                 .SelectMany(x => x.Links.Where(x => DeletedMethods.Contains(x.Text.ToUpper())))
                 .OrderBy(x=>x.LineBeg)
                 .ThenBy(x=>x.ColumnBeg)
@@ -231,7 +232,7 @@ namespace PackageSplitter.Model.Split
             if (LinksToDeletedMethod.Any())
             {
                 // Методы объявленные в новой спецификации
-                var NewSpecMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
+                var NewSpecMethods = GetNames(eSplitterObjectType.NewSpec, eElementStateType.Add).Select(x => x.ToUpper());
                 // Вычитаем из имен ссылок на удаленные методы те которые существуют в новой смпецификации, если что-то останется, то выводим ошибку
                 var WrongLinks = LinksToDeletedMethod.Select(x => x.Text.ToUpper()).Distinct().Except(NewSpecMethods);
                 if (WrongLinks.Any())
@@ -273,7 +274,7 @@ namespace PackageSplitter.Model.Split
             if (VariableToAdd.Any())
             {
                 // Вставляем перед первым найденным методом
-                PosVariable = _package.elements.Where(x => x.HasBody && x.ElementType == ePackageElementType.Method).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineBeg).OrderBy(x => x).First();
+                PosVariable = _package.elements.Where(x => x.HasBody && METHOD_TYPES.HasFlag(x.ElementType)).Select(x => x.Position[ePackageElementDefinitionType.BodyFull].LineBeg).OrderBy(x => x).First();
                 // Вставляем метку, для последующей вставки новых переменных
                 FileLines = FileLines.Insert(PosVariable - 1 /*На предыдущей строке*/ - 1 /* Нумерация позиций начинается с 1*/, new string[] { string.Empty, labelVariable });
                 // Текст новых переменных
@@ -357,7 +358,7 @@ namespace PackageSplitter.Model.Split
                    .Select(x => x.ToUpper());
 
             // Имена всех методов в новом теле пакета
-            var AllNewBodies = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method).Select(x => x.ToUpper());
+            var AllNewBodies = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add).Select(x => x.ToUpper());
 
             // Список имен элементов на которые ссылаются в этих методах (которые добавлены в новом теле пакета)
             var AllLinks = _package.elements.Where(x => AllNewBodies.Contains(x.Name.ToUpper())).SelectMany(x => x.Links.ToArray()).Select(x => x.Text).Distinct();
@@ -367,15 +368,16 @@ namespace PackageSplitter.Model.Split
 
             // Проверяем эти методы на флаг IsRequiried
             var NewRequiriedElements = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried);
+            var HasNewRequiriedElements = NewRequiriedElements.Any();
 
             // При отсутствии флага, проставляем его (Ячейки подсветятся желтым)
-            if (NewRequiriedElements.Any())
+            if (HasNewRequiriedElements)
                 NewRequiriedElements.ToList().ForEach(x => x.IsRequiried = true);
 
             // Удаляем IsRequiried у тех методов которые больше не имеют ссылок из нового тела
             _splitter.Elements.Where(x => x.IsRequiried && !LinkedOldNames.Contains(x.PackageElementName.ToUpper())).ToList().ForEach(x => { x.MakePrefix = false; x.IsRequiried = false; });
 
-            return NewRequiriedElements.Any();
+            return HasNewRequiriedElements;
         }
 
         #region private helpers
@@ -387,7 +389,7 @@ namespace PackageSplitter.Model.Split
         /// <param name="elementStates">Состояние элемента (можно несколько)</param>
         /// <param name="packageElementType">Тип элемента  (можно несколько)</param>
         /// <returns></returns>
-        private IEnumerable<string> GetNames(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Method)
+        private IEnumerable<string> GetNames(eSplitterObjectType splitterObjectType, eElementStateType elementStates, ePackageElementType packageElementType = ePackageElementType.Procedure | ePackageElementType.Function)
         {
             var x = Expr.Expression.Parameter(typeof(SplitterElement), "x");
             var HasFlagMethod = typeof(Enum).GetMethod("HasFlag", new[] { typeof(Enum) });
@@ -503,7 +505,7 @@ namespace PackageSplitter.Model.Split
             if (repositoryPackage.Owner.ToUpper() != Config.Instanse().NewPackageOwner.ToUpper())
                 NewPackageCallText = $"{Config.Instanse().NewPackageOwner.ToLower()}.{NewPackageCallText}";
             // Добавляем слово return для функции
-            if (text[SpaceBeforeTextBegin] == 'f' || text[SpaceBeforeTextBegin] == 'F')
+            if (element.ElementType == ePackageElementType.Function)
                 NewPackageCallText = $"return {NewPackageCallText}";
             // Отступ длинною в текст ссылки (необходим для отступов параметров)
             var IndentName = GetSpaces(NewPackageCallText.Count());
@@ -545,7 +547,7 @@ namespace PackageSplitter.Model.Split
             var AllPrefixNames = _splitter.Elements.Where(x => x.MakePrefix).Select(x => x.PackageElementName.ToUpper());
 
             // Назхвание всех новых методов в новом теле пакета, где будем обновлять ссылки
-            var AllNewBodyNames = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add, ePackageElementType.Method);
+            var AllNewBodyNames = GetNames(eSplitterObjectType.NewBody, eElementStateType.Add);
 
             // Все позхиции ссылок, которые должны быть обновлены 
             PosToUpgrade = _package.elements

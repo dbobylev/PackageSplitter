@@ -87,7 +87,7 @@ namespace PackageSplitter.ViewModel
         {
             var errorMsg = string.Empty;
 
-            if (ElementType == ePackageElementType.Method)
+            if (ElementType == ePackageElementType.Procedure || ElementType == ePackageElementType.Function)
             {
                 if (NewSpecState == eElementStateType.Add && NewBodyState == eElementStateType.Empty)
                     errorMsg = "Необходимо добавить тело метода";

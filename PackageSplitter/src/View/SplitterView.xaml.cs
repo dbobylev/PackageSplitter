@@ -41,7 +41,7 @@ namespace PackageSplitter.View
 
             var answer = 
                 Regex.IsMatch(elementName, tbElementPattern.Text, RegexOptions.IgnoreCase) 
-                && (  (elementType == ePackageElementType.Method && (bool)chkbShowMethods.IsChecked) 
+                && (  ((elementType == ePackageElementType.Function || elementType == ePackageElementType.Procedure) && (bool)chkbShowMethods.IsChecked) 
                    || (elementType == ePackageElementType.Variable && (bool)chkbShowVariables.IsChecked) 
                    || (elementType == ePackageElementType.Type && (bool)chkbShowTypes.IsChecked) 
                    || (elementType == ePackageElementType.Cursor && (bool)chkbShowCursors.IsChecked)

@@ -32,7 +32,8 @@ namespace PackageSplitter.View.Templates
 
             switch (elementType)
             {
-                case ePackageElementType.Method: return GetButtonsForMethod(splitterObject);
+                case ePackageElementType.Procedure:
+                case ePackageElementType.Function: return GetButtonsForMethod(splitterObject);
                 case ePackageElementType.Type:
                 case ePackageElementType.Cursor:
                 case ePackageElementType.Variable: return GetButtonsForVariables(splitterObject);
