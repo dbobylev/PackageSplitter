@@ -411,23 +411,6 @@ namespace PackageSplitter.Model.Split
         }
 
         /// <summary>
-        /// Получить участки кода для определнных элементов
-        /// </summary>
-        /// <param name="names">Список элементов</param>
-        /// <param name="codeDefinitionPart">Место откуда берем код</param>
-        /// <param name="hasSpec"></param>
-        /// <param name="hasBody"></param>
-        /// <returns></returns>
-        private PieceOfCode[] GetCodePositions(IEnumerable<string> names, ePackageElementDefinitionType codeDefinitionPart, bool? hasSpec, bool? hasBody)
-        {
-            return _package.elements
-                .Where(x => names.Contains(x.Name)
-                         && x.HasSpec == (hasSpec ?? x.HasSpec)
-                         && x.HasBody == (hasBody ?? x.HasBody))
-                .Select(x => x.Position[codeDefinitionPart]).ToArray();
-        }
-
-        /// <summary>
         /// Получить косок текста для определенных элементов
         /// </summary>
         /// <param name="names">Имена элементов</param>
@@ -448,7 +431,12 @@ namespace PackageSplitter.Model.Split
                 default: break;
             }
 
-            var CodeParts = GetCodePositions(names, codeDefinitionPart, hasSpec, hasBody);
+            var CodeParts = _package.elements
+                                    .Where(x => names.Contains(x.Name)
+                                             && x.HasSpec == (hasSpec ?? x.HasSpec)
+                                             && x.HasBody == (hasBody ?? x.HasBody))
+                                    .Select(x => x.Position[codeDefinitionPart]).ToArray();
+
             var repositoryObjectType = codeDefinitionPart == ePackageElementDefinitionType.Spec ? eRepositoryObjectType.Package_Spec : eRepositoryObjectType.Package_Body;
 
             return GetTextPart(CodeParts, repositoryObjectType, codeDefinitionPart == ePackageElementDefinitionType.BodyDeclaration);
