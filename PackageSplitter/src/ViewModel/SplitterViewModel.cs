@@ -60,6 +60,8 @@ namespace PackageSplitter.ViewModel
             RepositoryObjectWasUpdated = false;
             _SplitterSaver = new SplitterSaver(parsedPackage.repositoryPackage.ObjectName, parsedPackage.SHA);
             _splitter = new Splitter(parsedPackage);
+            _SplitManager.SetSplitterPackage(_splitter);
+
             FillElements();
         }
 
@@ -76,7 +78,6 @@ namespace PackageSplitter.ViewModel
             {
                 try
                 {
-                    _SplitManager.SetSplitterPackage(_splitter);
                     if (splitterObjectType == eSplitterObjectType.NewBody && AnalyzeLinks())
                         return;
 
@@ -118,6 +119,7 @@ namespace PackageSplitter.ViewModel
             if (_SplitterSaver.Load(out Splitter splitter))
             {
                 _splitter = splitter;
+                _SplitManager.SetSplitterPackage(_splitter);
                 FillElements();
             }
             OnPropertyChanged("HasRequiried");
