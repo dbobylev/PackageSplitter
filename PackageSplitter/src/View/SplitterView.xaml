@@ -51,6 +51,12 @@
                             <CheckBox x:Name="chkbShowTypes"  Content="Типы" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
                             <CheckBox x:Name="chkbShowCursors"  Content="Курсоры" IsChecked="True" Checked="UpdateCollectionViewSource" Unchecked="UpdateCollectionViewSource"/>
                         </StackPanel>
+                        <Border Margin="5,0,5,0" Background="{Binding LinksRadioBackground}"  Padding="0">
+                            <StackPanel>
+                                <RadioButton x:Name="RadioLinksALL" Content="Все" Margin="5" IsChecked="True" IsThreeState="False" Checked="UpdateCollectionViewSource"/>
+                                <RadioButton x:Name="RadioLinksRequiried" Content="Линки" Margin="5" IsThreeState="False" Checked="UpdateCollectionViewSource"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Border>
                 <Border>

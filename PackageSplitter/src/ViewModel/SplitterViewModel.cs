@@ -12,6 +12,8 @@ using System.Text;
 using System.Windows;
 using System.Windows.Annotations;
 using System.Windows.Documents;
+using System.Windows.Media;
+using PackageSplitter.ViewModel.Convertrs;
 
 namespace PackageSplitter.ViewModel
 {
@@ -33,14 +35,14 @@ namespace PackageSplitter.ViewModel
 
         public ObservableCollection<SplitterElementViewModel> ElementsViewModel { get; private set; }
 
-        public bool? HasRequiried
+        public SolidColorBrush LinksRadioBackground
         {
             get
             {
-                if (ElementsViewModel == null && ElementsViewModel.Count == 0)
-                    return null;
+                if (ElementsViewModel == null || ElementsViewModel.Count == 0 || _splitter.Elements.All(x => !x.IsRequiried || x.MakePrefix))
+                    return "cRadioLinksDefault".FindResource<SolidColorBrush>();
                 else
-                    return ElementsViewModel.Any(x => x.IsRequiried && !x.MakePrefix);
+                    return "cCellYellow".FindResource<SolidColorBrush>();
             }
         }
 
@@ -125,6 +127,10 @@ namespace PackageSplitter.ViewModel
             OnPropertyChanged("HasRequiried");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Да - есть неразрешенные проблемы, прекращаем выполнение. Нет - продолжаем генерацию текста</returns>
         private bool AnalyzeLinks()
         {
             var answer = _SplitManager.AnalizeLinks();
@@ -137,7 +143,14 @@ namespace PackageSplitter.ViewModel
 
             foreach (var item in ElementsViewModel)
                 item.UpdateIsRequiried();
-            OnPropertyChanged("HasRequiried");
+            OnPropertyChanged("LinksRadioBackground");
+
+            var WrongPrefix = _splitter.Elements.Where(x => x.MakePrefix && (x.OldSpec == eElementStateType.Delete || x.OldSpec == eElementStateType.Empty)).ToList();
+            if (WrongPrefix.Any())
+            {
+                MessageBox.Show($"Указан префикс на отсутствующию спецификацию в исходном пакете: ({string.Join(", ", WrongPrefix.Select(x => x.PackageElementName))})", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                answer = true;
+            }
 
             return answer;
         }

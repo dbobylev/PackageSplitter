@@ -39,8 +39,9 @@ namespace PackageSplitter.View
             var elementType = item.ElementType;
             var elementName = item.Name;
 
-            var answer = 
-                Regex.IsMatch(elementName, tbElementPattern.Text, RegexOptions.IgnoreCase) 
+            var answer =
+                ((bool)RadioLinksALL.IsChecked || item.IsRequiried)
+                && Regex.IsMatch(elementName, tbElementPattern.Text, RegexOptions.IgnoreCase) 
                 && (  ((elementType == ePackageElementType.Function || elementType == ePackageElementType.Procedure) && (bool)chkbShowMethods.IsChecked) 
                    || (elementType == ePackageElementType.Variable && (bool)chkbShowVariables.IsChecked) 
                    || (elementType == ePackageElementType.Type && (bool)chkbShowTypes.IsChecked) 

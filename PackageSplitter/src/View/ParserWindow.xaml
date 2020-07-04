@@ -61,7 +61,7 @@
                 <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Visibility="{Binding HasError}" CanContentScroll="True" VerticalScrollBarVisibility="Auto">
                     <TextBlock Text="{Binding ErrorMessage, Mode=OneWay}" TextWrapping="Wrap" Background="White"/>
                 </ScrollViewer>
-                <StackPanel  Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <StackPanel  Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="{Binding HasError}">
                     <Button Content="Ok" Command="{Binding CloseCommand}"/>
                 </StackPanel>
             </Grid>
