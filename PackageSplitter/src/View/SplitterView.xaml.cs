@@ -71,5 +71,12 @@ namespace PackageSplitter.View
                 box.FontWeight = FontWeights.Normal;
             }
         }
+
+        private void SplitNewBodyButton_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            btn.Command.Execute(eSplitterObjectType.NewBody);
+            UpdateCollectionViewSource(sender, e);
+        }
     }
 }

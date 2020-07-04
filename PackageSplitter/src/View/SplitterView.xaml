@@ -78,7 +78,7 @@
                         <Button Content="СПЕЦ.&#x0a;OLD" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldSpec}"/>
                         <Button Content="ТЕЛО&#x0a;OLD" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.OldBody}"/>
                         <Button Content="СПЕЦ.&#x0a;NEW" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewSpec}"/>
-                        <Button Content="ТЕЛО&#x0a;NEW" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" CommandParameter="{x:Static mdl:eSplitterObjectType.NewBody}"/>
+                        <Button Content="ТЕЛО&#x0a;NEW" TextBlock.TextAlignment="Center" Command="{Binding SplitCommand}" Click="SplitNewBodyButton_Click"/>
                     </StackPanel>
                 </Border>
             </StackPanel>
