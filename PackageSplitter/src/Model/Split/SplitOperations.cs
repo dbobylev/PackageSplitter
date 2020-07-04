@@ -364,20 +364,22 @@ namespace PackageSplitter.Model.Split
             var AllLinks = _package.elements.Where(x => AllNewBodies.Contains(x.Name.ToUpper())).SelectMany(x => x.Links.ToArray()).Select(x => x.Text).Distinct();
 
             // Из всех элементов вычитаем те которые были скопированы в новое тело/спеку и берем пересечение с ссылками которые есть в новом теле.
-            var LinkedOldNames = AllNames.Except(NewNames).Intersect(AllLinks);
+            var LinkedOldNames = AllNames.Except(NewNames).Intersect(AllLinks).ToList();
 
             // Проверяем эти методы на флаг IsRequiried
-            var NewRequiriedElements = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried);
-            var HasNewRequiriedElements = NewRequiriedElements.Any();
+            var NewRequiriedElements = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.IsRequiried).ToList();
 
             // При отсутствии флага, проставляем его (Ячейки подсветятся желтым)
-            if (HasNewRequiriedElements)
-                NewRequiriedElements.ToList().ForEach(x => x.IsRequiried = true);
+            if (NewRequiriedElements.Any())
+                NewRequiriedElements.ForEach(x => x.IsRequiried = true);
+
+            // Проверяем эти методы на флаг MakePrefix
+            var WithoutPrefix = _splitter.Elements.Where(x => LinkedOldNames.Contains(x.PackageElementName.ToUpper()) && !x.MakePrefix).ToList();
 
             // Удаляем IsRequiried у тех методов которые больше не имеют ссылок из нового тела
             _splitter.Elements.Where(x => x.IsRequiried && !LinkedOldNames.Contains(x.PackageElementName.ToUpper())).ToList().ForEach(x => { x.MakePrefix = false; x.IsRequiried = false; });
 
-            return HasNewRequiriedElements;
+            return WithoutPrefix.Any();
         }
 
         #region private helpers
