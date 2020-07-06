@@ -10,7 +10,7 @@ namespace PackageSplitter.Tests.Split.Source
 
     static class HelperPackageParts
     {
-        public static string GetHeader(string name, bool IsPackageBody = false) => $"create or replace package {(IsPackageBody ? "body " : string.Empty)} {name} \r\nis\r\n";
+        public static string GetHeader(string name, bool IsPackageBody = false) => $"create or replace package {(IsPackageBody ? "body " : string.Empty)} {name} \r\nis\r\n\r\n";
 
         public static string GetBottom(string name) => $"end {name};\r\n/";
 

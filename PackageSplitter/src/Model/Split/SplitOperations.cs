@@ -477,7 +477,7 @@ namespace PackageSplitter.Model.Split
         {
             var bodyWord = repositoryObjectType == eRepositoryObjectType.Package_Body ? "body " : string.Empty;
             var NewPackageName = $"{Config.Instanse().NewPackageOwner}.{Config.Instanse().NewPackageName}";
-            return $"create or replace package {bodyWord}{NewPackageName} is\r\n\r\n{text}\r\nend {Config.Instanse().NewPackageName};\r\n/";
+            return $"create or replace package {bodyWord}{NewPackageName} is\r\n\r\n{text}\r\nend {Config.Instanse().NewPackageName};\r\n/\r\n";
         }
 
         /// <summary>

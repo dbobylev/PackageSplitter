@@ -5,7 +5,7 @@ using System;
 
 namespace PackageSplitter
 {
-    class Seri
+    public class Seri
     {
         private static Logger _log;
         public static Logger Log

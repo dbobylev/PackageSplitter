@@ -17,9 +17,41 @@ namespace PackageSplitter.Tests.Split.Cases
             element.NewSpec = eElementStateType.Add;
             element.OldBody = eElementStateType.CreateLink;
 
-            ExceptedNewBody = "123";
-            ExceptedNewSpec = "123";
-            ExceptedOldBody = "123";
+            ExceptedPart[eSplitterObjectType.NewSpec] = @"create or replace package TESTREPOSITORY.NEW_PACKAGE1 is
+
+  -- Процедура запускает что-то в цикле
+  procedure ImportData(pID in number);
+
+end NEW_PACKAGE1;
+/
+";
+
+            ExceptedPart[eSplitterObjectType.NewBody] = @"create or replace package body TESTREPOSITORY.NEW_PACKAGE1 is
+
+  -- Процедура запускает что-то в цикле
+  procedure ImportData(pID in number) is
+  begin
+    for i in (select SomeProperty from testtable where id = pid)
+    loop
+      runSomething(i.SomeProperty);
+    end loop;
+  end ImportData;
+
+end NEW_PACKAGE1;
+/
+";
+
+            ExceptedPart[eSplitterObjectType.OldBody] = @"create or replace package body  Package1 
+is
+
+  -- Процедура запускает что-то в цикле
+  procedure ImportData(pID in number) is
+  begin
+    new_package1.ImportData(pID => pID);
+  end ImportData;
+end Package1;
+/
+";
         }
     }
 }

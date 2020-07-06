@@ -1,6 +1,7 @@
 ﻿using DataBaseRepository.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace PackageSplitter.Tests.Split.Source
@@ -8,16 +9,8 @@ namespace PackageSplitter.Tests.Split.Source
     public abstract class PackageText
     {
         public RepositoryPackage RepositoryPackage { get; private set; }
-
-        private string _PackageName;
-        public string PackageName { 
-            get => _PackageName; 
-            protected set
-            {
-                _PackageName = value;
-                RepositoryPackage = new RepositoryPackage(_PackageName, "ALPHA");
-            }
-        }
+        
+        public string PackageName { get; protected set; }
 
         public string SpecText { get; protected set; }
                               
@@ -28,5 +21,15 @@ namespace PackageSplitter.Tests.Split.Source
             
         }
 
+        protected void SaveTextToFile()
+        {
+            RepositoryPackage = new RepositoryPackage(PackageName, "TestRepository");
+
+            if (!Directory.Exists(RepositoryPackage.OwnerFullPath))
+                Directory.CreateDirectory(RepositoryPackage.OwnerFullPath);
+
+            File.WriteAllText(RepositoryPackage.SpecRepFullPath, SpecText);
+            File.WriteAllText(RepositoryPackage.BodyRepFullPath, BodyText);
+        }
     }
 }

@@ -6,7 +6,7 @@ using UpdateableConfig;
 
 namespace PackageSplitter
 {
-    class Config : UpdateableJsonConfig
+    public class Config : UpdateableJsonConfig
     {
         public string RepositoryPath
         {

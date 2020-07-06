@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PackageSplitter.Model
 {
-    static class Helper
+    public static class Helper
     {
         public static eRepositoryObjectType GetRepositoryType(this eSplitterObjectType source)
         {

@@ -18,18 +18,18 @@ namespace PackageSplitter.Tests.Split.Cases
         protected Package _package;
         protected Splitter _splitter;
 
-        public string ExceptedOldSpec { get; protected set; }
-        public string ExceptedOldBody { get; protected set; }
-        public string ExceptedNewSpec { get; protected set; }
-        public string ExceptedNewBody { get; protected set; }
+        public RepositoryPackage RepositoryPackage { get; private set; }
+
+        public Dictionary<eSplitterObjectType, string> ExceptedPart { get; private set; }
 
         public SplitPackageCaseBase(PackageText packageText)
         {
-            var repositoryPackage = packageText.RepositoryPackage;
+            RepositoryPackage = packageText.RepositoryPackage;
+            ExceptedPart = new Dictionary<eSplitterObjectType, string>();
 
             _OraParser = OraParser.Instance();
 
-            _package = _OraParser.ParsePackage(repositoryPackage, false).Result;
+            _package = _OraParser.ParsePackage(RepositoryPackage, false).Result;
             _splitter = new Splitter(_package);
 
             _SplitManager = SplitManager.Instance();
@@ -37,9 +37,13 @@ namespace PackageSplitter.Tests.Split.Cases
             _SplitManager.SetSplitterPackage(_splitter);
         }
 
-        public void RunSplit()
+        public void RunSplit(eSplitterObjectType splitterOvjectType, eSplitParam splitterParam)
         {
+            // Убираем параметр "Открыть в новом окне" (при его наличии)
+            if (splitterParam.HasFlag(eSplitParam.OpenNewWindow))
+                splitterParam &= ~eSplitParam.OpenNewWindow;
 
+            _SplitManager.RunSplit(splitterOvjectType, splitterParam);
         }
 
     }

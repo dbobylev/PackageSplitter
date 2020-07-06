@@ -7,13 +7,14 @@ namespace PackageSplitter.Tests.Split.Source
     class TestPackage1 :PackageText
     {
         public const string METHOD1_NAME = "ImportData";
+        public const string VARIABLE1_NAME = "LogLevel";
 
         public TestPackage1()
         {
             PackageName = "Package1";
 
             SpecText += HelperPackageParts.GetHeader(PackageName);
-            SpecText += HelperPackageParts.GetVariableDeclaration("LogLevel", eVariableType.number, "-- настройка", "3");
+            SpecText += HelperPackageParts.GetVariableDeclaration("VARIABLE1_NAME", eVariableType.number, "-- настройка", "3");
             SpecText += HelperPackageParts.GetVariableDeclaration("LogLevel2", eVariableType.number, "-- настройка", "5");
             SpecText += HelperPackageParts.GetSpecMethod1(METHOD1_NAME);
             SpecText += HelperPackageParts.GetBottom(PackageName);
@@ -21,6 +22,8 @@ namespace PackageSplitter.Tests.Split.Source
             BodyText += HelperPackageParts.GetHeader(PackageName, true);
             BodyText += HelperPackageParts.GetBodyMethod1(METHOD1_NAME);
             BodyText += HelperPackageParts.GetBottom(PackageName);
+
+            SaveTextToFile();
         }
     }
 }
